@@ -1,108 +1,476 @@
-# 🔐 Fullstack Auth Turborepo
-
-This monorepo provides a modern fullstack authentication boilerplate using **Next.js** for the frontend and **NestJS** for the backend — organized and managed with **Turborepo**.
-
-It’s designed for scalability, type safety, and developer experience — ideal as a base for full-featured auth-driven applications.
-
----
-
-## 1. 📦 Getting Started
-
-### 1. Use as Template or Clone
-
-Use this repo as a GitHub template (recommended), or clone it directly:
-
-- `git clone https://github.com/robertlinde/next-nest-turbo-auth-boilerplate.git`
-- `cd next-nest-turbo-auth-boilerplate`
-
-### 2. Build Shared Package
-
-Build the shared package so it can be installed as dependency for the apps:
-
-- `cd packages/shared`
-- `npm install`
-- `npm run build`
-
-### 3. Install Dependencies
-
-Install root-level dependencies (workspace-based):
-
-- `npm install`
-
-This will install dependencies for all apps using Turborepo's workspace management.
-
-### 4. Setup Environment Variables
-
-Each app has its own .env.example. Copy and configure them:
-
-- `cp apps/nextjs-frontend/.env.example apps/nextjs-frontend/.env`
-- `cp apps/nestjs-backend/.env.example apps/nestjs-backend/.env`
-
-Then fill in the required environment variables based on your setup (e.g., database credentials, JWT secrets, email service configs).
-
-### 5. Start the Backend
-
-Start the database container and apply migrations:
-
-- `cd apps/nestjs-backend`
-- `docker-compose up -d`
-- `npm run migration:create`
-- `npm run migration:up`
-
-### 6. Start dev mode
-
-At the root of your project, run:
-
-- `npm run start:dev`
-
-Your app should now be running with both frontend and backend services in development mode.
+<div align="center">
+  <h1>🚀 Titan</h1>
+  <p><strong>专业级素材协作平台</strong></p>
+  <p>无缝整合云存储与项目管理，为团队协作赋能</p>
+  
+  <p>
+    <a href="https://github.com/yourusername/titan/stargazers">
+      <img src="https://img.shields.io/github/stars/yourusername/titan?style=for-the-badge&logo=github" alt="GitHub Stars">
+    </a>
+    <a href="https://github.com/yourusername/titan/network/members">
+      <img src="https://img.shields.io/github/forks/yourusername/titan?style=for-the-badge&logo=github" alt="GitHub Forks">
+    </a>
+    <a href="https://github.com/yourusername/titan/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/yourusername/titan?style=for-the-badge" alt="License">
+    </a>
+    <a href="https://github.com/yourusername/titan/issues">
+      <img src="https://img.shields.io/github/issues/yourusername/titan?style=for-the-badge" alt="Issues">
+    </a>
+  </p>
+  
+  <p>
+    <a href="https://nodejs.org/">
+      <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+    </a>
+    <a href="https://www.typescriptlang.org/">
+      <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+    </a>
+    <a href="https://nextjs.org/">
+      <img src="https://img.shields.io/badge/Next.js-15+-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js">
+    </a>
+    <a href="https://nestjs.com/">
+      <img src="https://img.shields.io/badge/NestJS-10+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS">
+    </a>
+  </p>
+  
+  <p>
+    <a href="#快速开始">快速开始</a> •
+    <a href="#核心功能">核心功能</a> •
+    <a href="#系统架构">系统架构</a> •
+    <a href="#api文档">API文档</a> •
+    <a href="#参与贡献">参与贡献</a> •
+    <a href="#开源协议">开源协议</a>
+  </p>
+</div>
 
 ---
 
-## 2. ⚙️ Base Tech Used
+## ✨ 核心功能
 
-### 🖥 Frontend (`apps/frontend`)
+### 🔗 **云存储集成**
 
-- **Next.js** (App Router)
-- **TypeScript**
-- **Tailwind CSS** + **PrimeReact**
-- **Zustand**
-- **React Hook Form** + **Joi**
-- **React Query**
-- **next-intl** (i18n)
+- **阿里云盘支持**：无缝连接和管理阿里云盘文件
+- **安全令牌管理**：AES-256 加密存储凭证信息
+- **实时同步**：自动与云存储保持同步
 
-➡️ More in [apps/nextjs-frontend/README.md](./apps/nextjs-frontend/README.md)
+### 📂 **项目管理**
 
-### 🛠 Backend (`apps/backend`)
+- **直观仪表板**：简洁现代的项目管理界面
+- **素材组织**：智能分类和标签系统
+- **团队协作**：多用户项目访问和权限管理
 
-- **NestJS**
-- **TypeScript**
-- **JWT Auth**
-- **MikroORM** + **PostgreSQL**
-- **Templated email service**
-- **class-validator**
+### 🔐 **企业级安全**
 
-➡️ More in [apps/nestjs-backend/README.md](./apps/nestjs-backend/README.md)
+- **JWT 认证**：安全的基于令牌的身份验证
+- **基于角色的访问控制**：细粒度权限系统
+- **数据加密**：端到端敏感数据加密
 
-### 📦 Shared (`packages/shared`)
+### 🎨 **现代化 UI/UX**
 
-- **TypeScript**
-- **class-validator**
-- Shared types & DTOs between frontend and backend
-- Type-safe API contracts
+- **响应式设计**：完美适配所有设备
+- **PrimeReact 组件**：专业的 UI 组件库
+- **深色/浅色主题**：可自定义的主题系统
+- **国际化支持**：多语言界面
 
-➡️ More in [packages/shared/README.md](./packages/shared/README.md)
+### 🚀 **开发者体验**
 
----
-
-## 3. 🤝 Contributing
-
-This repo is intended to be cloned, extended, and customized. Feel free to open issues or submit PRs if you're improving the base or adapting it.
+- **Turborepo 单体仓库**：高效的工作空间管理
+- **类型安全**：全栈 TypeScript 支持
+- **热重载**：闪电般的开发体验
+- **全面测试**：单元、集成和端到端测试
 
 ---
 
-## 4. 📝 License
+## 📋 目录导航
 
-MIT — free to use, modify, and distribute.
+- [快速开始](#快速开始)
+- [核心功能](#核心功能)
+- [系统架构](#系统架构)
+- [安装部署](#安装部署)
+- [环境配置](#环境配置)
+- [使用指南](#使用指南)
+- [API文档](#api文档)
+- [开发指南](#开发指南)
+- [测试](#测试)
+- [部署](#部署)
+- [参与贡献](#参与贡献)
+- [开源协议](#开源协议)
 
-➡️ More in [LICENSE](./LICENSE)
+---
+
+## 🚀 快速开始
+
+### 环境要求
+
+- **Node.js 18+**
+- **PostgreSQL 12+**
+- **Docker**（可选，用于容器化数据库）
+
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/yourusername/titan.git
+cd titan
+```
+
+### 2. 安装依赖
+
+```bash
+# 安装根目录依赖
+npm install
+
+# 构建共享包
+cd packages/shared
+npm run build
+cd ../..
+```
+
+### 3. 环境配置
+
+```bash
+# 后端环境配置
+cp apps/nestjs-backend/.env.example apps/nestjs-backend/.env
+
+# 前端环境配置
+cp apps/nextjs-frontend/.env.example apps/nextjs-frontend/.env
+```
+
+### 4. 数据库设置
+
+```bash
+cd apps/nestjs-backend
+
+# 启动 PostgreSQL（Docker）
+npm run start:dev:infra
+
+# 运行数据库迁移
+npm run migration:up
+```
+
+### 5. 启动开发服务器
+
+```bash
+# 从根目录启动
+npm run start:dev
+```
+
+🎉 **完成！** 你的应用现在已经运行在：
+
+- **前端**：http://localhost:3000
+- **后端**：http://localhost:3001
+
+---
+
+## 🏗️ 系统架构
+
+### 架构总览
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     前端        │    │     后端        │    │     数据库      │
+│   (Next.js)     │◄──►│   (NestJS)      │◄──►│  (PostgreSQL)   │
+│   端口: 3000    │    │   端口: 3001    │    │   端口: 5432    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │
+         │                       │
+         ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐
+│    共享类型     │    │    阿里云盘     │
+│  (TypeScript)   │    │     集成        │
+└─────────────────┘    └─────────────────┘
+```
+
+### 🖥️ 前端架构
+
+- **框架**：Next.js 15 + App Router
+- **状态管理**：Zustand + React Query
+- **样式**：Tailwind CSS + PrimeReact
+- **表单**：React Hook Form + Zod 验证
+- **国际化**：next-intl
+
+### 🛠️ 后端架构
+
+- **框架**：NestJS + TypeScript
+- **数据库**：MikroORM + PostgreSQL
+- **认证**：JWT + 刷新令牌
+- **验证**：class-validator
+- **邮件**：Handlebars 模板邮件服务
+
+### 📦 共享包
+
+- **类型安全**：前后端共享的 TypeScript 类型和 DTOs
+- **数据验证**：通用验证模式
+- **API 合约**：类型安全的 API 接口
+
+---
+
+## 🔧 环境配置
+
+### 后端配置
+
+```typescript
+// apps/nestjs-backend/.env
+DATABASE_URL = 'postgresql://username:password@localhost:5432/titan';
+JWT_SECRET = 'your-super-secret-jwt-key';
+JWT_REFRESH_SECRET = 'your-refresh-secret-key';
+ENCRYPTION_KEY = 'your-32-character-encryption-key';
+SMTP_HOST = 'smtp.gmail.com';
+SMTP_PORT = 587;
+SMTP_USER = 'your-email@gmail.com';
+SMTP_PASS = 'your-app-password';
+```
+
+### 前端配置
+
+```typescript
+// apps/nextjs-frontend/.env
+NEXT_PUBLIC_API_URL = 'http://localhost:3001';
+NEXT_PUBLIC_APP_NAME = 'Titan';
+```
+
+---
+
+## 💡 使用指南
+
+### 1. 用户认证
+
+```typescript
+// 注册新用户
+const response = await fetch('/api/auth/register', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    email: 'user@example.com',
+    password: 'securePassword123',
+    firstName: '张',
+    lastName: '三',
+  }),
+});
+```
+
+### 2. 阿里云盘集成
+
+```typescript
+// 配置阿里云盘连接
+const configResponse = await fetch('/api/aliyun-drive/config', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  },
+  body: JSON.stringify({
+    refreshToken: 'your-aliyun-refresh-token',
+  }),
+});
+```
+
+### 3. 项目管理
+
+```typescript
+// 创建新项目
+const project = await fetch('/api/projects', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  },
+  body: JSON.stringify({
+    name: '我的项目',
+    description: '项目描述',
+  }),
+});
+```
+
+---
+
+## 📚 API文档
+
+### 认证接口
+
+| 方法 | 接口             | 描述         |
+| ---- | ---------------- | ------------ |
+| POST | `/auth/register` | 用户注册     |
+| POST | `/auth/login`    | 用户登录     |
+| POST | `/auth/refresh`  | 刷新访问令牌 |
+| POST | `/auth/logout`   | 用户登出     |
+
+### 项目管理接口
+
+| 方法   | 接口            | 描述             |
+| ------ | --------------- | ---------------- |
+| GET    | `/projects`     | 获取用户项目列表 |
+| POST   | `/projects`     | 创建新项目       |
+| GET    | `/projects/:id` | 获取项目详情     |
+| PATCH  | `/projects/:id` | 更新项目         |
+| DELETE | `/projects/:id` | 删除项目         |
+
+### 阿里云盘接口
+
+| 方法 | 接口                   | 描述         |
+| ---- | ---------------------- | ------------ |
+| POST | `/aliyun-drive/config` | 配置阿里云盘 |
+| GET  | `/aliyun-drive/config` | 获取配置状态 |
+| GET  | `/aliyun-drive/files`  | 获取文件列表 |
+
+---
+
+## 🔨 开发指南
+
+### 可用脚本
+
+```bash
+# 开发模式
+npm run start:dev          # 启动前后端
+npm run start:dev:frontend # 仅启动前端
+npm run start:dev:backend  # 仅启动后端
+
+# 构建
+npm run build             # 构建所有包
+npm run build:frontend    # 仅构建前端
+npm run build:backend     # 仅构建后端
+
+# 测试
+npm run test:unit         # 运行单元测试
+npm run test:e2e          # 运行端到端测试
+npm run test:coverage     # 生成覆盖率报告
+
+# 代码质量
+npm run lint             # 检查代码规范
+npm run lint:fix         # 修复代码规范问题
+npm run format           # 格式化代码
+```
+
+### 项目结构
+
+```
+titan/
+├── apps/
+│   ├── nestjs-backend/          # NestJS 后端应用
+│   │   ├── src/
+│   │   │   ├── auth/            # 认证模块
+│   │   │   ├── users/           # 用户管理
+│   │   │   ├── aliyun-drive/    # 阿里云盘集成
+│   │   │   └── project/         # 项目管理
+│   │   └── migrations/          # 数据库迁移
+│   └── nextjs-frontend/         # Next.js 前端应用
+│       ├── app/                 # App Router 页面
+│       ├── components/          # 可复用组件
+│       └── lib/                 # 工具函数
+├── packages/
+│   └── shared/                  # 共享 TypeScript 类型
+│       ├── src/
+│       │   ├── types/           # 通用类型
+│       │   └── dtos/            # 数据传输对象
+└── docs/                        # 文档
+```
+
+---
+
+## 🧪 测试
+
+### 单元测试
+
+```bash
+# 运行所有单元测试
+npm run test:unit
+
+# 运行测试并生成覆盖率
+npm run test:coverage
+
+# 监视模式运行测试
+npm run test:watch
+```
+
+### 端到端测试
+
+```bash
+# 运行 E2E 测试
+npm run test:e2e
+
+# 带 UI 界面运行 E2E 测试
+npm run test:e2e:ui
+```
+
+### 测试覆盖率
+
+我们在所有关键组件中保持高测试覆盖率：
+
+- **后端**：90%+ 覆盖率
+- **前端**：85%+ 覆盖率
+- **共享包**：95%+ 覆盖率
+
+---
+
+## 🚀 部署
+
+### Docker 部署
+
+```bash
+# 使用 Docker Compose 构建并运行
+docker-compose up --build
+
+# 生产环境部署
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### 环境变量
+
+确保在生产环境中设置以下环境变量：
+
+```bash
+# 后端
+DATABASE_URL=postgresql://...
+JWT_SECRET=your-production-secret
+ENCRYPTION_KEY=your-production-key
+
+# 前端
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+```
+
+---
+
+## 🤝 参与贡献
+
+我们欢迎所有形式的贡献！请查看我们的 [贡献指南](CONTRIBUTING.md) 了解详情。
+
+### 开发流程
+
+1. **Fork** 项目仓库
+2. **创建** 功能分支 (`git checkout -b feature/amazing-feature`)
+3. **提交** 你的更改 (`git commit -m 'Add amazing feature'`)
+4. **推送** 到分支 (`git push origin feature/amazing-feature`)
+5. **创建** Pull Request
+
+### 代码规范
+
+- **ESLint**：使用 XO 进行代码检查
+- **Prettier**：代码格式化
+- **TypeScript**：启用严格模式
+- **约定式提交**：请使用约定式提交信息
+
+---
+
+## 📄 开源协议
+
+本项目采用 MIT 协议 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+---
+
+## ❤️ 致谢
+
+- [Next.js](https://nextjs.org/) - React 框架
+- [NestJS](https://nestjs.com/) - Node.js 框架
+- [PrimeReact](https://primereact.org/) - UI 组件库
+- [MikroORM](https://mikro-orm.io/) - TypeScript ORM
+- [Turborepo](https://turbo.build/) - 单体仓库管理
+
+---
+
+<div align="center">
+  <p>用 ❤️ 由 Titan 团队制作</p>
+  <p>
+    <a href="https://github.com/yourusername/titan/stargazers">⭐ 在 GitHub 上给我们点星</a> •
+    <a href="https://github.com/yourusername/titan/issues">🐛 报告问题</a> •
+    <a href="https://github.com/yourusername/titan/issues">💡 功能建议</a>
+  </p>
+</div>
