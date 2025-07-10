@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Structure
 
 This is a Turborepo monorepo containing a fullstack authentication system with:
+
 - **apps/nestjs-backend**: NestJS backend with JWT auth, MikroORM + PostgreSQL, email templating
 - **apps/nextjs-frontend**: Next.js frontend with App Router, TypeScript, Tailwind CSS, PrimeReact
 - **packages/shared**: Shared TypeScript types and DTOs between frontend and backend
@@ -12,6 +13,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 ## Development Commands
 
 ### Root Level (run from `/home/green/project/titan`)
+
 - `npm run start:dev` - Start both frontend and backend in development mode
 - `npm run build` - Build all apps and packages
 - `npm run lint` - Run linting across all apps
@@ -21,6 +23,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - `npm run format` - Format code with Prettier
 
 ### Backend Specific (apps/nestjs-backend)
+
 - `npm run start:dev` - Start backend in watch mode
 - `npm run start:dev:infra` - Start Docker infrastructure (PostgreSQL)
 - `npm run migration:create` - Create new database migration
@@ -32,6 +35,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - `npm run lint:fix` - Fix XO linting issues
 
 ### Frontend Specific (apps/nextjs-frontend)
+
 - `npm run start:dev` - Start Next.js in development mode
 - `npm run build` - Build Next.js app
 - `npm run test:e2e` - Run Playwright E2E tests
@@ -40,6 +44,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - `npm run lint:fix` - Fix XO linting issues
 
 ### Shared Package (packages/shared)
+
 - `npm run build` - Build shared TypeScript package (required before running apps)
 - `npm run start:dev` - Build in watch mode
 - `npm run lint` - Run XO linting
@@ -56,6 +61,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 ## Architecture Notes
 
 ### Backend Architecture
+
 - **Module-based structure**: Each feature (auth, users, email, etc.) is a separate NestJS module
 - **Global guards**: JWT authentication and throttling applied globally via APP_GUARD
 - **Database**: MikroORM with PostgreSQL, migration-based schema management
@@ -63,6 +69,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - **Validation**: class-validator for DTOs, Joi for environment config validation
 
 ### Frontend Architecture
+
 - **App Router**: Next.js 15 with App Router and TypeScript
 - **State Management**: Zustand for global state, React Query for server state
 - **Styling**: Tailwind CSS with PrimeReact components
@@ -70,6 +77,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - **Authentication**: JWT-based with refresh tokens, stored in Zustand
 
 ### Shared Package
+
 - Contains shared TypeScript types and DTOs
 - Must be built before running apps
 - Used by both frontend and backend for type safety

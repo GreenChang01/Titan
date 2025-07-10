@@ -33,6 +33,12 @@ const validationSchemaMap: Record<ConfigKey, Joi.Schema> = {
   [ConfigKey.MAIL_USER]: Joi.string().optional(),
 
   [ConfigKey.MAIL_PASS]: Joi.string().optional(),
+
+  [ConfigKey.ENCRYPTION_KEY]: Joi.string().length(32).required(),
+  [ConfigKey.WEBDAV_BASE_URL]: Joi.string().uri().required(),
+  [ConfigKey.WEBDAV_USERNAME]: Joi.string().required(),
+  [ConfigKey.WEBDAV_PASSWORD]: Joi.string().required(),
+  [ConfigKey.WEBDAV_TIMEOUT]: Joi.number().min(1000).max(300000).default(30000),
 };
 
 export default Joi.object(validationSchemaMap);

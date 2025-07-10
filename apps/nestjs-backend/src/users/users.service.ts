@@ -11,6 +11,7 @@ import {CryptoService} from '../crypto/crypto.service';
 import {EmailService} from '../email/email.service';
 import {oneDay, oneHour} from '../utils/time.util';
 import {User} from './entities/user.entity';
+import {AliyunDriveConfig} from '../aliyun-drive/entities/aliyun-drive-config.entity';
 
 @Injectable()
 export class UsersService {
@@ -175,5 +176,12 @@ export class UsersService {
 
     await this.em.persistAndFlush(user);
     return user;
+  }
+
+  async checkAliyunDriveConfigStatus(userId: string): Promise<boolean> {
+    const config = await this.em.findOne(AliyunDriveConfig, {
+      user: userId,
+    });
+    return config !== null && config.isActive;
   }
 }

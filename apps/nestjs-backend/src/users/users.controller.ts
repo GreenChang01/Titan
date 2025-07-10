@@ -158,4 +158,29 @@ export class UsersController {
     const userEntity = await this.usersService.updateUser(userId, email, username, password);
     return new UserDto(userEntity);
   }
+
+  @Get('me/config-status')
+  @ApiOperation({
+    summary: 'Get user configuration status',
+    description:
+      'This endpoint retrieves the configuration status of the currently authenticated user, including whether they have configured Aliyun Drive.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successfully retrieved user configuration status.',
+    schema: {
+      type: 'object',
+      properties: {
+        hasAliyunDriveConfig: {
+          type: 'boolean',
+          description: 'Whether the user has configured Aliyun Drive',
+        },
+      },
+    },
+  })
+  async getConfigStatus(@User() user: ActiveUser): Promise<{hasAliyunDriveConfig: boolean}> {
+    const {userId} = user;
+    const hasConfig = await this.usersService.checkAliyunDriveConfigStatus(userId);
+    return {hasAliyunDriveConfig: hasConfig};
+  }
 }
