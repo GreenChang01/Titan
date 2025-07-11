@@ -7,7 +7,7 @@ import {EntityRepository} from '@mikro-orm/core';
 import {ConfigService} from '@nestjs/config';
 import axios, {AxiosInstance} from 'axios';
 import {ConfigKey} from '../config/config-key.enum';
-import {CryptoService} from '../crypto/crypto.service';
+import {CryptoService, type EncryptedData} from '../crypto/crypto.service';
 import {User} from '../users/entities/user.entity';
 import {AliyunDriveConfig} from './entities/aliyun-drive-config.entity';
 import {
@@ -80,7 +80,7 @@ export class AliyunDriveService {
 
   async getDecryptedPassword(config: AliyunDriveConfig): Promise<string> {
     try {
-      const encryptedData = JSON.parse(config.encryptedPassword) as Record<string, unknown>;
+      const encryptedData = JSON.parse(config.encryptedPassword) as EncryptedData;
       return this.cryptoService.decrypt(encryptedData);
     } catch (error) {
       this.logger.error(
@@ -121,7 +121,7 @@ export class AliyunDriveService {
   async listFiles(config: AliyunDriveConfig, listDto: ListFilesDto): Promise<ListFilesResponseDto> {
     try {
       const client = await this.createWebDavClient(config);
-      const targetPath = path.posix.join(config.basePath, listDto.path);
+      const targetPath = path.posix.join(config.basePath ?? '/', listDto.path ?? '/');
 
       const propfindBody = `<?xml version="1.0" encoding="utf-8"?>
 <d:propfind xmlns:d="DAV:">
@@ -151,7 +151,7 @@ export class AliyunDriveService {
 
       return {
         files,
-        path: listDto.path,
+        path: listDto.path ?? '/',
         total: files.length,
       };
     } catch (error) {

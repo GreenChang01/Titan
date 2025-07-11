@@ -1,7 +1,7 @@
 import {Cascade, Collection, Entity, ManyToOne, OneToMany, Property, types} from '@mikro-orm/core';
 import {User} from '../../users/entities/user.entity';
 import {BaseEntity} from '../../common/entities/base-entity.entity';
-import type {ProjectMaterial} from '../../project-material/entities/project-material.entity';
+import {ProjectMaterial} from '../../project-material/entities/project-material.entity';
 
 @Entity()
 export class Project extends BaseEntity {

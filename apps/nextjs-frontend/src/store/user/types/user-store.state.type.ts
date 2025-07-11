@@ -1,4 +1,4 @@
-import {type UserDto} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type UserDto} from '@titan/shared';
 import {type LoadUserReturnType} from './load-user.return.type';
 
 /**

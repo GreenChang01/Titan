@@ -1,5 +1,5 @@
 {
-  "name": "@next-nest-turbo-auth-boilerplate/shared",
+  "name": "@titan/shared",
   "version": "0.0.1",
   "scripts": {
     "start:dev": "tsc --watch",

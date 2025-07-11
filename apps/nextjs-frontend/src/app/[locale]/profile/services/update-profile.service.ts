@@ -1,4 +1,4 @@
-import {type UpdateUserBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type UpdateUserBody} from '@titan/shared';
 import {apiRequestHandler} from '@/utils/api/api-request-handler.ts';
 
 export const updateProfile = async (data: UpdateUserBody): Promise<void> => {

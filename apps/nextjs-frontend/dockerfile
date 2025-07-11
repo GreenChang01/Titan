@@ -40,7 +40,7 @@ COPY --from=builder /app/apps/nextjs-frontend/public ./public
 COPY --from=builder /app/apps/nextjs-frontend/next.config.ts ./
 
 # Copy built shared package if needed at runtime
-COPY --from=builder /app/packages/shared/dist ./node_modules/@next-nest-turbo-auth-boilerplate/shared/dist
+COPY --from=builder /app/packages/titan-shared/dist ./node_modules/@titan/shared/dist
 
 # Only copy dependencies needed for production
 # This is more efficient than copying all node_modules

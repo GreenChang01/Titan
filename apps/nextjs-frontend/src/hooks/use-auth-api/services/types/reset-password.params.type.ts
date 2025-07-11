@@ -1,4 +1,4 @@
-import {type ResetPasswordConfirmBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type ResetPasswordConfirmBody} from '@titan/shared';
 
 export type ResetPasswordParams = {
   resetPasswordData: ResetPasswordConfirmBody;

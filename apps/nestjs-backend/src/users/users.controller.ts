@@ -7,7 +7,7 @@ import {
   UserDto,
   ResetPasswordRequestBodyDto,
   UpdateUserBodyDto,
-} from '@next-nest-turbo-auth-boilerplate/shared';
+} from '@titan/shared';
 import {ValidateHeader} from '../common/decorators/validate-header/validate-header.decorator';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {Public} from '../auth/decorators/public.decorator';

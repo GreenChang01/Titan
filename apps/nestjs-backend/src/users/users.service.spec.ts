@@ -4,7 +4,7 @@ import {ConflictException, GoneException, NotFoundException} from '@nestjs/commo
 import {ConfigService} from '@nestjs/config';
 import {Test, TestingModule} from '@nestjs/testing';
 import {mock, MockProxy} from 'jest-mock-extended';
-import {UserStatus} from '@next-nest-turbo-auth-boilerplate/shared';
+import {UserStatus} from '@titan/shared';
 import {ConfigKey} from '../config/config-key.enum';
 import {CryptoService} from '../crypto/crypto.service';
 import {EmailService} from '../email/email.service';

@@ -1,4 +1,4 @@
-import {type CreateUserBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type CreateUserBody} from '@titan/shared';
 
 export type RegisterParams = {
   createUserData: CreateUserBody;

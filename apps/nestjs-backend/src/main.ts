@@ -37,15 +37,18 @@ async function bootstrap(): Promise<void> {
 
   if (process.env.ENABLE_SWAGGER === 'true') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('nest auth boilerplate')
-      .setDescription('The nest auth boilerplate API description')
+      .setTitle('Titan | 素材协作平台 API')
+      .setDescription('Titan 素材协作平台后端接口文档')
       .setVersion('1.0')
       .build();
     const documentFactory = (): OpenAPIObject => SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api/docs', app, documentFactory);
+    SwaggerModule.setup('api/docs', app, documentFactory, {
+      customSiteTitle: 'Titan API Docs',
+    });
   }
 
-  await app.listen(process.env.PORT ?? 4000);
+  const port = process.env.PORT ?? 4000;
+  await app.listen(port, '127.0.0.1');
 
   if (process.env.ENABLE_SWAGGER === 'true') {
     const logger = new Logger('bootstrap', {timestamp: true});

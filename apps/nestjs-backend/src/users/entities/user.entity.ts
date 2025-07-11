@@ -1,5 +1,5 @@
-import {Cascade, Collection, Entity, Enum, OneToMany, OneToOne, Property, types, Unique} from '@mikro-orm/core';
-import {UserStatus} from '@next-nest-turbo-auth-boilerplate/shared';
+import {Cascade, Collection, Entity, Enum, OneToMany, Property, types, Unique} from '@mikro-orm/core';
+import {UserStatus} from '@titan/shared';
 import {TwoFactorAuth} from '../../auth/entities/two-factor-auth.entity';
 import {BaseEntity} from '../../common/entities/base-entity.entity';
 import {AliyunDriveConfig} from '../../aliyun-drive/entities/aliyun-drive-config.entity';
@@ -22,7 +22,7 @@ export class User extends BaseEntity {
   confirmationCode: string;
 
   @Enum(() => UserStatus)
-  status: UserStatus;
+  status: UserStatus = UserStatus.CONFIRMATION_PENDING;
 
   @Property({type: types.string, nullable: true})
   passwordResetToken?: string | undefined;
@@ -36,11 +36,11 @@ export class User extends BaseEntity {
   })
   twoFactorAuth?: TwoFactorAuth[];
 
-  @OneToOne(() => AliyunDriveConfig, (config) => config.user, {
+  @OneToMany(() => AliyunDriveConfig, (config) => config.user, {
     cascade: [Cascade.REMOVE],
     nullable: true,
   })
-  aliyunDriveConfig?: AliyunDriveConfig;
+  aliyunDriveConfig?: AliyunDriveConfig[];
 
   @OneToMany(() => Project, (project) => project.user, {
     cascade: [Cascade.REMOVE],
@@ -63,6 +63,5 @@ export class User extends BaseEntity {
     this.password = password;
     this.username = username;
     this.confirmationCode = confirmationCode;
-    this.status = UserStatus.CONFIRMATION_PENDING;
   }
 }

@@ -22,6 +22,12 @@ const appConfig = (): Record<ConfigKey, unknown> => ({
   [ConfigKey.MAIL_PORT]: Number(process.env.MAIL_PORT),
   [ConfigKey.MAIL_USER]: process.env.MAIL_USER,
   [ConfigKey.MAIL_PASS]: process.env.MAIL_PASS,
+
+  [ConfigKey.ENCRYPTION_KEY]: process.env.ENCRYPTION_KEY,
+  [ConfigKey.WEBDAV_BASE_URL]: process.env.WEBDAV_BASE_URL,
+  [ConfigKey.WEBDAV_USERNAME]: process.env.WEBDAV_USERNAME,
+  [ConfigKey.WEBDAV_PASSWORD]: process.env.WEBDAV_PASSWORD,
+  [ConfigKey.WEBDAV_TIMEOUT]: Number(process.env.WEBDAV_TIMEOUT),
 });
 
 export default appConfig;

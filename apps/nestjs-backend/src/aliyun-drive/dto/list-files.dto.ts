@@ -34,5 +34,4 @@ export type ListFilesResponseDto = {
   files: WebDavFileDto[];
   total: number;
   path: string;
-  hasMore: boolean;
 };

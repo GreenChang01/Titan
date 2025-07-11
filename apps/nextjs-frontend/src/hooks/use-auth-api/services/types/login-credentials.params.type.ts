@@ -1,4 +1,4 @@
-import {type LoginCredentialsBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type LoginCredentialsBody} from '@titan/shared';
 
 export type LoginCredentialsParams = {
   loginCredentialsData: LoginCredentialsBody;

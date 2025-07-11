@@ -1,12 +1,7 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {mock} from 'jest-mock-extended';
-import {
-  CreateUserBodyDto,
-  ResetPasswordConfirmBodyDto,
-  UpdateUserBodyDto,
-  UserDto,
-} from '@next-nest-turbo-auth-boilerplate/shared';
-import {ResetPasswordRequestBodyDto} from '@next-nest-turbo-auth-boilerplate/shared/src/dto/reset-password-request.body.dto';
+import {CreateUserBodyDto, ResetPasswordConfirmBodyDto, UpdateUserBodyDto, UserDto} from '@titan/shared';
+import {ResetPasswordRequestBodyDto} from '@titan/shared/src/dto/reset-password-request.body.dto';
 import {ActiveUser} from '../auth/types/active-user.type';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {ConfirmUserParamDto} from './dto/confirm-user.param.dto';

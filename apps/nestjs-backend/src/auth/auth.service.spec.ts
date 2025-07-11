@@ -5,7 +5,7 @@ import {ConfigService} from '@nestjs/config';
 import {JwtService} from '@nestjs/jwt';
 import {Test, TestingModule} from '@nestjs/testing';
 import {mock, MockProxy} from 'jest-mock-extended';
-import {UserStatus} from '@next-nest-turbo-auth-boilerplate/shared';
+import {UserStatus} from '@titan/shared';
 import {ConfigKey} from '../config/config-key.enum';
 import {CryptoService} from '../crypto/crypto.service';
 import {EmailService} from '../email/email.service';

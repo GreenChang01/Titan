@@ -4,7 +4,7 @@ import {GoneException, Injectable, NotFoundException} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {Cron} from '@nestjs/schedule';
 import {v4 as uuidv4} from 'uuid';
-import {UserStatus} from '@next-nest-turbo-auth-boilerplate/shared';
+import {UserStatus} from '@titan/shared';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {ConfigKey} from '../config/config-key.enum';
 import {CryptoService} from '../crypto/crypto.service';

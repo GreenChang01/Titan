@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {type UserDto} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type UserDto} from '@titan/shared';
 import {type UserStoreState} from './types/user-store.state.type';
 import {type LoadUserReturnType} from './types/load-user.return.type';
 import {apiRequestHandler} from '@/utils/api/api-request-handler.ts';

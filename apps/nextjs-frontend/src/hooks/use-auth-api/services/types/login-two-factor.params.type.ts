@@ -1,4 +1,4 @@
-import {type LoginTwoFactorAuthBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type LoginTwoFactorAuthBody} from '@titan/shared';
 
 export type LoginTwoFactorParams = {
   loginTwoFactorData: LoginTwoFactorAuthBody;

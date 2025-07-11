@@ -1,4 +1,4 @@
-import {type ResetPasswordRequestBody} from '@next-nest-turbo-auth-boilerplate/shared';
+import {type ResetPasswordRequestBody} from '@titan/shared';
 
 export type ForgotPasswordParams = {
   language: string;

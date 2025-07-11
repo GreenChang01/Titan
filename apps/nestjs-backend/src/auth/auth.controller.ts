@@ -3,7 +3,7 @@ import {ConfigService} from '@nestjs/config';
 import {ApiResponse, ApiTags, ApiOperation} from '@nestjs/swagger';
 import {Throttle} from '@nestjs/throttler';
 import type {Response, Request} from 'express';
-import {LoginCredentialsBodyDto, LoginTwoFactorAuthBodyDto} from '@next-nest-turbo-auth-boilerplate/shared';
+import {LoginCredentialsBodyDto, LoginTwoFactorAuthBodyDto} from '@titan/shared';
 import {ConfigKey} from '../config/config-key.enum';
 import {oneMinute, oneWeek} from '../utils/time.util';
 import {ValidateHeader} from '../common/decorators/validate-header/validate-header.decorator';
