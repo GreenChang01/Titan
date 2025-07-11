@@ -6,3 +6,6 @@ export * from './dto/reset-password-request.body.dto';
 export * from './dto/update-user.body.dto';
 export * from './dto/login-credentials.body.dto';
 export * from './dto/login-two-factor-auth.body.dto';
+export * from './dto/project.dto';
+export * from './dto/project-material.dto';
+export * from './dto/aliyun-drive.dto';

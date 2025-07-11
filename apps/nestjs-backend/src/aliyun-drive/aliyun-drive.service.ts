@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/member-ordering, @typescript-eslint/naming-convention */
 import * as path from 'node:path';
 import {Readable} from 'node:stream';
 import {Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
@@ -105,7 +105,7 @@ export class AliyunDriveService {
     const password = await this.getDecryptedPassword(config);
 
     return axios.create({
-      baseUrl: config.webdavUrl,
+      baseURL: config.webdavUrl,
       timeout: config.timeout,
       auth: {
         username: config.username,

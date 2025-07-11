@@ -71,3 +71,18 @@
 - **决策**: 在`app.module.ts`中为`ConfigModule.forRoot()`添加`isGlobal: true`。
 - **理由**: 确保ConfigService在整个应用程序中可用，无需在每个模块中单独导入。
 - **影响**: 应用程序编译成功，但热重载导致EADDRINUSE错误。这表明原始配置问题已解决，现在是进程管理问题。
+
+---
+
+### 决策 #007: 修复编译错误
+
+[2025-07-11 16:47:18] - 修复 `aliyun-drive` 模块的编译错误。
+
+- **背景**: 项目在更新 Swagger 文档后出现两个编译错误，导致后端服务无法启动。
+- **决策**:
+  1.  为 `nestjs-backend` 添加 `@types/multer` 开发依赖，并在 `aliyun-drive.controller.ts` 中导入 `multer`，以解决 `Express.Multer.File` 类型未定义的问题。
+  2.  在 `aliyun-drive.service.ts` 中，将 `axios` 配置的 `baseUrl` 属性更正为 `baseURL`。
+- **理由**:
+  1.  缺少 `multer` 的类型定义文件导致 TypeScript 编译器无法识别相关类型。
+  2.  `axios` 库的配置项拼写错误。
+- **影响**: 解决了编译错误，使后端服务能够正常编译和启动。

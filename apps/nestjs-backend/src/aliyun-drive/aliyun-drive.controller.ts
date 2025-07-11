@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-restricted-types, @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-restricted-types, import-x/no-unassigned-import */
+import 'multer';
 import {
   Controller,
   Get,
