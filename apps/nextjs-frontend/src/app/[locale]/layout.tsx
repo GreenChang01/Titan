@@ -11,7 +11,7 @@ import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
 import {ReactQueryProvider} from '@/providers/react-query/react-query.provider';
 import {ToastProvider} from '@/providers/toast/toast.provider';
 import {UserProvider} from '@/providers/user/user.provider';
-import {Header} from '@/components/header/header.component.tsx';
+import {ConditionalHeader} from '@/components/header/conditional-header.component.tsx';
 import {Footer} from '@/components/footer/footer.component';
 import {routing} from '@/i18n/routing.ts';
 import {ZodErrorProvider} from '@/providers/zod-error/zod-error.provider';
@@ -43,7 +43,7 @@ export default async function Layout({
               <ConfirmDialog />
               <UserProvider>
                 <ReactQueryProvider>
-                  <Header />
+                  <ConditionalHeader />
                   <div className="mx-auto my-6 flex w-full max-w-7xl flex-col px-2 md:my-8 md:px-4 lg:my-12 min-h-screen">
                     {children}
                   </div>

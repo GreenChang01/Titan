@@ -21,20 +21,18 @@ export class ListFilesDto {
   search?: string;
 }
 
-export interface WebDAVFileDto {
-  filename: string;
-  basename: string;
-  lastmod: string;
-  size: number;
-  type: 'file' | 'directory';
-  etag?: string;
-  mime?: string;
-  props?: Record<string, any>;
-}
+export type WebDavFileDto = {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+  size?: number;
+  contentType?: string;
+  lastModified?: Date;
+};
 
-export interface ListFilesResponseDto {
-  files: WebDAVFileDto[];
+export type ListFilesResponseDto = {
+  files: WebDavFileDto[];
   total: number;
   path: string;
   hasMore: boolean;
-}
+};

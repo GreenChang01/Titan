@@ -57,6 +57,7 @@ export class UsersController {
   ): Promise<UserDto> {
     const {email, password, username} = body;
     const userEntity = await this.usersService.createUser(email, password, username, language);
+
     return new UserDto(userEntity);
   }
 
@@ -79,6 +80,7 @@ export class UsersController {
   async confirmUser(@Param() param: ConfirmUserParamDto): Promise<UserDto> {
     const {confirmationCode} = param;
     const userEntity = await this.usersService.confirmUser(confirmationCode);
+
     return new UserDto(userEntity);
   }
 
@@ -154,8 +156,10 @@ export class UsersController {
   })
   async updateUser(@User() user: ActiveUser, @Body() body: UpdateUserBodyDto): Promise<UserDto> {
     const {userId} = user;
+
     const {email, password, username} = body;
     const userEntity = await this.usersService.updateUser(userId, email, username, password);
+
     return new UserDto(userEntity);
   }
 

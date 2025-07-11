@@ -10,8 +10,8 @@ import {ConfigKey} from '../config/config-key.enum';
 import {CryptoService} from '../crypto/crypto.service';
 import {EmailService} from '../email/email.service';
 import {oneDay, oneHour} from '../utils/time.util';
-import {User} from './entities/user.entity';
 import {AliyunDriveConfig} from '../aliyun-drive/entities/aliyun-drive-config.entity';
+import {User} from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -182,6 +182,6 @@ export class UsersService {
     const config = await this.em.findOne(AliyunDriveConfig, {
       user: userId,
     });
-    return config !== null && config.isActive;
+    return Boolean(config?.isActive);
   }
 }

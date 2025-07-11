@@ -21,7 +21,45 @@ export function Header(): JSX.Element {
 
   const {logout} = useAuthApi();
 
-  const items: MenuItem[] = useMemo(() => [], []);
+  const items: MenuItem[] = useMemo(
+    () => [
+      {
+        label: t('dashboard', {defaultMessage: '看板'}),
+        icon: 'pi pi-home',
+        command(): void {
+          router.push('/dashboard');
+        },
+      },
+      {
+        label: t('projects', {defaultMessage: '项目'}),
+        icon: 'pi pi-folder',
+        items: [
+          {
+            label: t('all-projects', {defaultMessage: '所有项目'}),
+            icon: 'pi pi-list',
+            command(): void {
+              router.push('/dashboard');
+            },
+          },
+          {
+            label: t('new-project', {defaultMessage: '新建项目'}),
+            icon: 'pi pi-plus',
+            command(): void {
+              // 添加新建项目功能
+            },
+          },
+        ],
+      },
+      {
+        label: t('settings', {defaultMessage: '设置'}),
+        icon: 'pi pi-cog',
+        command(): void {
+          router.push('/settings');
+        },
+      },
+    ],
+    [router, t],
+  );
 
   const endMenuItems: MenuItem[] = useMemo(
     () => [
@@ -38,12 +76,17 @@ export function Header(): JSX.Element {
           {
             label: t('logout-button-label'),
             icon: 'pi pi-sign-out',
-            command: async (): Promise<void> =>
-              logout({
-                onSuccess() {
-                  router.push('/login');
-                },
-              }),
+            async command(): Promise<void> {
+              try {
+                await logout({
+                  onSuccess() {
+                    router.push('/login');
+                  },
+                });
+              } catch {
+                // Handle logout error
+              }
+            },
           },
         ],
       },

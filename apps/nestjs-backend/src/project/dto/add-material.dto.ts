@@ -41,5 +41,5 @@ export class AddMaterialDto {
   description?: string;
 
   @IsOptional()
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }

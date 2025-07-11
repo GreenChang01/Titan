@@ -59,9 +59,9 @@ export class CopyItemDto {
   overwrite?: boolean = false;
 }
 
-export interface FileOperationResponseDto {
+export type FileOperationResponseDto = {
   success: boolean;
   message?: string;
   path?: string;
   error?: string;
-}
+};

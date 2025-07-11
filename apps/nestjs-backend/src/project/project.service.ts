@@ -1,9 +1,9 @@
 import {Injectable, NotFoundException, ConflictException} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
 import {EntityRepository, EntityManager} from '@mikro-orm/core';
-import {Project} from './entities/project.entity';
 import {ProjectMaterial} from '../project-material/entities/project-material.entity';
 import {User} from '../users/entities/user.entity';
+import {Project} from './entities/project.entity';
 import {AddMaterialDto} from './dto/add-material.dto';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class ProjectService {
       user,
       name,
       description,
-      color: color || '#3B82F6',
+      color: color ?? '#3B82F6',
     });
 
     await this.em.persistAndFlush(project);
@@ -38,7 +38,7 @@ export class ProjectService {
     );
   }
 
-  async findById(id: string, user: User): Promise<Project | null> {
+  async findById(id: string, user: User): Promise<Project | undefined> {
     return this.projectRepository.findOne({id, user}, {populate: ['materials']});
   }
 
@@ -115,7 +115,7 @@ export class ProjectService {
     return this.projectMaterialRepository.find({project, isActive: true}, {orderBy: {createdAt: 'DESC'}});
   }
 
-  async findMaterialById(project: Project, materialId: string): Promise<ProjectMaterial | null> {
+  async findMaterialById(project: Project, materialId: string): Promise<ProjectMaterial | undefined> {
     return this.projectMaterialRepository.findOne({
       id: materialId,
       project,
@@ -129,6 +129,7 @@ export class ProjectService {
     if (!project) {
       throw new NotFoundException('Project not found or you do not have access to it');
     }
+
     return project;
   }
 }

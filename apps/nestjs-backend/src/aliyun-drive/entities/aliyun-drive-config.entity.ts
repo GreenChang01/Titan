@@ -19,8 +19,8 @@ export class AliyunDriveConfig extends BaseEntity {
   @Property({type: types.string, nullable: true})
   displayName?: string;
 
-  @Property({type: types.integer, default: 30000})
-  timeout = 30000;
+  @Property({type: types.integer, default: 30_000})
+  timeout = 30_000;
 
   @Property({type: types.string, default: '/'})
   basePath = '/';

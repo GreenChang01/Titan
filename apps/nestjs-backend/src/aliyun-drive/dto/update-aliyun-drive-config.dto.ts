@@ -20,7 +20,7 @@ export class UpdateAliyunDriveConfigDto {
   @IsOptional()
   @IsInt()
   @Min(1000)
-  @Max(300000)
+  @Max(300_000)
   timeout?: number;
 
   @IsOptional()

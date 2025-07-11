@@ -1,20 +1,25 @@
+import * as crypto from 'node:crypto';
+import {Buffer} from 'node:buffer';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
 import {ConfigKey} from '../config/config-key.enum';
 
-export interface EncryptedData {
+export type EncryptedData = {
   encryptedText: string;
   iv: string;
   authTag: string;
-}
+};
 
 @Injectable()
 export class CryptoService {
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  private readonly saltRounds = 10;
-  private readonly algorithm = 'aes-256-gcm';
+  private get saltRounds(): number {
+    return 10;
+  }
+
+  private get algorithm(): string {
+    return 'aes-256-gcm';
+  }
 
   constructor(private readonly configService: ConfigService) {}
 
@@ -52,7 +57,7 @@ export class CryptoService {
 
       const iv = crypto.randomBytes(12); // 96-bit IV for GCM mode
       const key = crypto.scryptSync(encryptionKey, 'salt', 32);
-      const cipher = crypto.createCipheriv(this.algorithm, key, iv);
+      const cipher = crypto.createCipheriv(this.algorithm, key, iv) as crypto.CipherGCM;
 
       let encryptedText = cipher.update(text, 'utf8', 'hex');
       encryptedText += cipher.final('hex');
@@ -64,8 +69,8 @@ export class CryptoService {
         iv: iv.toString('hex'),
         authTag: authTag.toString('hex'),
       };
-    } catch (error: any) {
-      throw new Error(`Encryption failed: ${error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`Encryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -82,7 +87,11 @@ export class CryptoService {
       }
 
       const key = crypto.scryptSync(encryptionKey, 'salt', 32);
-      const decipher = crypto.createDecipheriv(this.algorithm, key, Buffer.from(encryptedData.iv, 'hex'));
+      const decipher = crypto.createDecipheriv(
+        this.algorithm,
+        key,
+        Buffer.from(encryptedData.iv, 'hex'),
+      ) as crypto.DecipherGCM;
 
       decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
 
@@ -90,8 +99,8 @@ export class CryptoService {
       decryptedText += decipher.final('utf8');
 
       return decryptedText;
-    } catch (error: any) {
-      throw new Error(`Decryption failed: ${error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`Decryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

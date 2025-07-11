@@ -38,7 +38,7 @@ export class ProjectMaterial extends BaseEntity {
   description?: string;
 
   @Property({type: types.json, nullable: true})
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 
   @Unique()
   @Property({type: types.string, nullable: false, persist: false})
@@ -69,7 +69,7 @@ export class ProjectMaterial extends BaseEntity {
     fileCreatedAt?: Date;
     fileUpdatedAt?: Date;
     description?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }) {
     super();
     this.project = project;

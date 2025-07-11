@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {EntityManager, QueryBuilder} from '@mikro-orm/postgresql';
 import {ConflictException, GoneException, NotFoundException} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
@@ -429,7 +430,7 @@ describe('UsersService', () => {
       expect(mockQueryBuilder.delete).toHaveBeenCalled();
       expect(mockQueryBuilder.where).toHaveBeenCalledWith({
         status: UserStatus.CONFIRMATION_PENDING,
-        createdAt: {$lt: expect.any(Date)}, // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+        createdAt: {$lt: expect.any(Date)},
       });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('Removed 3 expired pending users');

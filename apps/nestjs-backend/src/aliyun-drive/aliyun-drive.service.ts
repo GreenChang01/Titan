@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/member-ordering */
+import * as path from 'node:path';
+import {Readable} from 'node:stream';
 import {Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
 import {EntityRepository} from '@mikro-orm/core';
 import {ConfigService} from '@nestjs/config';
-import {AliyunDriveConfig} from './entities/aliyun-drive-config.entity';
-import {User} from '../users/entities/user.entity';
-import {CryptoService} from '../crypto/crypto.service';
+import axios, {AxiosInstance} from 'axios';
 import {ConfigKey} from '../config/config-key.enum';
+import {CryptoService} from '../crypto/crypto.service';
+import {User} from '../users/entities/user.entity';
+import {AliyunDriveConfig} from './entities/aliyun-drive-config.entity';
 import {
   CreateAliyunDriveConfigDto,
   UpdateAliyunDriveConfigDto,
   ListFilesDto,
-  WebDAVFileDto,
+  WebDavFileDto,
   ListFilesResponseDto,
   UploadFileDto,
   DownloadFileDto,
@@ -19,10 +23,7 @@ import {
   MoveItemDto,
   CopyItemDto,
   FileOperationResponseDto,
-} from './dto';
-import axios, {AxiosInstance} from 'axios';
-import * as path from 'path';
-import {Readable} from 'stream';
+} from './dto/index.js';
 
 @Injectable()
 export class AliyunDriveService {
@@ -35,30 +36,30 @@ export class AliyunDriveService {
     private readonly cryptoService: CryptoService,
     private readonly configService: ConfigService,
   ) {
-    this.defaultTimeout = this.configService.get<number>(ConfigKey.WEBDAV_TIMEOUT) || 30000;
+    this.defaultTimeout = this.configService.get<number>(ConfigKey.WEBDAV_TIMEOUT) ?? 30_000;
   }
 
   // 配置管理方法
   async createConfig(user: User, createDto: CreateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
     const encryptedPassword = this.cryptoService.encrypt(createDto.password);
 
-    const config = this.aliyunDriveConfigRepository.create({
+    const config = new AliyunDriveConfig({
       user,
       webdavUrl: createDto.webdavUrl,
       username: createDto.username,
       encryptedPassword: JSON.stringify(encryptedPassword),
       displayName: createDto.displayName,
-      timeout: createDto.timeout || this.defaultTimeout,
-      basePath: createDto.basePath || '/',
-      isActive: true,
+      timeout: createDto.timeout ?? this.defaultTimeout,
+      basePath: createDto.basePath ?? '/',
     });
 
     await this.aliyunDriveConfigRepository.getEntityManager().persistAndFlush(config);
     return config;
   }
 
-  async findByUser(user: User): Promise<AliyunDriveConfig | null> {
-    return this.aliyunDriveConfigRepository.findOne({user});
+  async findByUser(user: User): Promise<AliyunDriveConfig | undefined> {
+    const result = await this.aliyunDriveConfigRepository.findOne({user});
+    return result ?? undefined;
   }
 
   async updateConfig(config: AliyunDriveConfig, updateDto: UpdateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
@@ -67,22 +68,31 @@ export class AliyunDriveService {
     if (updateDto.password) {
       config.encryptedPassword = JSON.stringify(this.cryptoService.encrypt(updateDto.password));
     }
+
     if (updateDto.displayName !== undefined) config.displayName = updateDto.displayName;
     if (updateDto.timeout !== undefined) config.timeout = updateDto.timeout;
     if (updateDto.basePath !== undefined) config.basePath = updateDto.basePath;
 
     config.lastSyncAt = new Date();
-    await this.aliyunDriveConfigRepository.persistAndFlush(config);
+    await this.aliyunDriveConfigRepository.getEntityManager().persistAndFlush(config);
     return config;
   }
 
   async getDecryptedPassword(config: AliyunDriveConfig): Promise<string> {
-    const encryptedData = JSON.parse(config.encryptedPassword);
-    return this.cryptoService.decrypt(encryptedData);
+    try {
+      const encryptedData = JSON.parse(config.encryptedPassword) as Record<string, unknown>;
+      return this.cryptoService.decrypt(encryptedData);
+    } catch (error) {
+      this.logger.error(
+        `Failed to decrypt password: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
+      throw new HttpException('Failed to decrypt password', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async deleteConfig(config: AliyunDriveConfig): Promise<void> {
-    await this.aliyunDriveConfigRepository.removeAndFlush(config);
+    await this.aliyunDriveConfigRepository.getEntityManager().removeAndFlush(config);
   }
 
   async updateLastSyncTime(config: AliyunDriveConfig): Promise<void> {
@@ -91,15 +101,15 @@ export class AliyunDriveService {
   }
 
   // WebDAV 客户端方法
-  private async createWebDAVClient(config: AliyunDriveConfig): Promise<AxiosInstance> {
+  private async createWebDavClient(config: AliyunDriveConfig): Promise<AxiosInstance> {
     const password = await this.getDecryptedPassword(config);
 
     return axios.create({
-      baseURL: config.webdavUrl,
+      baseUrl: config.webdavUrl,
       timeout: config.timeout,
       auth: {
         username: config.username,
-        password: password,
+        password,
       },
       headers: {
         'Content-Type': 'application/xml',
@@ -110,7 +120,7 @@ export class AliyunDriveService {
 
   async listFiles(config: AliyunDriveConfig, listDto: ListFilesDto): Promise<ListFilesResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const targetPath = path.posix.join(config.basePath, listDto.path);
 
       const propfindBody = `<?xml version="1.0" encoding="utf-8"?>
@@ -130,12 +140,12 @@ export class AliyunDriveService {
         url: targetPath,
         data: propfindBody,
         headers: {
-          Depth: '1',
+          depth: '1',
           'Content-Type': 'application/xml',
         },
       });
 
-      const files = this.parseWebDAVResponse(response.data, targetPath);
+      const files = this.parseWebDavResponse(response.data as string, targetPath);
 
       await this.updateLastSyncTime(config);
 
@@ -145,18 +155,24 @@ export class AliyunDriveService {
         total: files.length,
       };
     } catch (error) {
-      this.logger.error(`Failed to list files: ${error.message}`, error.stack);
-      throw new HttpException(`Failed to list files: ${error.message}`, HttpStatus.BAD_REQUEST);
+      this.logger.error(
+        `Failed to list files: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
+      throw new HttpException(
+        `Failed to list files: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   async uploadFile(
     config: AliyunDriveConfig,
     uploadDto: UploadFileDto,
-    fileBuffer: Buffer,
+    fileBuffer: Uint8Array,
   ): Promise<FileOperationResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const targetPath = path.posix.join(config.basePath, uploadDto.path, uploadDto.fileName);
 
       await client.put(targetPath, fileBuffer, {
@@ -173,10 +189,13 @@ export class AliyunDriveService {
         path: targetPath,
       };
     } catch (error) {
-      this.logger.error(`Failed to upload file: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to upload file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
       return {
         success: false,
-        error: `Failed to upload file: ${error.message}`,
+        error: `Failed to upload file: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -186,26 +205,32 @@ export class AliyunDriveService {
     downloadDto: DownloadFileDto,
   ): Promise<{stream: Readable; filename: string; contentType: string}> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const targetPath = path.posix.join(config.basePath, downloadDto.filePath);
 
       const response = await client.get(targetPath, {
         responseType: 'stream',
       });
 
-      const filename = downloadDto.downloadName || path.basename(downloadDto.filePath);
-      const contentType = response.headers['content-type'] || 'application/octet-stream';
+      const filename = downloadDto.downloadName ?? path.basename(downloadDto.filePath);
+      const contentType = (response.headers['content-type'] as string) ?? 'application/octet-stream';
 
       await this.updateLastSyncTime(config);
 
       return {
-        stream: response.data,
+        stream: response.data as Readable,
         filename,
         contentType,
       };
     } catch (error) {
-      this.logger.error(`Failed to download file: ${error.message}`, error.stack);
-      throw new HttpException(`Failed to download file: ${error.message}`, HttpStatus.BAD_REQUEST);
+      this.logger.error(
+        `Failed to download file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
+      throw new HttpException(
+        `Failed to download file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -214,7 +239,7 @@ export class AliyunDriveService {
     createDirDto: CreateDirectoryDto,
   ): Promise<FileOperationResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const targetPath = path.posix.join(config.basePath, createDirDto.path, createDirDto.directoryName);
 
       await client.request({
@@ -230,28 +255,32 @@ export class AliyunDriveService {
         path: targetPath,
       };
     } catch (error) {
-      this.logger.error(`Failed to create directory: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to create directory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
       return {
         success: false,
-        error: `Failed to create directory: ${error.message}`,
+        error: `Failed to create directory: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
   async deleteItems(config: AliyunDriveConfig, deleteDto: DeleteItemsDto): Promise<FileOperationResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
-      const results = [];
+      const client = await this.createWebDavClient(config);
 
-      for (const itemPath of deleteDto.paths) {
+      const deletePromises = deleteDto.paths.map(async (itemPath) => {
         try {
           const targetPath = path.posix.join(config.basePath, itemPath);
           await client.delete(targetPath);
-          results.push(`Deleted: ${itemPath}`);
+          return `Deleted: ${itemPath}`;
         } catch (error) {
-          results.push(`Failed to delete ${itemPath}: ${error.message}`);
+          return `Failed to delete ${itemPath}: ${error instanceof Error ? error.message : 'Unknown error'}`;
         }
-      }
+      });
+
+      const results = await Promise.all(deletePromises);
 
       await this.updateLastSyncTime(config);
 
@@ -260,17 +289,20 @@ export class AliyunDriveService {
         message: results.join('; '),
       };
     } catch (error) {
-      this.logger.error(`Failed to delete items: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to delete items: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
       return {
         success: false,
-        error: `Failed to delete items: ${error.message}`,
+        error: `Failed to delete items: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
   async moveItem(config: AliyunDriveConfig, moveDto: MoveItemDto): Promise<FileOperationResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const sourcePath = path.posix.join(config.basePath, moveDto.sourcePath);
       const targetPath = path.posix.join(config.basePath, moveDto.targetPath);
 
@@ -278,8 +310,8 @@ export class AliyunDriveService {
         method: 'MOVE',
         url: sourcePath,
         headers: {
-          Destination: targetPath,
-          Overwrite: moveDto.overwrite ? 'T' : 'F',
+          destination: targetPath,
+          overwrite: moveDto.overwrite ? 'T' : 'F',
         },
       });
 
@@ -291,17 +323,20 @@ export class AliyunDriveService {
         path: targetPath,
       };
     } catch (error) {
-      this.logger.error(`Failed to move item: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to move item: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
       return {
         success: false,
-        error: `Failed to move item: ${error.message}`,
+        error: `Failed to move item: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
   async copyItem(config: AliyunDriveConfig, copyDto: CopyItemDto): Promise<FileOperationResponseDto> {
     try {
-      const client = await this.createWebDAVClient(config);
+      const client = await this.createWebDavClient(config);
       const sourcePath = path.posix.join(config.basePath, copyDto.sourcePath);
       const targetPath = path.posix.join(config.basePath, copyDto.targetPath);
 
@@ -309,8 +344,8 @@ export class AliyunDriveService {
         method: 'COPY',
         url: sourcePath,
         headers: {
-          Destination: targetPath,
-          Overwrite: copyDto.overwrite ? 'T' : 'F',
+          destination: targetPath,
+          overwrite: copyDto.overwrite ? 'T' : 'F',
         },
       });
 
@@ -322,17 +357,20 @@ export class AliyunDriveService {
         path: targetPath,
       };
     } catch (error) {
-      this.logger.error(`Failed to copy item: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to copy item: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
       return {
         success: false,
-        error: `Failed to copy item: ${error.message}`,
+        error: `Failed to copy item: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
   // WebDAV 响应解析辅助方法
-  private parseWebDAVResponse(xmlData: string, basePath: string): WebDAVFileDto[] {
-    const files: WebDAVFileDto[] = [];
+  private parseWebDavResponse(xmlData: string, basePath: string): WebDavFileDto[] {
+    const files: WebDavFileDto[] = [];
 
     try {
       // 这里需要解析 XML 响应，为简化示例，我们使用正则表达式
@@ -342,34 +380,37 @@ export class AliyunDriveService {
 
       if (!matches) return files;
 
-      matches.forEach((match) => {
-        const hrefMatch = match.match(/<d:href>(.*?)<\/d:href>/);
-        const displayNameMatch = match.match(/<d:displayname>(.*?)<\/d:displayname>/);
-        const contentLengthMatch = match.match(/<d:getcontentlength>(.*?)<\/d:getcontentlength>/);
-        const contentTypeMatch = match.match(/<d:getcontenttype>(.*?)<\/d:getcontenttype>/);
-        const lastModifiedMatch = match.match(/<d:getlastmodified>(.*?)<\/d:getlastmodified>/);
-        const resourceTypeMatch = match.match(/<d:resourcetype>(.*?)<\/d:resourcetype>/);
+      for (const match of matches) {
+        const hrefMatch = /<d:href>(.*?)<\/d:href>/.exec(match);
+        const displayNameMatch = /<d:displayname>(.*?)<\/d:displayname>/.exec(match);
+        const contentLengthMatch = /<d:getcontentlength>(.*?)<\/d:getcontentlength>/.exec(match);
+        const contentTypeMatch = /<d:getcontenttype>(.*?)<\/d:getcontenttype>/.exec(match);
+        const lastModifiedMatch = /<d:getlastmodified>(.*?)<\/d:getlastmodified>/.exec(match);
+        const resourceTypeMatch = /<d:resourcetype>(.*?)<\/d:resourcetype>/.exec(match);
 
         if (hrefMatch) {
           const href = decodeURIComponent(hrefMatch[1]);
           const relativePath = href.replace(basePath, '').replace(/^\//, '');
 
           if (relativePath && relativePath !== '.') {
-            const isDirectory = resourceTypeMatch && resourceTypeMatch[1].includes('collection');
+            const isDirectory = Boolean(resourceTypeMatch?.[1]?.includes('collection'));
 
             files.push({
               name: displayNameMatch ? displayNameMatch[1] : path.basename(relativePath),
               path: relativePath,
               isDirectory,
-              size: contentLengthMatch ? parseInt(contentLengthMatch[1]) : undefined,
+              size: contentLengthMatch ? Number.parseInt(contentLengthMatch[1], 10) : undefined,
               contentType: contentTypeMatch ? contentTypeMatch[1] : undefined,
               lastModified: lastModifiedMatch ? new Date(lastModifiedMatch[1]) : undefined,
             });
           }
         }
-      });
+      }
     } catch (error) {
-      this.logger.error(`Failed to parse WebDAV response: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to parse WebDAV response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : '',
+      );
     }
 
     return files;

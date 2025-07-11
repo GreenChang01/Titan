@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {EntityManager, QueryBuilder} from '@mikro-orm/postgresql';
 import {ForbiddenException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
@@ -375,7 +376,7 @@ describe('AuthService', () => {
       expect(em.createQueryBuilder).toHaveBeenCalledWith(TwoFactorAuth);
       expect(mockQueryBuilder.delete).toHaveBeenCalled();
       expect(mockQueryBuilder.where).toHaveBeenCalledWith({
-        createdAt: {$lt: expect.any(Date)}, // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+        createdAt: {$lt: expect.any(Date)},
       });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('Removed 5 expired pending two factor auth codes');
@@ -427,7 +428,7 @@ describe('AuthService', () => {
       expect(em.createQueryBuilder).toHaveBeenCalledWith(RevokedRefreshToken);
       expect(mockQueryBuilder.delete).toHaveBeenCalled();
       expect(mockQueryBuilder.where).toHaveBeenCalledWith({
-        createdAt: {$lt: expect.any(Date)}, // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+        createdAt: {$lt: expect.any(Date)},
       });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith('Removed 3 expired revoked refresh tokens');
