@@ -39,7 +39,8 @@ export class ProjectService {
   }
 
   async findById(id: string, user: User): Promise<Project | undefined> {
-    return this.projectRepository.findOne({id, user}, {populate: ['materials']});
+    const result = await this.projectRepository.findOne({id, user}, {populate: ['materials']});
+    return result ?? undefined;
   }
 
   async update(project: Project, name?: string, description?: string, color?: string): Promise<Project> {
@@ -116,11 +117,12 @@ export class ProjectService {
   }
 
   async findMaterialById(project: Project, materialId: string): Promise<ProjectMaterial | undefined> {
-    return this.projectMaterialRepository.findOne({
+    const result = await this.projectMaterialRepository.findOne({
       id: materialId,
       project,
       isActive: true,
     });
+    return result ?? undefined;
   }
 
   // 验证用户权限的辅助方法

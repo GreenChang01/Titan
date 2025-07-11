@@ -2,19 +2,21 @@
 
 import {type JSX} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Button} from 'primereact/button';
 import {useForm, type SubmitHandler} from 'react-hook-form';
 import {useLocale, useTranslations} from 'next-intl';
 import {type LoginCredentialsFormFields} from './types/login-credentials-form-fields.type.ts';
 import {type LoginCredentialsProps} from './types/login-credentials-props.type.ts';
 import {loginCredentialsSchema} from './types/login-credentials.schema.ts';
-import {FloatLabelInputText} from '@/components/float-label-input-text/float-label-input-text.component.tsx';
 import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {type ApiError} from '@/utils/api/api-error.ts';
-import {Link} from '@/i18n/navigation.ts';
+import {Link, useRouter} from '@/i18n/navigation.ts';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentialsProps): JSX.Element {
   const {loginCredentials} = useAuthApi();
+  const router = useRouter();
 
   const t = useTranslations('Component-Login-Credentials');
 
@@ -48,52 +50,69 @@ export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentia
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <h2>{t('title')}</h2>
+    <div className="flex flex-col items-center space-y-6 p-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+      </div>
+      
       <form
-        className="mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8"
+        className="w-full max-w-sm space-y-4"
         onSubmit={handleSubmitCredentials(onSubmitCredentials)}
       >
-        <div className="flex flex-col flex-wrap items-center gap-1">
-          <FloatLabelInputText
+        <div className="space-y-2">
+          <Label htmlFor="email">{t('email-input-label')}</Label>
+          <Input
             {...registerCredentials('email')}
+            id="email"
             type="email"
-            label={t('email-input-label')}
+            placeholder={t('email-input-label')}
             data-testid="login-email"
           />
-          {errorsCredentials.email ? <p className="text-red-700">{errorsCredentials.email.message}</p> : null}
+          {errorsCredentials.email ? <p className="text-sm text-destructive">{errorsCredentials.email.message}</p> : null}
         </div>
-        <div className="flex flex-col flex-wrap items-center gap-1">
-          <FloatLabelInputText
+        
+        <div className="space-y-2">
+          <Label htmlFor="password">{t('password-input-label')}</Label>
+          <Input
             {...registerCredentials('password')}
+            id="password"
             type="password"
-            label={t('password-input-label')}
+            placeholder={t('password-input-label')}
             data-testid="login-password"
           />
-          {errorsCredentials.password ? <p className="text-red-700">{errorsCredentials.password.message}</p> : null}
+          {errorsCredentials.password ? <p className="text-sm text-destructive">{errorsCredentials.password.message}</p> : null}
         </div>
-        <div>
-          <Button
-            label={isSubmittingCredentials ? t('submit-button-loading-label') : t('submit-button-label')}
-            type="submit"
-            disabled={isSubmittingCredentials}
-            data-testid="login-submit"
-          />
-        </div>
-        {errorsCredentials.root ? <p className="text-red-700">{errorsCredentials.root.message}</p> : null}
+
+        <Button
+          type="submit"
+          disabled={isSubmittingCredentials}
+          className="w-full"
+          data-testid="login-submit"
+        >
+          {isSubmittingCredentials ? t('submit-button-loading-label') : t('submit-button-label')}
+        </Button>
+        
+        {errorsCredentials.root ? <p className="text-sm text-destructive text-center">{errorsCredentials.root.message}</p> : null}
       </form>
-      <p className="mt-4 md:mt-6 lg:mt-8">
-        {t('forgot-password-question')}{' '}
-        <Link className="underline" href="/forgot-password" data-testid="login-forgot-password">
-          {t('forgot-password-link-label')}
-        </Link>
-      </p>
-      <p className="mt-2 md:mt-4">
-        {t('register-question')}{' '}
-        <Link className="underline" href="/register">
-          {t('register-link-label')}
-        </Link>
-      </p>
+      
+      <div className="text-center space-y-2">
+        <p className="text-sm text-muted-foreground">
+          {t('forgot-password-question')}{' '}
+          <Link 
+            className="text-primary hover:underline" 
+            href="/forgot-password" 
+            data-testid="login-forgot-password"
+          >
+            {t('forgot-password-link-label')}
+          </Link>
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {t('register-question')}{' '}
+          <Link className="text-primary hover:underline" href="/register">
+            {t('register-link-label')}
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

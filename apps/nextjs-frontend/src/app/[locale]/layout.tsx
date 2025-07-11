@@ -1,20 +1,16 @@
 import {type JSX} from 'react';
 import type {Metadata} from 'next';
-import {ConfirmDialog} from 'primereact/confirmdialog';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
+import {headers} from 'next/headers';
 // eslint-disable-next-line import-x/order
 import './globals.css';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/primereact.min.css';
-import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
 import {ReactQueryProvider} from '@/providers/react-query/react-query.provider';
 import {ToastProvider} from '@/providers/toast/toast.provider';
 import {UserProvider} from '@/providers/user/user.provider';
-import {ConditionalHeader} from '@/components/header/conditional-header.component.tsx';
-import {Footer} from '@/components/footer/footer.component';
 import {routing} from '@/i18n/routing.ts';
 import {ZodErrorProvider} from '@/providers/zod-error/zod-error.provider';
+import {AuthenticatedLayout} from '@/components/layout/authenticated-layout';
 
 export const metadata: Metadata = {
   title: 'Next.js Frontend',
@@ -34,20 +30,30 @@ export default async function Layout({
     notFound();
   }
 
+  // Get the current pathname to determine if this is an auth page
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') || '';
+  const isAuthPage = pathname.includes('/login') || pathname.includes('/register') || pathname.includes('/auth');
+
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} suppressHydrationWarning={true}>
+      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning={true}>
         <NextIntlClientProvider>
           <ZodErrorProvider>
             <ToastProvider>
-              <ConfirmDialog />
               <UserProvider>
                 <ReactQueryProvider>
-                  <ConditionalHeader />
-                  <div className="mx-auto my-6 flex w-full max-w-7xl flex-col px-2 md:my-8 md:px-4 lg:my-12 min-h-screen">
-                    {children}
-                  </div>
-                  <Footer />
+                  {isAuthPage ? (
+                    // Auth pages - simple centered layout
+                    <div className="min-h-screen flex items-center justify-center bg-background">
+                      {children}
+                    </div>
+                  ) : (
+                    // Dashboard pages - use shadcn-admin layout
+                    <AuthenticatedLayout>
+                      {children}
+                    </AuthenticatedLayout>
+                  )}
                 </ReactQueryProvider>
               </UserProvider>
             </ToastProvider>
