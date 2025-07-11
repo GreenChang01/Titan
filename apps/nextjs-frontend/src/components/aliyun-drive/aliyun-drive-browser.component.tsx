@@ -8,7 +8,7 @@ import {Column} from 'primereact/column';
 import {Checkbox} from 'primereact/checkbox';
 import {ProgressSpinner} from 'primereact/progressspinner';
 import {InputText} from 'primereact/inputtext';
-import {Breadcrumb} from 'primereact/breadcrumb';
+import {BreadCrumb} from 'primereact/breadcrumb';
 import {type MenuItem} from 'primereact/menuitem';
 import {useTranslations} from 'next-intl';
 
@@ -44,12 +44,6 @@ export function AliyunDriveBrowser({
   const [currentPath, setCurrentPath] = useState('/');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    if (isVisible) {
-      void loadFiles();
-    }
-  }, [isVisible, currentPath, loadFiles]);
 
   const loadFiles = useCallback(async (): Promise<void> => {
     // 模拟的文件数据
@@ -103,6 +97,12 @@ export function AliyunDriveBrowser({
     }
   }, []);
 
+  useEffect(() => {
+    if (isVisible) {
+      void loadFiles();
+    }
+  }, [isVisible, currentPath, loadFiles]);
+
   const handleFileSelect = (file: FileItem): void => {
     if (file.type === 'folder') {
       // 进入文件夹
@@ -133,8 +133,11 @@ export function AliyunDriveBrowser({
     onHide();
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+  const formatFileSize = (bytes?: number): string => {
+    if (!bytes || bytes === 0) {
+      return '-';
+    }
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -216,7 +219,7 @@ export function AliyunDriveBrowser({
     </div>
   );
 
-  const fileSizeTemplate = (file: FileItem): string => (file.size > 0 ? formatFileSize(file.size) : '-');
+  const fileSizeTemplate = (file: FileItem): string => formatFileSize(file.size);
 
   const actionTemplate = (file: FileItem): JSX.Element => (
     <div className="flex gap-1">
@@ -295,7 +298,7 @@ export function AliyunDriveBrowser({
     >
       <div className="space-y-4">
         {/* 导航面包屑 */}
-        <Breadcrumb model={breadcrumbItems} home={breadcrumbHome} />
+        <BreadCrumb model={breadcrumbItems} home={breadcrumbHome} />
 
         {/* 搜索框 */}
         <div className="flex items-center gap-2">
@@ -314,7 +317,7 @@ export function AliyunDriveBrowser({
             icon="pi pi-refresh"
             severity="secondary"
             tooltip={t('refresh', {defaultMessage: '刷新'})}
-            onClick={async () => loadFiles()}
+            onClick={loadFiles}
           />
         </div>
 
@@ -327,10 +330,15 @@ export function AliyunDriveBrowser({
             </div>
           ) : (
             <DataTable
-              value={filteredFiles}
-              emptyMessage={t('no-files', {defaultMessage: '暂无文件'})}
               className="border-0"
-              selectionMode={hasMultiSelect ? 'multiple' : 'single'}
+              dataKey="id"
+              emptyMessage={t('no-files', {defaultMessage: '暂无文件'})}
+              selection={selectedFiles}
+              selectionMode={hasMultiSelect ? 'checkbox' : null}
+              value={filteredFiles}
+              onSelectionChange={(e: {value: FileItem[]}) => {
+                setSelectedFiles(e.value);
+              }}
             >
               <Column header="" body={fileIconTemplate} style={{width: '3rem'}} />
               <Column

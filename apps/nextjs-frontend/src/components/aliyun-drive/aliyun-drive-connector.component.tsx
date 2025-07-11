@@ -12,7 +12,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
 
 const configSchema = z.object({
-  refreshToken: z.string().min(1, 'refresh_token_required'),
+  refreshToken: z.string().min(1),
 });
 
 type ConfigFormData = z.infer<typeof configSchema>;
@@ -58,14 +58,15 @@ export function AliyunDriveConnector({
 
       setConnectionStatus('connected');
     } catch {
-      // Handle error silently or use proper error handling
       setConnectionStatus('error');
     }
   };
 
   const handleTestConnection = async (): Promise<void> => {
     const data = getValues();
-    if (!data.refreshToken) {
+    const validation = configSchema.safeParse(data);
+
+    if (!validation.success) {
       return;
     }
 
@@ -74,7 +75,6 @@ export function AliyunDriveConnector({
       const isSuccess = (await onTestConnection?.(data)) ?? true;
       setConnectionStatus(isSuccess ? 'connected' : 'error');
     } catch {
-      // Handle error silently or use proper error handling
       setConnectionStatus('error');
     } finally {
       setIsTestingConnection(false);
@@ -84,22 +84,18 @@ export function AliyunDriveConnector({
   const getStatusMessage = (): JSX.Element | undefined => {
     switch (connectionStatus) {
       case 'connected': {
-        return <Message severity="success" text={t('connection-success', {defaultMessage: '阿里云盘连接成功'})} />;
+        return <Message severity="success" text={t('connection-success')} />;
       }
 
       case 'connecting': {
-        return <Message severity="info" text={t('connection-connecting', {defaultMessage: '正在连接阿里云盘...'})} />;
+        return <Message severity="info" text={t('connection-connecting')} />;
       }
 
       case 'error': {
-        return (
-          <Message severity="error" text={t('connection-error', {defaultMessage: '阿里云盘连接失败，请检查配置'})} />
-        );
+        return <Message severity="error" text={t('connection-error')} />;
       }
 
-      case 'disconnected': {
-        return null;
-      }
+      case 'disconnected':
     }
   };
 
@@ -148,10 +144,8 @@ export function AliyunDriveConnector({
               placeholder={t('refresh-token-placeholder', {defaultMessage: '请输入阿里云盘 Refresh Token'})}
               disabled={isSubmitting || connectionStatus === 'connecting'}
             />
-            {errors.refreshToken ? (
-              <small className="text-red-500 mt-1 block">
-                {t('refresh-token-required', {defaultMessage: 'Refresh Token 是必填项'})}
-              </small>
+            {errors.refreshToken?.message ? (
+              <small className="text-red-500 mt-1 block">{errors.refreshToken.message}</small>
             ) : null}
             <small className="text-gray-500 mt-1 block">
               {t('refresh-token-help', {defaultMessage: '可从阿里云盘开发者工具中获取 Refresh Token'})}

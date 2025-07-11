@@ -5,6 +5,11 @@ const xoConfig: FlatXoConfig = [
     ignores: ['node_modules', 'postcss.config.mjs'],
   },
   {
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.eslint.json',
+      },
+    },
     react: true,
     prettier: 'compat',
     space: true,
