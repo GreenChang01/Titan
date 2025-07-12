@@ -5,15 +5,17 @@ import {LoginCredentials} from './components/login-credentials/login-credentials
 import {LoginTwoFactor} from './components/login-two-factor/login-two-factor.component.tsx';
 
 export default function Login(): JSX.Element {
-  const [tab, setTab] = useState<'credentials' | '2fa'>('credentials');
+	const [tab, setTab] = useState<'credentials' | '2fa'>('credentials');
 
-  return tab === 'credentials' ? (
-    <LoginCredentials
-      handleLoginCredentialsSuccess={() => {
-        setTab('2fa');
-      }}
-    />
-  ) : (
-    <LoginTwoFactor />
-  );
+	return tab === 'credentials'
+		? (
+			<LoginCredentials
+				handleLoginCredentialsSuccess={() => {
+					setTab('2fa');
+				}}
+			/>
+		)
+		: (
+			<LoginTwoFactor />
+		);
 }

@@ -1,9 +1,11 @@
 import {spawn} from 'node:child_process';
 import {promises as fs} from 'node:fs';
 import {join} from 'node:path';
-import {Injectable, Logger} from '@nestjs/common';
+import {Buffer} from 'node:buffer';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {v4 as uuidv4} from 'uuid';
+import {FfprobeData} from 'fluent-ffmpeg';
 import {
   IAudioMixer,
   MixingOptions,
@@ -11,11 +13,11 @@ import {
   AudioProcessingResult,
   AudioQualityReport,
   AudioQualityStandards,
-} from '../interfaces';
+} from '../interfaces.js';
 
 @Injectable()
-export class FFmpegAudioMixer implements IAudioMixer {
-  private readonly logger = new Logger(FFmpegAudioMixer.name);
+export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
+  private readonly logger = new Logger(FfmpegAudioMixer.name);
   private readonly tempDir: string;
   private readonly ffmpegPath: string;
   private readonly ffprobePath: string;
@@ -24,10 +26,14 @@ export class FFmpegAudioMixer implements IAudioMixer {
     this.tempDir = this.configService.get<string>('AUDIO_TEMP_DIR', '/tmp/titan/audio');
     this.ffmpegPath = this.configService.get<string>('FFMPEG_PATH', 'ffmpeg');
     this.ffprobePath = this.configService.get<string>('FFPROBE_PATH', 'ffprobe');
-
-    this.ensureTempDirectory();
   }
 
+  async onModuleInit() {
+    this.logger.log('Initializing FfmpegAudioMixer and ensuring temp directory...');
+    await this.ensureTempDirectory();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   async mixVoiceAndSoundscape(
     voice: Buffer,
     soundscape: Buffer,
@@ -102,6 +108,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   async applyBinauralEffects(audio: Buffer, settings: BinauralSettings): Promise<Buffer> {
     if (!settings.enabled) {
       return audio;
@@ -146,7 +153,8 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
   }
 
-  async optimizeForASMR(audio: Buffer): Promise<Buffer> {
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
+  async optimizeForAsmr(audio: Buffer): Promise<Buffer> {
     const sessionId = uuidv4();
 
     try {
@@ -186,6 +194,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   async analyzeAudioQuality(audio: Buffer): Promise<AudioQualityReport> {
     const sessionId = uuidv4();
 
@@ -210,6 +219,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   async normalizeAudio(audio: Buffer, targetLUFS = -23): Promise<Buffer> {
     const sessionId = uuidv4();
 
@@ -242,6 +252,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   async convertFormat(
     audio: Buffer,
     targetFormat: 'mp3' | 'wav' | 'aac',
@@ -424,7 +435,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
   /**
    * 获取详细音频信息
    */
-  private async getDetailedAudioInfo(filePath: string): Promise<any> {
+  private async getDetailedAudioInfo(filePath: string): Promise<FfprobeData> {
     return new Promise((resolve, reject) => {
       const args = ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', filePath];
 
@@ -460,7 +471,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
   /**
    * 生成质量报告
    */
-  private generateQualityReport(metadata: any): AudioQualityReport {
+  private generateQualityReport(metadata: FfprobeData): AudioQualityReport {
     const audioStream = metadata.streams.find((s: any) => s.codec_type === 'audio');
     const {format} = metadata;
 
@@ -575,6 +586,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
   private async getAudioDuration(audioBuffer: Buffer): Promise<number> {
     // 简化的时长计算，实际应使用ffprobe
     return Math.floor(audioBuffer.length / (44_100 * 2 * 2)); // 44.1kHz, 16-bit, stereo

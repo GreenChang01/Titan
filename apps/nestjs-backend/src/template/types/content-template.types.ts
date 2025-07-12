@@ -32,7 +32,7 @@ export type VideoSettings = {
 /**
  * ASMR Audio specific template configuration
  */
-export type ASMRAudioConfig = {
+export type AsmrAudioConfig = {
   voiceSettings?: {
     voiceId: string;
     stability: number;
@@ -89,7 +89,7 @@ export type TemplateConfig = {
   audioMix?: AudioMix;
   
   // New ASMR audio configuration
-  asmrAudio?: ASMRAudioConfig;
+  asmrAudio?: AsmrAudioConfig;
   
   // Future configurations can be added here
   // video?: VideoConfig;

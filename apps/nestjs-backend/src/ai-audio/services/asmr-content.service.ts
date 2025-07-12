@@ -9,7 +9,7 @@ import {
 } from '../interfaces';
 import {ElevenLabsProvider} from '../providers/elevenlabs.provider';
 import {ElevenLabsSoundscapeProvider} from '../providers/soundverse.provider';
-import {FFmpegAudioMixer} from './ffmpeg-audio-mixer.service';
+import {FfmpegAudioMixer} from './ffmpeg-audio-mixer.service';
 
 export type ASMRGenerationRequest = {
   text: string;
@@ -55,7 +55,7 @@ export class ASMRContentService {
     private readonly configService: ConfigService,
     private readonly elevenLabsProvider: ElevenLabsProvider,
     private readonly elevenLabsSoundscapeProvider: ElevenLabsSoundscapeProvider,
-    private readonly audioMixer: FFmpegAudioMixer,
+    private readonly audioMixer: FfmpegAudioMixer,
   ) {
     this.logger.log('ASMR Content Service initialized');
   }
@@ -115,7 +115,7 @@ export class ASMRContentService {
 
       // 5. ASMR优化
       this.logger.log('Applying ASMR optimization...');
-      finalAudio = await this.audioMixer.optimizeForASMR(finalAudio);
+      finalAudio = await this.audioMixer.optimizeForAsmr(finalAudio);
       components.asmrOptimized = true;
 
       // 6. 质量验证

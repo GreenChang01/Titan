@@ -11,7 +11,7 @@ import {
   Max,
 } from 'class-validator';
 import {Type} from 'class-transformer';
-import {SlotDefinition, TemplateConfig, VideoSettings} from '../types/content-template.types';
+import {TemplateConfig, VideoSettings} from '../types/content-template.types';
 
 class SlotDefinitionDto {
   @IsString()

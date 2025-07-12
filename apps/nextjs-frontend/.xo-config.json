@@ -1,4 +1,5 @@
 {
+  "extends": ["xo"],
   "rules": {
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off", 
@@ -8,6 +9,31 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "react/prop-types": "off",
     "import-x/extensions": "off",
-    "@typescript-eslint/no-deprecated": "off"
+    "@typescript-eslint/no-deprecated": "off",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      },
+      {
+        "selector": "objectLiteralProperty",
+        "format": null
+      },
+      {
+        "selector": "variable",
+        "modifiers": ["const"],
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      }
+    ],
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "@stylistic/no-mixed-operators": "off",
+    "no-promise-executor-return": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "complexity": "off",
+    "@stylistic/max-len": "off",
+    "@typescript-eslint/no-floating-promises": "warn",
+    "react-hooks/exhaustive-deps": "off",
+    "n/prefer-global/process": "off"
   }
 }

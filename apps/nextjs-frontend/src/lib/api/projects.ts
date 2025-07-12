@@ -2,239 +2,266 @@ import {apiClient} from './client';
 
 // Project types
 export type Project = {
-  id: string;
-  name: string;
-  description?: string;
-  color: string;
-  ownerId: string;
-  createdAt: string;
-  updatedAt: string;
-  materialCount: number;
-  isActive: boolean;
-}
+	id: string;
+	name: string;
+	description?: string;
+	color: string;
+	ownerId: string;
+	createdAt: string;
+	updatedAt: string;
+	materialCount: number;
+	isActive: boolean;
+};
 
 export type CreateProjectRequest = {
-  name: string;
-  description?: string;
-  color: string;
-}
+	name: string;
+	description?: string;
+	color: string;
+};
 
 export type UpdateProjectRequest = {
-  name?: string;
-  description?: string;
-  color?: string;
-  isActive?: boolean;
-}
+	name?: string;
+	description?: string;
+	color?: string;
+	isActive?: boolean;
+};
 
 export type ProjectMaterial = {
-  id: string;
-  projectId: string;
-  assetId: string;
-  asset: {
-    id: string;
-    filename: string;
-    path: string;
-    type: 'image' | 'video' | 'audio' | 'text';
-    size: number;
-    mimeType: string;
-    tags: string[];
-    createdAt: string;
-  };
-  addedAt: string;
-}
+	id: string;
+	projectId: string;
+	assetId: string;
+	asset: {
+		id: string;
+		filename: string;
+		path: string;
+		type: 'image' | 'video' | 'audio' | 'text';
+		size: number;
+		mimeType: string;
+		tags: string[];
+		createdAt: string;
+	};
+	addedAt: string;
+};
 
 export type ProjectActivity = {
-  id: string;
-  projectId: string;
-  userId: string;
-  user: {
-    id: string;
-    name: string;
-  };
-  action: 'created' | 'updated' | 'material_added' | 'material_removed';
-  description: string;
-  metadata?: Record<string, any>;
-  createdAt: string;
-}
+	id: string;
+	projectId: string;
+	userId: string;
+	user: {
+		id: string;
+		name: string;
+	};
+	action: 'created' | 'updated' | 'material_added' | 'material_removed';
+	description: string;
+	metadata?: Record<string, any>;
+	createdAt: string;
+};
 
 export type ProjectListParams = {
-  page?: number;
-  limit?: number;
-  search?: string;
-  sortBy?: 'name' | 'createdAt' | 'updatedAt';
-  sortOrder?: 'asc' | 'desc';
-  isActive?: boolean;
-}
+	page?: number;
+	limit?: number;
+	search?: string;
+	sortBy?: 'name' | 'createdAt' | 'updatedAt';
+	sortOrder?: 'asc' | 'desc';
+	isActive?: boolean;
+};
 
 export type ProjectListResponse = {
-  projects: Project[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+	projects: Project[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
+};
 
 export type AddMaterialRequest = {
-  assetIds: string[];
-}
+	assetIds: string[];
+};
 
 export type ProjectStats = {
-  totalProjects: number;
-  activeProjects: number;
-  totalMaterials: number;
-  recentActivity: number;
-}
+	totalProjects: number;
+	activeProjects: number;
+	totalMaterials: number;
+	recentActivity: number;
+};
 
 // Projects API service
 export const projectsApi = {
-  // Get projects list
-  async getProjects(params?: ProjectListParams): Promise<ProjectListResponse> {
-    const queryParams: Record<string, string> = {};
+	// Get projects list
+	async getProjects(parameters?: ProjectListParams): Promise<ProjectListResponse> {
+		const queryParameters: Record<string, string> = {};
 
-    if (params) {
-      if (params.page) queryParams.page = params.page.toString();
-      if (params.limit) queryParams.limit = params.limit.toString();
-      if (params.search) queryParams.search = params.search;
-      if (params.sortBy) queryParams.sortBy = params.sortBy;
-      if (params.sortOrder) queryParams.sortOrder = params.sortOrder;
-      if (params.isActive !== undefined) queryParams.isActive = params.isActive.toString();
-    }
+		if (parameters) {
+			if (parameters.page) {
+				queryParameters.page = parameters.page.toString();
+			}
 
-    return apiClient.get<ProjectListResponse>('/projects', queryParams);
-  },
+			if (parameters.limit) {
+				queryParameters.limit = parameters.limit.toString();
+			}
 
-  // Get project by ID
-  async getProject(projectId: string): Promise<Project> {
-    return apiClient.get<Project>(`/projects/${projectId}`);
-  },
+			if (parameters.search) {
+				queryParameters.search = parameters.search;
+			}
 
-  // Create new project
-  async createProject(projectData: CreateProjectRequest): Promise<Project> {
-    return apiClient.post<Project>('/projects', projectData);
-  },
+			if (parameters.sortBy) {
+				queryParameters.sortBy = parameters.sortBy;
+			}
 
-  // Update project
-  async updateProject(projectId: string, updates: UpdateProjectRequest): Promise<Project> {
-    return apiClient.patch<Project>(`/projects/${projectId}`, updates);
-  },
+			if (parameters.sortOrder) {
+				queryParameters.sortOrder = parameters.sortOrder;
+			}
 
-  // Delete project
-  async deleteProject(projectId: string): Promise<void> {
-    await apiClient.delete(`/projects/${projectId}`);
-  },
+			if (parameters.isActive !== undefined) {
+				queryParameters.isActive = parameters.isActive.toString();
+			}
+		}
 
-  // Get project materials
-  async getProjectMaterials(projectId: string): Promise<ProjectMaterial[]> {
-    return apiClient.get<ProjectMaterial[]>(`/projects/${projectId}/materials`);
-  },
+		return apiClient.get<ProjectListResponse>('/projects', queryParameters);
+	},
 
-  // Add materials to project
-  async addMaterials(projectId: string, data: AddMaterialRequest): Promise<ProjectMaterial[]> {
-    return apiClient.post<ProjectMaterial[]>(`/projects/${projectId}/materials`, data);
-  },
+	// Get project by ID
+	async getProject(projectId: string): Promise<Project> {
+		return apiClient.get<Project>(`/projects/${projectId}`);
+	},
 
-  // Remove material from project
-  async removeMaterial(projectId: string, materialId: string): Promise<void> {
-    await apiClient.delete(`/projects/${projectId}/materials/${materialId}`);
-  },
+	// Create new project
+	async createProject(projectData: CreateProjectRequest): Promise<Project> {
+		return apiClient.post<Project>('/projects', projectData);
+	},
 
-  // Bulk remove materials from project
-  async removeMaterials(projectId: string, materialIds: string[]): Promise<void> {
-    await apiClient.post(`/projects/${projectId}/materials/remove`, {
-      materialIds,
-    });
-  },
+	// Update project
+	async updateProject(projectId: string, updates: UpdateProjectRequest): Promise<Project> {
+		return apiClient.patch<Project>(`/projects/${projectId}`, updates);
+	},
 
-  // Get project activities
-  async getProjectActivities(
-    projectId: string,
-    params?: {
-      page?: number;
-      limit?: number;
-    },
-  ): Promise<{
-      activities: ProjectActivity[];
-      total: number;
-      page: number;
-      limit: number;
-    }> {
-    const queryParams: Record<string, string> = {};
+	// Delete project
+	async deleteProject(projectId: string): Promise<void> {
+		await apiClient.delete(`/projects/${projectId}`);
+	},
 
-    if (params?.page) queryParams.page = params.page.toString();
-    if (params?.limit) queryParams.limit = params.limit.toString();
+	// Get project materials
+	async getProjectMaterials(projectId: string): Promise<ProjectMaterial[]> {
+		return apiClient.get<ProjectMaterial[]>(`/projects/${projectId}/materials`);
+	},
 
-    return apiClient.get(`/projects/${projectId}/activities`, queryParams);
-  },
+	// Add materials to project
+	async addMaterials(projectId: string, data: AddMaterialRequest): Promise<ProjectMaterial[]> {
+		return apiClient.post<ProjectMaterial[]>(`/projects/${projectId}/materials`, data);
+	},
 
-  // Get project statistics
-  async getProjectStats(): Promise<ProjectStats> {
-    return apiClient.get<ProjectStats>('/projects/stats');
-  },
+	// Remove material from project
+	async removeMaterial(projectId: string, materialId: string): Promise<void> {
+		await apiClient.delete(`/projects/${projectId}/materials/${materialId}`);
+	},
 
-  // Get recent projects
-  async getRecentProjects(limit = 5): Promise<Project[]> {
-    return apiClient.get<Project[]>('/projects/recent', {
-      limit: limit.toString(),
-    });
-  },
+	// Bulk remove materials from project
+	async removeMaterials(projectId: string, materialIds: string[]): Promise<void> {
+		await apiClient.post(`/projects/${projectId}/materials/remove`, {
+			materialIds,
+		});
+	},
 
-  // Search projects
-  async searchProjects(
-    query: string,
-    options?: {
-      limit?: number;
-      includeInactive?: boolean;
-    },
-  ): Promise<Project[]> {
-    const params: Record<string, string> = {
-      search: query,
-    };
+	// Get project activities
+	async getProjectActivities(
+		projectId: string,
+		parameters?: {
+			page?: number;
+			limit?: number;
+		},
+	): Promise<{
+			activities: ProjectActivity[];
+			total: number;
+			page: number;
+			limit: number;
+		}> {
+		const queryParameters: Record<string, string> = {};
 
-    if (options?.limit) params.limit = options.limit.toString();
-    if (options?.includeInactive) params.includeInactive = 'true';
+		if (parameters?.page) {
+			queryParameters.page = parameters.page.toString();
+		}
 
-    return apiClient.get<Project[]>('/projects/search', params);
-  },
+		if (parameters?.limit) {
+			queryParameters.limit = parameters.limit.toString();
+		}
 
-  // Archive project (soft delete)
-  async archiveProject(projectId: string): Promise<Project> {
-    return apiClient.patch<Project>(`/projects/${projectId}`, {
-      isActive: false,
-    });
-  },
+		return apiClient.get(`/projects/${projectId}/activities`, queryParameters);
+	},
 
-  // Restore archived project
-  async restoreProject(projectId: string): Promise<Project> {
-    return apiClient.patch<Project>(`/projects/${projectId}`, {
-      isActive: true,
-    });
-  },
+	// Get project statistics
+	async getProjectStats(): Promise<ProjectStats> {
+		return apiClient.get<ProjectStats>('/projects/stats');
+	},
 
-  // Duplicate project
-  async duplicateProject(projectId: string, name: string): Promise<Project> {
-    return apiClient.post<Project>(`/projects/${projectId}/duplicate`, {
-      name,
-    });
-  },
+	// Get recent projects
+	async getRecentProjects(limit = 5): Promise<Project[]> {
+		return apiClient.get<Project[]>('/projects/recent', {
+			limit: limit.toString(),
+		});
+	},
 
-  // Export project data
-  async exportProject(projectId: string): Promise<Blob> {
-    const response = await fetch(`${apiClient.baseURL}/projects/${projectId}/export`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${apiClient.token}`,
-      },
-    });
+	// Search projects
+	async searchProjects(
+		query: string,
+		options?: {
+			limit?: number;
+			includeInactive?: boolean;
+		},
+	): Promise<Project[]> {
+		const parameters: Record<string, string> = {
+			search: query,
+		};
 
-    if (!response.ok) {
-      throw new Error(`Export failed: ${response.statusText}`);
-    }
+		if (options?.limit) {
+			parameters.limit = options.limit.toString();
+		}
 
-    return response.blob();
-  },
+		if (options?.includeInactive) {
+			parameters.includeInactive = 'true';
+		}
 
-  // Import project data
-  async importProject(file: File): Promise<Project> {
-    return apiClient.upload<Project>('/projects/import', [file]);
-  },
+		return apiClient.get<Project[]>('/projects/search', parameters);
+	},
+
+	// Archive project (soft delete)
+	async archiveProject(projectId: string): Promise<Project> {
+		return apiClient.patch<Project>(`/projects/${projectId}`, {
+			isActive: false,
+		});
+	},
+
+	// Restore archived project
+	async restoreProject(projectId: string): Promise<Project> {
+		return apiClient.patch<Project>(`/projects/${projectId}`, {
+			isActive: true,
+		});
+	},
+
+	// Duplicate project
+	async duplicateProject(projectId: string, name: string): Promise<Project> {
+		return apiClient.post<Project>(`/projects/${projectId}/duplicate`, {
+			name,
+		});
+	},
+
+	// Export project data
+	async exportProject(projectId: string): Promise<Blob> {
+		const response = await fetch(`${apiClient.baseURL}/projects/${projectId}/export`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${apiClient.token}`,
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`Export failed: ${response.statusText}`);
+		}
+
+		return response.blob();
+	},
+
+	// Import project data
+	async importProject(file: File): Promise<Project> {
+		return apiClient.upload<Project>('/projects/import', [file]);
+	},
 };

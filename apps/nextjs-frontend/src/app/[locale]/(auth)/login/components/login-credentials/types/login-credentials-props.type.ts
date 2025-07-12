@@ -1,3 +1,3 @@
 export type LoginCredentialsProps = {
-  handleLoginCredentialsSuccess: () => void;
+	handleLoginCredentialsSuccess: () => void;
 };

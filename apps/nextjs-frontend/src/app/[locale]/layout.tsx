@@ -12,49 +12,49 @@ import {ZodErrorProvider} from '@/providers/zod-error/zod-error.provider';
 import {AuthenticatedLayout} from '@/components/layout/authenticated-layout';
 
 export const metadata: Metadata = {
-  title: 'Next.js Frontend',
-  description: 'Frontend powered by Next.js',
+	title: 'Next.js Frontend',
+	description: 'Frontend powered by Next.js',
 };
 
 export default async function Layout({
-  children,
-  params,
+	children,
+	params,
 }: {
-  readonly children: React.ReactNode;
-  readonly params: Promise<{locale: string}>;
+	readonly children: React.ReactNode;
+	readonly params: Promise<{locale: string}>;
 }): Promise<JSX.Element> {
-  // Ensure that the incoming `locale` is valid
-  const {locale} = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+	// Ensure that the incoming `locale` is valid
+	const {locale} = await params;
+	if (!hasLocale(routing.locales, locale)) {
+		notFound();
+	}
 
-  // Get the current pathname to determine if this is an auth page
-  const headersList = await headers();
-  const pathname = headersList.get('x-pathname') || '';
-  const isAuthPage = pathname.includes('/login') || pathname.includes('/register') || pathname.includes('/auth');
+	// Get the current pathname to determine if this is an auth page
+	const headersList = await headers();
+	const pathname = headersList.get('x-pathname') || '';
+	const isAuthPage = pathname.includes('/login') || pathname.includes('/register') || pathname.includes('/auth');
 
-  return (
-    <html suppressHydrationWarning lang={locale}>
-      <body suppressHydrationWarning className="min-h-screen bg-background text-foreground">
-        <NextIntlClientProvider>
-          <ZodErrorProvider>
-            <ToastProvider>
-              <UserProvider>
-                <ReactQueryProvider>
-                  {isAuthPage ? (
-                    // Auth pages - simple centered layout
-                    <div className="min-h-screen flex items-center justify-center bg-background">{children}</div>
-                  ) : (
-                    // Dashboard pages - use shadcn-admin layout
-                    <AuthenticatedLayout>{children}</AuthenticatedLayout>
-                  )}
-                </ReactQueryProvider>
-              </UserProvider>
-            </ToastProvider>
-          </ZodErrorProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html suppressHydrationWarning lang={locale}>
+			<body suppressHydrationWarning className='min-h-screen bg-background text-foreground'>
+				<NextIntlClientProvider>
+					<ZodErrorProvider>
+						<ToastProvider>
+							<UserProvider>
+								<ReactQueryProvider>
+									{isAuthPage ? (
+									// Auth pages - simple centered layout
+										<div className='min-h-screen flex items-center justify-center bg-background'>{children}</div>
+									) : (
+									// Dashboard pages - use shadcn-admin layout
+										<AuthenticatedLayout>{children}</AuthenticatedLayout>
+									)}
+								</ReactQueryProvider>
+							</UserProvider>
+						</ToastProvider>
+					</ZodErrorProvider>
+				</NextIntlClientProvider>
+			</body>
+		</html>
+	);
 }

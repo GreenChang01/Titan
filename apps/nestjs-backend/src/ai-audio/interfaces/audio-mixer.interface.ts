@@ -94,7 +94,7 @@ export type IAudioMixer = {
    * @param audio 音频数据
    * @returns 优化后的音频
    */
-  optimizeForASMR(audio: Buffer): Promise<Buffer>;
+  optimizeForAsmr(audio: Buffer): Promise<Buffer>;
 
   /**
    * 分析音频质量
