@@ -1,7 +1,7 @@
 <div align="center">
   <h1>🚀 Titan</h1>
-  <p><strong>专业级素材协作平台</strong></p>
-  <p>无缝整合云存储与项目管理，为团队协作赋能</p>
+  <p><strong>智能ASMR内容生产与分发平台</strong></p>
+  <p>AI驱动的专业ASMR音频制作工具，从素材管理到多平台分发的一站式解决方案</p>
   
   <p>
     <a href="https://github.com/yourusername/titan/stargazers">
@@ -20,7 +20,7 @@
   
   <p>
     <a href="https://nodejs.org/">
-      <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+      <img src="https://img.shields.io/badge/Node.js-24+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
     </a>
     <a href="https://www.typescriptlang.org/">
       <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
@@ -31,11 +31,18 @@
     <a href="https://nestjs.com/">
       <img src="https://img.shields.io/badge/NestJS-10+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS">
     </a>
+    <a href="https://elevenlabs.io/">
+      <img src="https://img.shields.io/badge/ElevenLabs-AI%20Voice-FF6B35?style=for-the-badge" alt="ElevenLabs">
+    </a>
+    <a href="https://soundverse.ai/">
+      <img src="https://img.shields.io/badge/Soundverse-AI%20Audio-9D4EDD?style=for-the-badge" alt="Soundverse">
+    </a>
   </p>
   
   <p>
     <a href="#快速开始">快速开始</a> •
     <a href="#核心功能">核心功能</a> •
+    <a href="#asmr音频制作">ASMR音频制作</a> •
     <a href="#系统架构">系统架构</a> •
     <a href="#api文档">API文档</a> •
     <a href="#参与贡献">参与贡献</a> •
@@ -47,17 +54,33 @@
 
 ## ✨ 核心功能
 
+### 🎵 **AI ASMR音频生产**
+
+- **ElevenLabs语音合成**：高质量AI语音生成，支持多种音色和风格
+- **Soundverse音景制作**：AI驱动的ASMR背景音效和音景生成
+- **FFmpeg音频处理**：专业级音频混合、降噪和后期处理
+- **批量内容生产**：支持大规模ASMR内容的自动化生产流程
+
+### 📚 **智能内容管理**
+
+- **ASMR素材库**：专门针对ASMR内容的素材分类和管理
+- **模板系统**：预设ASMR内容模板，支持快速内容创建
+- **标签体系**：丰富的ASMR标签系统（放松、睡眠、冥想等）
+- **版本控制**：音频内容的版本管理和历史记录
+
 ### 🔗 **云存储集成**
 
 - **阿里云盘支持**：无缝连接和管理阿里云盘文件
 - **安全令牌管理**：AES-256 加密存储凭证信息
 - **实时同步**：自动与云存储保持同步
+- **大文件处理**：优化的音频文件上传和下载体验
 
-### 📂 **项目管理**
+### 📱 **多平台分发**
 
-- **直观仪表板**：简洁现代的项目管理界面
-- **素材组织**：智能分类和标签系统
-- **团队协作**：多用户项目访问和权限管理
+- **微信公众号**：一键发布到微信公众号平台
+- **音频平台集成**：支持多个音频分发平台
+- **定时发布**：支持内容的定时发布和调度
+- **发布记录**：完整的发布历史和状态跟踪
 
 ### 🔐 **企业级安全**
 
@@ -103,9 +126,11 @@
 
 ### 环境要求
 
-- **Node.js 18+**
+- **Node.js 24+**
 - **PostgreSQL 12+**
+- **FFmpeg**（音频处理）
 - **Docker**（可选，用于容器化数据库）
+- **Redis**（可选，用于队列和缓存）
 
 ### 1. 克隆项目
 
@@ -118,11 +143,11 @@ cd titan
 
 ```bash
 # 安装根目录依赖
-npm install
+pnpm install
 
 # 构建共享包
 cd packages/titan-shared
-npm run build
+pnpm run build
 cd ../..
 ```
 
@@ -142,17 +167,17 @@ cp apps/nextjs-frontend/.env.example apps/nextjs-frontend/.env
 cd apps/nestjs-backend
 
 # 启动 PostgreSQL（Docker）
-npm run start:dev:infra
+pnpm run start:dev:infra
 
 # 运行数据库迁移
-npm run migration:up
+pnpm run migration:up
 ```
 
 ### 5. 启动开发服务器
 
 ```bash
 # 从根目录启动
-npm run start:dev
+pnpm run start:dev
 ```
 
 🎉 **完成！** 你的应用现在已经运行在：
@@ -207,6 +232,63 @@ npm run start:dev
 
 ---
 
+## 🎵 ASMR音频制作
+
+### 工作流程
+
+```
+文本素材 → AI语音合成 → 音景生成 → 音频混合 → 后期处理 → 发布分发
+   ↓           ↓           ↓          ↓         ↓         ↓
+素材库     ElevenLabs  Soundverse   FFmpeg   质量检测   多平台
+```
+
+### 核心组件
+
+#### 🎤 AI语音合成 (ElevenLabs)
+
+- 支持多种音色和语言
+- 自然流畅的语音生成
+- 可调节语速、音调和情感
+- 支持SSML标记语言
+
+#### 🌊 AI音景生成 (Soundverse)
+
+- 自然环境音效（雨声、海浪、森林等）
+- 可定制音景参数
+- 支持多层音效混合
+- 实时音效生成
+
+#### 🔧 专业音频处理 (FFmpeg)
+
+- 多轨音频混合
+- 音频格式转换
+- 降噪和音质优化
+- 动态范围控制
+
+### 使用示例
+
+```typescript
+// 创建ASMR内容任务
+const job = await fetch('/api/content-jobs', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  },
+  body: JSON.stringify({
+    type: 'ASMR_AUDIO_GENERATION',
+    content: {
+      text: '欢迎来到放松时光，让我们一起进入宁静的世界...',
+      voiceId: 'soothing-female',
+      backgroundSound: 'rain-forest',
+      duration: 600, // 10分钟
+    },
+  }),
+});
+```
+
+---
+
 ## 🔧 环境配置
 
 ### 后端配置
@@ -217,10 +299,23 @@ DATABASE_URL = 'postgresql://username:password@localhost:5432/titan';
 JWT_SECRET = 'your-super-secret-jwt-key';
 JWT_REFRESH_SECRET = 'your-refresh-secret-key';
 ENCRYPTION_KEY = 'your-32-character-encryption-key';
+
+// 邮件配置
 SMTP_HOST = 'smtp.gmail.com';
 SMTP_PORT = 587;
 SMTP_USER = 'your-email@gmail.com';
 SMTP_PASS = 'your-app-password';
+
+// AI服务配置
+ELEVENLABS_API_KEY = 'your-elevenlabs-api-key';
+SOUNDVERSE_API_KEY = 'your-soundverse-api-key';
+
+// 文件存储配置
+UPLOAD_PATH = './uploads';
+MAX_FILE_SIZE = '100MB';
+
+// 队列配置 (可选)
+REDIS_URL = 'redis://localhost:6379';
 ```
 
 ### 前端配置
@@ -297,6 +392,45 @@ const project = await fetch('/api/projects', {
 | POST | `/auth/refresh`  | 刷新访问令牌 |
 | POST | `/auth/logout`   | 用户登出     |
 
+### 素材管理接口
+
+| 方法   | 接口          | 描述         |
+| ------ | ------------- | ------------ |
+| GET    | `/assets`     | 获取素材列表 |
+| POST   | `/assets`     | 上传新素材   |
+| GET    | `/assets/:id` | 获取素材详情 |
+| PATCH  | `/assets/:id` | 更新素材信息 |
+| DELETE | `/assets/:id` | 删除素材     |
+
+### ASMR内容生产接口
+
+| 方法   | 接口                       | 描述               |
+| ------ | -------------------------- | ------------------ |
+| POST   | `/content-jobs`            | 创建内容生产任务   |
+| GET    | `/content-jobs`            | 获取任务列表       |
+| GET    | `/content-jobs/:id`        | 获取任务详情和状态 |
+| DELETE | `/content-jobs/:id`        | 取消任务           |
+| GET    | `/content-jobs/:id/result` | 获取生成的音频文件 |
+
+### 模板管理接口
+
+| 方法   | 接口             | 描述         |
+| ------ | ---------------- | ------------ |
+| GET    | `/templates`     | 获取模板列表 |
+| POST   | `/templates`     | 创建新模板   |
+| GET    | `/templates/:id` | 获取模板详情 |
+| PATCH  | `/templates/:id` | 更新模板     |
+| DELETE | `/templates/:id` | 删除模板     |
+
+### 发布管理接口
+
+| 方法 | 接口                      | 描述           |
+| ---- | ------------------------- | -------------- |
+| POST | `/publications`           | 创建发布任务   |
+| GET  | `/publications`           | 获取发布历史   |
+| GET  | `/publications/:id`       | 获取发布详情   |
+| POST | `/publications/:id/retry` | 重试失败的发布 |
+
 ### 项目管理接口
 
 | 方法   | 接口            | 描述             |
@@ -323,24 +457,24 @@ const project = await fetch('/api/projects', {
 
 ```bash
 # 开发模式
-npm run start:dev          # 启动前后端
-npm run start:dev:frontend # 仅启动前端
-npm run start:dev:backend  # 仅启动后端
+pnpm run start:dev          # 启动前后端
+pnpm run start:dev:frontend # 仅启动前端
+pnpm run start:dev:backend  # 仅启动后端
 
 # 构建
-npm run build             # 构建所有包
-npm run build:frontend    # 仅构建前端
-npm run build:backend     # 仅构建后端
+pnpm run build             # 构建所有包
+pnpm run build:frontend    # 仅构建前端
+pnpm run build:backend     # 仅构建后端
 
 # 测试
-npm run test:unit         # 运行单元测试
-npm run test:e2e          # 运行端到端测试
-npm run test:coverage     # 生成覆盖率报告
+pnpm run test:unit         # 运行单元测试
+pnpm run test:e2e          # 运行端到端测试
+pnpm run test:unit:cov     # 生成覆盖率报告
 
 # 代码质量
-npm run lint             # 检查代码规范
-npm run lint:fix         # 修复代码规范问题
-npm run format           # 格式化代码
+pnpm run lint             # 检查代码规范
+pnpm run lint:fix         # 修复代码规范问题
+pnpm run format           # 格式化代码
 ```
 
 ### 项目结构
@@ -354,7 +488,14 @@ titan/
 │   │   │   ├── users/           # 用户管理
 │   │   │   ├── aliyun-drive/    # 阿里云盘集成
 │   │   │   ├── project/         # 项目管理
-│   │   │   └── project-material/ # 项目素材管理
+│   │   │   ├── asset/           # 素材管理
+│   │   │   ├── ai-audio/        # AI音频生产模块
+│   │   │   │   ├── providers/   # ElevenLabs & Soundverse
+│   │   │   │   └── services/    # 音频处理服务
+│   │   │   ├── content-job/     # 内容生产任务
+│   │   │   ├── template/        # 模板管理
+│   │   │   ├── publication/     # 发布管理
+│   │   │   └── schedule/        # 定时调度
 │   │   └── migrations/          # 数据库迁移
 │   └── nextjs-frontend/         # Next.js 前端应用
 │       ├── src/
@@ -363,6 +504,8 @@ titan/
 │       │   │   ├── ui/          # Shadcn/ui 基础组件
 │       │   │   ├── aliyun-drive/ # 阿里云盘组件
 │       │   │   ├── project/     # 项目管理组件
+│       │   │   ├── asset/       # 素材管理组件
+│       │   │   ├── audio/       # 音频相关组件
 │       │   │   └── layout/      # 布局组件
 │       │   ├── hooks/           # React Hooks
 │       │   ├── store/           # Zustand 状态管理
@@ -371,8 +514,19 @@ titan/
 │   └── titan-shared/            # 共享 TypeScript 类型
 │       ├── src/
 │       │   ├── types/           # 通用类型
+│       │   │   ├── asmr.ts      # ASMR相关类型
+│       │   │   ├── audio.ts     # 音频相关类型
+│       │   │   └── content.ts   # 内容相关类型
 │       │   └── dto/             # 数据传输对象
-└── docs/                        # 文档
+├── development/                 # 开发文档
+│   ├── v1.0/                   # V1.0 版本开发文档
+│   └── v1.1/                   # V1.1 版本开发文档
+│       └── poc-scripts/        # 概念验证脚本
+├── requirements/               # 需求文档
+│   ├── PRD-v1.0.md            # V1.0 产品需求文档
+│   ├── PRD-v1.1.md            # V1.1 产品需求文档
+│   └── change-requests/        # 变更请求
+└── docs/                       # 项目文档
 ```
 
 ---
@@ -383,23 +537,23 @@ titan/
 
 ```bash
 # 运行所有单元测试
-npm run test:unit
+pnpm run test:unit
 
 # 运行测试并生成覆盖率
-npm run test:coverage
+pnpm run test:unit:cov
 
 # 监视模式运行测试
-npm run test:watch
+pnpm run test:watch
 ```
 
 ### 端到端测试
 
 ```bash
 # 运行 E2E 测试
-npm run test:e2e
+pnpm run test:e2e
 
 # 带 UI 界面运行 E2E 测试
-npm run test:e2e:ui
+pnpm run test:e2e:ui
 ```
 
 ### 测试覆盖率
@@ -476,6 +630,9 @@ NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 - [MikroORM](https://mikro-orm.io/) - TypeScript ORM
 - [Turborepo](https://turbo.build/) - 单体仓库管理
 - [TanStack Query](https://tanstack.com/query) - 数据获取和状态管理
+- [ElevenLabs](https://elevenlabs.io/) - AI语音合成服务
+- [Soundverse](https://soundverse.ai/) - AI音效生成服务
+- [FFmpeg](https://ffmpeg.org/) - 多媒体处理框架
 
 ---
 
