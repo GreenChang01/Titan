@@ -23,7 +23,7 @@ const TWO_FACTOR_AUTH_COOKIE_KEY = 'two_factor_auth';
  * 身份验证控制器
  * 处理用户登录、双因子验证、令牌刷新和退出登录的 API 端点
  */
-@ApiTags('auth')
+@ApiTags('身份验证')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -39,17 +39,16 @@ export class AuthController {
   @Public()
   @Throttle({default: {ttl: oneMinute, limit: 5}})
   @ApiOperation({
-    summary: 'Login with credentials and issue 2FA code',
-    description:
-      'This endpoint accepts user credentials (email and password) and issues a 2FA code for further authentication.',
+    summary: '用户凭据登录并发送双因子验证码',
+    description: '接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱，用于进一步身份验证',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Login successful, 2FA code issued.',
+    description: '登录成功，双因子验证码已发送',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid credentials.',
+    description: '用户凭据无效',
   })
   @HttpCode(HttpStatus.OK)
   async login(
@@ -86,16 +85,16 @@ export class AuthController {
   @Public()
   @Throttle({default: {ttl: oneMinute, limit: 5}})
   @ApiOperation({
-    summary: 'Login with 2FA code and generate tokens',
-    description: 'This endpoint verifies the provided 2FA code and generates access and refresh tokens for the user.',
+    summary: '双因子验证码登录并生成令牌',
+    description: '验证双因子验证码，成功后生成访问令牌和刷新令牌用于用户身份验证',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Login successful, tokens generated.',
+    description: '登录成功，令牌已生成',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid 2FA code.',
+    description: '双因子验证码无效',
   })
   @HttpCode(HttpStatus.OK)
   async login2fa(
@@ -135,16 +134,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @ApiOperation({
-    summary: 'Refresh access and refresh tokens',
-    description: 'This endpoint refreshes the access and refresh tokens using the provided refresh token.',
+    summary: '刷新访问令牌和刷新令牌',
+    description: '使用刷新令牌来获取新的令牌对，保持用户登录状态',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Tokens refreshed successfully.',
+    description: '令牌刷新成功',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid refresh token.',
+    description: '刷新令牌无效',
   })
   @HttpCode(HttpStatus.OK)
   async refresh(@Req() req: Request, @Res({passthrough: true}) response: Response): Promise<void> {
@@ -178,12 +177,12 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Logout and clear authentication cookies',
-    description: 'This endpoint clears the access and refresh tokens from the cookies and logs out the user.',
+    summary: '退出登录并清除认证Cookie',
+    description: '清除访问令牌和刷新令牌的Cookie，完成用户退出登录',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Logged out successfully.',
+    description: '退出登录成功',
   })
   async logout(@Res({passthrough: true}) response: Response): Promise<void> {
     response.clearCookie(ACCESS_TOKEN_COOKIE_KEY);

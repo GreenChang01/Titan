@@ -1,20 +1,20 @@
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository, EntityManager } from '@mikro-orm/core';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { ContentJob } from './entities/content-job.entity';
-import { CreateContentJobDto, CreateBatchJobDto } from './dto';
-import { JobStatus, JobType } from '../common/enums';
+import {Injectable, Logger, NotFoundException, BadRequestException} from '@nestjs/common';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {EntityRepository, EntityManager} from '@mikro-orm/core';
+import {InjectQueue} from '@nestjs/bull';
+import {Queue} from 'bull';
+import {JobStatus, JobType} from '../common/enums';
+import {ContentJob} from './entities/content-job.entity';
+import {CreateContentJobDto, CreateBatchJobDto} from './dto';
 
-export interface JobQueryOptions {
+export type JobQueryOptions = {
   status?: JobStatus;
   projectId?: string;
   page?: number;
   limit?: number;
 }
 
-export interface JobProgressData {
+export type JobProgressData = {
   id: string;
   status: JobStatus;
   progress: number;
@@ -53,16 +53,20 @@ export class ContentJobService {
     await this.em.persistAndFlush(job);
 
     // 添加到队列进行处理
-    await this.mediaQueue.add('process-content', {
-      jobId: job.id,
-      userId,
-    }, {
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 2000,
+    await this.mediaQueue.add(
+      'process-content',
+      {
+        jobId: job.id,
+        userId,
       },
-    });
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000,
+        },
+      },
+    );
 
     this.logger.log(`Single content job created: ${job.id}`);
     return job;
@@ -115,25 +119,29 @@ export class ContentJobService {
   /**
    * 获取任务列表
    */
-  async getJobs(userId: string, options: JobQueryOptions): Promise<{
-    data: ContentJob[];
-    total: number;
-    page: number;
-    limit: number;
-  }> {
-    const { status, projectId, page = 1, limit = 20 } = options;
+  async getJobs(
+    userId: string,
+    options: JobQueryOptions,
+  ): Promise<{
+      data: ContentJob[];
+      total: number;
+      page: number;
+      limit: number;
+    }> {
+    const {status, projectId, page = 1, limit = 20} = options;
     const offset = (page - 1) * limit;
 
-    const where: any = { userId };
+    const where: any = {userId};
     if (status) {
       where.status = status;
     }
+
     if (projectId) {
       where.projectId = projectId;
     }
 
     const [jobs, total] = await this.jobRepository.findAndCount(where, {
-      orderBy: { createdAt: 'DESC' },
+      orderBy: {createdAt: 'DESC'},
       limit,
       offset,
     });
@@ -200,17 +208,21 @@ export class ContentJobService {
     await this.em.persistAndFlush(job);
 
     // 重新添加到队列
-    await this.mediaQueue.add('process-content', {
-      jobId: job.id,
-      userId,
-      isRetry: true,
-    }, {
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 2000,
+    await this.mediaQueue.add(
+      'process-content',
+      {
+        jobId: job.id,
+        userId,
+        isRetry: true,
       },
-    });
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000,
+        },
+      },
+    );
 
     this.logger.log(`Job retry initiated: ${jobId}`);
     return job;
@@ -219,13 +231,8 @@ export class ContentJobService {
   /**
    * 更新任务状态
    */
-  async updateJobStatus(
-    jobId: string,
-    status: JobStatus,
-    progress?: number,
-    errorMessage?: string,
-  ): Promise<void> {
-    const job = await this.jobRepository.findOne({ id: jobId });
+  async updateJobStatus(jobId: string, status: JobStatus, progress?: number, errorMessage?: string): Promise<void> {
+    const job = await this.jobRepository.findOne({id: jobId});
     if (!job) {
       throw new NotFoundException('Job not found');
     }
@@ -234,6 +241,7 @@ export class ContentJobService {
     if (progress !== undefined) {
       job.progress = progress;
     }
+
     if (errorMessage !== undefined) {
       job.errorMessage = errorMessage;
     }
@@ -256,7 +264,7 @@ export class ContentJobService {
    * 设置任务输出路径
    */
   async setJobOutput(jobId: string, outputPath: string): Promise<void> {
-    const job = await this.jobRepository.findOne({ id: jobId });
+    const job = await this.jobRepository.findOne({id: jobId});
     if (!job) {
       throw new NotFoundException('Job not found');
     }
@@ -276,21 +284,23 @@ export class ContentJobService {
       voicePreset?: string;
       soundscapeType?: string;
       projectId?: string;
-    } = {}
-  ): Promise<{ jobId: string; queueJobId: string }> {
-    const { duration = 30, voicePreset = 'ELDERLY_FRIENDLY', soundscapeType = 'RAIN_FOREST', projectId } = options;
+    } = {},
+  ): Promise<{jobId: string; queueJobId: string}> {
+    const {duration = 30, voicePreset = 'ELDERLY_FRIENDLY', soundscapeType = 'RAIN_FOREST', projectId} = options;
 
     // 创建数据库任务记录
     const job = new ContentJob();
     job.userId = userId;
-    job.projectId = projectId || null;
+    job.projectId = projectId;
     job.jobType = JobType.SINGLE;
     job.status = JobStatus.QUEUED;
-    job.inputAssets = [{
-      assetId: 'text',
-      slotName: 'text_content',
-      parameters: { text, duration, voicePreset, soundscapeType }
-    }];
+    job.inputAssets = [
+      {
+        assetId: 'text',
+        slotName: 'text_content',
+        parameters: {text, duration, voicePreset, soundscapeType},
+      },
+    ];
 
     await this.em.persistAndFlush(job);
 
@@ -299,20 +309,24 @@ export class ContentJobService {
     const outputPath = `${outputDir}/asmr_${Date.now()}.mp3`;
 
     // 添加到音频生成队列
-    const queueJob = await this.audioQueue.add('generate-asmr', {
-      jobId: job.id,
-      text,
-      duration,
-      voicePreset,
-      soundscapeType,
-      outputPath,
-    }, {
-      attempts: 2,
-      backoff: {
-        type: 'exponential',
-        delay: 5000,
+    const queueJob = await this.audioQueue.add(
+      'generate-asmr',
+      {
+        jobId: job.id,
+        text,
+        duration,
+        voicePreset,
+        soundscapeType,
+        outputPath,
       },
-    });
+      {
+        attempts: 2,
+        backoff: {
+          type: 'exponential',
+          delay: 5000,
+        },
+      },
+    );
 
     this.logger.log(`ASMR audio job created: ${job.id}, queue job: ${queueJob.id}`);
 
@@ -331,21 +345,23 @@ export class ContentJobService {
     options: {
       voicePreset?: string;
       projectId?: string;
-    } = {}
-  ): Promise<{ jobId: string; queueJobId: string }> {
-    const { voicePreset = 'ELDERLY_FRIENDLY', projectId } = options;
+    } = {},
+  ): Promise<{jobId: string; queueJobId: string}> {
+    const {voicePreset = 'ELDERLY_FRIENDLY', projectId} = options;
 
     // 创建数据库任务记录
     const job = new ContentJob();
     job.userId = userId;
-    job.projectId = projectId || null;
+    job.projectId = projectId;
     job.jobType = JobType.SINGLE;
     job.status = JobStatus.QUEUED;
-    job.inputAssets = [{
-      assetId: 'text',
-      slotName: 'text_content',
-      parameters: { text, voicePreset }
-    }];
+    job.inputAssets = [
+      {
+        assetId: 'text',
+        slotName: 'text_content',
+        parameters: {text, voicePreset},
+      },
+    ];
 
     await this.em.persistAndFlush(job);
 
@@ -354,18 +370,22 @@ export class ContentJobService {
     const outputPath = `${outputDir}/voice_${Date.now()}.mp3`;
 
     // 添加到音频生成队列
-    const queueJob = await this.audioQueue.add('generate-voice', {
-      jobId: job.id,
-      text,
-      voicePreset,
-      outputPath,
-    }, {
-      attempts: 2,
-      backoff: {
-        type: 'exponential',
-        delay: 3000,
+    const queueJob = await this.audioQueue.add(
+      'generate-voice',
+      {
+        jobId: job.id,
+        text,
+        voicePreset,
+        outputPath,
       },
-    });
+      {
+        attempts: 2,
+        backoff: {
+          type: 'exponential',
+          delay: 3000,
+        },
+      },
+    );
 
     this.logger.log(`Voice generation job created: ${job.id}, queue job: ${queueJob.id}`);
 
@@ -385,21 +405,23 @@ export class ContentJobService {
       duration?: number;
       soundscapeType?: string;
       projectId?: string;
-    } = {}
-  ): Promise<{ jobId: string; queueJobId: string }> {
-    const { duration = 30, soundscapeType = 'RAIN_FOREST', projectId } = options;
+    } = {},
+  ): Promise<{jobId: string; queueJobId: string}> {
+    const {duration = 30, soundscapeType = 'RAIN_FOREST', projectId} = options;
 
     // 创建数据库任务记录
     const job = new ContentJob();
     job.userId = userId;
-    job.projectId = projectId || null;
+    job.projectId = projectId;
     job.jobType = JobType.SINGLE;
     job.status = JobStatus.QUEUED;
-    job.inputAssets = [{
-      assetId: 'prompt',
-      slotName: 'soundscape_prompt',
-      parameters: { prompt, duration, soundscapeType }
-    }];
+    job.inputAssets = [
+      {
+        assetId: 'prompt',
+        slotName: 'soundscape_prompt',
+        parameters: {prompt, duration, soundscapeType},
+      },
+    ];
 
     await this.em.persistAndFlush(job);
 
@@ -408,19 +430,23 @@ export class ContentJobService {
     const outputPath = `${outputDir}/soundscape_${Date.now()}.mp3`;
 
     // 添加到音频生成队列
-    const queueJob = await this.audioQueue.add('generate-soundscape', {
-      jobId: job.id,
-      text: prompt,
-      duration,
-      soundscapeType,
-      outputPath,
-    }, {
-      attempts: 2,
-      backoff: {
-        type: 'exponential',
-        delay: 3000,
+    const queueJob = await this.audioQueue.add(
+      'generate-soundscape',
+      {
+        jobId: job.id,
+        text: prompt,
+        duration,
+        soundscapeType,
+        outputPath,
       },
-    });
+      {
+        attempts: 2,
+        backoff: {
+          type: 'exponential',
+          delay: 3000,
+        },
+      },
+    );
 
     this.logger.log(`Soundscape generation job created: ${job.id}, queue job: ${queueJob.id}`);
 

@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository, EntityManager } from '@mikro-orm/core';
-import { Publication, PublicationStatus } from '../entities/publication.entity';
-import { IPlatformPublisher } from '../interfaces/platform-publisher.interface';
-import { EmailService } from '../../email/email.service';
+import {Injectable, Logger} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {EntityRepository, EntityManager} from '@mikro-orm/core';
+import {Publication, PublicationStatus} from '../entities/publication.entity';
+import {IPlatformPublisher} from '../interfaces/platform-publisher.interface';
+import {EmailService} from '../../email/email.service';
 
 @Injectable()
 export class WeChatManualPublisher implements IPlatformPublisher {
@@ -35,10 +35,9 @@ export class WeChatManualPublisher implements IPlatformPublisher {
       await this.sendUploadNotification(publication);
 
       this.logger.log(`WeChat manual upload requested for publication ${publication.id}`);
-
     } catch (error) {
       publication.status = PublicationStatus.UPLOAD_FAILED;
-      publication.failureReason = `Manual upload notification failed: ${error.message}`;
+      publication.failureReason = `Manual upload notification failed: ${(error as Error).message}`;
       await this.em.persistAndFlush(publication);
       throw error;
     }

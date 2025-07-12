@@ -1,23 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable, Logger} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import {
-  IAudioProvider,
-  ISoundscapeProvider,
-  IAudioMixer,
   VoiceOptions,
   SoundscapeOptions,
   MixingOptions,
   BinauralSettings,
-  ASMRVoicePresets,
-  ASMRSoundscapeTemplates,
-  ASMRMixingPresets,
-  ElderlyFriendlySoundscapes
+  ElderlyFriendlySoundscapes,
 } from '../interfaces';
-import { ElevenLabsProvider } from '../providers/elevenlabs.provider';
-import { ElevenLabsSoundscapeProvider } from '../providers/soundverse.provider';
-import { FFmpegAudioMixer } from './ffmpeg-audio-mixer.service';
+import {ElevenLabsProvider} from '../providers/elevenlabs.provider';
+import {ElevenLabsSoundscapeProvider} from '../providers/soundverse.provider';
+import {FFmpegAudioMixer} from './ffmpeg-audio-mixer.service';
 
-export interface ASMRGenerationRequest {
+export type ASMRGenerationRequest = {
   text: string;
   voiceSettings: VoiceOptions;
   soundscapeConfig: SoundscapeOptions & {
@@ -32,7 +26,7 @@ export interface ASMRGenerationRequest {
   };
 }
 
-export interface ASMRGenerationResult {
+export type ASMRGenerationResult = {
   audioBuffer: Buffer;
   metadata: {
     totalDuration: number;
@@ -89,7 +83,7 @@ export class ASMRContentService {
       this.logger.log('Generating AI voice...');
       const voiceResult = await this.elevenLabsProvider.generateVoice(
         optimizedRequest.text,
-        optimizedRequest.voiceSettings
+        optimizedRequest.voiceSettings,
       );
       components.voiceGenerated = true;
       totalCost += voiceResult.metadata.cost || 0;
@@ -98,7 +92,7 @@ export class ASMRContentService {
       this.logger.log('Generating AI soundscape...');
       const soundscapeResult = await this.elevenLabsSoundscapeProvider.generateSoundscape(
         optimizedRequest.soundscapeConfig.prompt,
-        optimizedRequest.soundscapeConfig
+        optimizedRequest.soundscapeConfig,
       );
       components.soundscapeGenerated = true;
       totalCost += soundscapeResult.metadata.cost || 0;
@@ -108,7 +102,7 @@ export class ASMRContentService {
       const mixedResult = await this.audioMixer.mixVoiceAndSoundscape(
         voiceResult.audioBuffer,
         soundscapeResult.audioBuffer,
-        optimizedRequest.mixingSettings
+        optimizedRequest.mixingSettings,
       );
       components.mixingApplied = true;
 
@@ -116,10 +110,7 @@ export class ASMRContentService {
       let finalAudio = mixedResult.outputBuffer;
       if (optimizedRequest.binauralSettings?.enabled) {
         this.logger.log('Applying binaural effects...');
-        finalAudio = await this.audioMixer.applyBinauralEffects(
-          finalAudio,
-          optimizedRequest.binauralSettings
-        );
+        finalAudio = await this.audioMixer.applyBinauralEffects(finalAudio, optimizedRequest.binauralSettings);
       }
 
       // 5. ASMR优化
@@ -129,12 +120,16 @@ export class ASMRContentService {
 
       // 6. 质量验证
       const qualityReport = await this.audioMixer.analyzeAudioQuality(finalAudio);
-      
+
       // 7. 质量检查和重试逻辑
-      if (optimizedRequest.qualityRequirements?.enableAutoRetry && 
-          qualityReport.overallScore < optimizedRequest.qualityRequirements.minimumScore) {
-        this.logger.warn(`Quality score ${qualityReport.overallScore} below minimum ${optimizedRequest.qualityRequirements.minimumScore}, considering retry`);
-        
+      if (
+        optimizedRequest.qualityRequirements?.enableAutoRetry &&
+        qualityReport.overallScore < optimizedRequest.qualityRequirements.minimumScore
+      ) {
+        this.logger.warn(
+          `Quality score ${qualityReport.overallScore} below minimum ${optimizedRequest.qualityRequirements.minimumScore}, considering retry`,
+        );
+
         if (qualityReport.needsReprocessing) {
           // 这里可以实现智能重试逻辑
           this.logger.log('Auto-retry would be implemented here');
@@ -165,7 +160,6 @@ export class ASMRContentService {
         qualityReport,
         components,
       };
-
     } catch (error) {
       this.logger.error(`ASMR content generation failed: ${(error as Error).message}`);
       throw error;
@@ -184,9 +178,11 @@ export class ASMRContentService {
     // 分批处理以控制并发
     for (let i = 0; i < requests.length; i += maxConcurrent) {
       const batch = requests.slice(i, i + maxConcurrent);
-      
-      this.logger.log(`Processing batch ${Math.floor(i / maxConcurrent) + 1}/${Math.ceil(requests.length / maxConcurrent)}`);
-      
+
+      this.logger.log(
+        `Processing batch ${Math.floor(i / maxConcurrent) + 1}/${Math.ceil(requests.length / maxConcurrent)}`,
+      );
+
       const batchPromises = batch.map(async (request, index) => {
         try {
           return await this.generateASMRContent(request);
@@ -197,15 +193,15 @@ export class ASMRContentService {
       });
 
       const batchResults = await Promise.allSettled(batchPromises);
-      
-      batchResults.forEach((result, index) => {
+
+      for (const [index, result] of batchResults.entries()) {
         if (result.status === 'fulfilled') {
           results.push(result.value);
         } else {
           this.logger.error(`Batch item ${i + index + 1} failed:`, result.reason);
           // 可以选择继续处理其他项目或抛出错误
         }
-      });
+      }
     }
 
     this.logger.log(`Batch generation completed: ${results.length}/${requests.length} successful`);
@@ -258,7 +254,7 @@ export class ASMRContentService {
     }
 
     results.overall = results.elevenlabs && results.elevenLabsSoundscape && results.ffmpeg;
-    
+
     this.logger.log(`AI Services validation: ${JSON.stringify(results)}`);
     return results;
   }
@@ -272,14 +268,11 @@ export class ASMRContentService {
     totalCost: number;
     currency: string;
   }> {
-    const voiceCost = await this.elevenLabsProvider.estimateCost(
-      request.text,
-      request.voiceSettings
-    );
+    const voiceCost = await this.elevenLabsProvider.estimateCost(request.text, request.voiceSettings);
 
     const soundscapeCost = await this.elevenLabsSoundscapeProvider.estimateCost(
       request.soundscapeConfig.duration,
-      request.soundscapeConfig.quality
+      request.soundscapeConfig.quality,
     );
 
     return {
@@ -294,7 +287,7 @@ export class ASMRContentService {
    * 针对中老年人优化请求参数
    */
   private optimizeRequestForElderly(request: ASMRGenerationRequest): ASMRGenerationRequest {
-    const optimized = { ...request };
+    const optimized = {...request};
 
     // 应用中老年人友好的语音设置
     if (!optimized.voiceSettings.stability) {
@@ -337,7 +330,7 @@ export class ASMRContentService {
   createElderlyFriendlyTemplate(
     text: string,
     voicePreset: keyof typeof ASMRVoicePresets = 'ELDERLY_FRIENDLY',
-    soundscapeType: keyof typeof ASMRSoundscapeTemplates = 'RAIN_FOREST'
+    soundscapeType: keyof typeof ASMRSoundscapeTemplates = 'RAIN_FOREST',
   ): ASMRGenerationRequest {
     const voiceSettings = {
       voiceId: this.configService.get<string>('DEFAULT_ASMR_VOICE_ID', '21m00Tcm4TlvDq8ikWAM'),
@@ -372,7 +365,7 @@ export class ASMRContentService {
       mixingSettings,
       binauralSettings,
       qualityRequirements: {
-        minimumScore: 6.0,
+        minimumScore: 6,
         enableAutoRetry: true,
         maxRetryAttempts: 2,
       },

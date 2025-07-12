@@ -47,12 +47,12 @@ const validationSchemaMap: Record<ConfigKey, Joi.Schema> = {
 
   // File Storage
   [ConfigKey.UPLOAD_DIR]: Joi.string().default('./uploads'),
-  [ConfigKey.MAX_FILE_SIZE]: Joi.number().min(1024).default(524288000), // 500MB
+  [ConfigKey.MAX_FILE_SIZE]: Joi.number().min(1024).default(524_288_000), // 500MB
   [ConfigKey.ALLOWED_MIME_TYPES]: Joi.string().default('image/*,video/*,audio/*,text/*'),
 
   // Redis
   [ConfigKey.REDIS_HOST]: Joi.string().default('localhost'),
-  [ConfigKey.REDIS_PORT]: Joi.number().min(1).max(65535).default(6379),
+  [ConfigKey.REDIS_PORT]: Joi.number().min(1).max(65_535).default(6379),
   [ConfigKey.REDIS_PASSWORD]: Joi.string().allow('').default(''),
   [ConfigKey.REDIS_DB]: Joi.number().min(0).max(15).default(0),
 

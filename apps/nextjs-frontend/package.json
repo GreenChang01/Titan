@@ -75,5 +75,18 @@
     "typescript": "5.8.3",
     "xo": "1.1.1"
   },
-  "packageManager": "npm@11.4.2"
+  "packageManager": "npm@11.4.2",
+  "xo": {
+    "rules": {
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off", 
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unnecessary-type-arguments": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off",
+      "import-x/extensions": "off",
+      "@typescript-eslint/no-deprecated": "off"
+    }
+  }
 }

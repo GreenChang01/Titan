@@ -3,7 +3,6 @@ import type {Metadata} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import {headers} from 'next/headers';
-// eslint-disable-next-line import-x/order
 import './globals.css';
 import {ReactQueryProvider} from '@/providers/react-query/react-query.provider';
 import {ToastProvider} from '@/providers/toast/toast.provider';
@@ -36,8 +35,8 @@ export default async function Layout({
   const isAuthPage = pathname.includes('/login') || pathname.includes('/register') || pathname.includes('/auth');
 
   return (
-    <html lang={locale} suppressHydrationWarning={true}>
-      <body className="min-h-screen bg-background text-foreground" suppressHydrationWarning={true}>
+    <html suppressHydrationWarning lang={locale}>
+      <body suppressHydrationWarning className="min-h-screen bg-background text-foreground">
         <NextIntlClientProvider>
           <ZodErrorProvider>
             <ToastProvider>
@@ -45,14 +44,10 @@ export default async function Layout({
                 <ReactQueryProvider>
                   {isAuthPage ? (
                     // Auth pages - simple centered layout
-                    <div className="min-h-screen flex items-center justify-center bg-background">
-                      {children}
-                    </div>
+                    <div className="min-h-screen flex items-center justify-center bg-background">{children}</div>
                   ) : (
                     // Dashboard pages - use shadcn-admin layout
-                    <AuthenticatedLayout>
-                      {children}
-                    </AuthenticatedLayout>
+                    <AuthenticatedLayout>{children}</AuthenticatedLayout>
                   )}
                 </ReactQueryProvider>
               </UserProvider>

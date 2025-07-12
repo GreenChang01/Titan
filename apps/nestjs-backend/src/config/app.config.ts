@@ -28,6 +28,33 @@ const appConfig = (): Record<ConfigKey, unknown> => ({
   [ConfigKey.WEBDAV_USERNAME]: process.env.WEBDAV_USERNAME,
   [ConfigKey.WEBDAV_PASSWORD]: process.env.WEBDAV_PASSWORD,
   [ConfigKey.WEBDAV_TIMEOUT]: Number(process.env.WEBDAV_TIMEOUT),
+
+  // Media Processing
+  [ConfigKey.FFMPEG_PATH]: process.env.FFMPEG_PATH,
+  [ConfigKey.TEMP_DIR]: process.env.TEMP_DIR,
+  [ConfigKey.MAX_CONCURRENT_JOBS]: Number(process.env.MAX_CONCURRENT_JOBS),
+
+  // File Storage
+  [ConfigKey.UPLOAD_DIR]: process.env.UPLOAD_DIR,
+  [ConfigKey.MAX_FILE_SIZE]: Number(process.env.MAX_FILE_SIZE),
+  [ConfigKey.ALLOWED_MIME_TYPES]: process.env.ALLOWED_MIME_TYPES,
+
+  // Redis
+  [ConfigKey.REDIS_HOST]: process.env.REDIS_HOST,
+  [ConfigKey.REDIS_PORT]: Number(process.env.REDIS_PORT),
+  [ConfigKey.REDIS_PASSWORD]: process.env.REDIS_PASSWORD,
+  [ConfigKey.REDIS_DB]: Number(process.env.REDIS_DB),
+
+  // WeChat
+  [ConfigKey.WECHAT_APP_ID]: process.env.WECHAT_APP_ID,
+  [ConfigKey.WECHAT_APP_SECRET]: process.env.WECHAT_APP_SECRET,
+  [ConfigKey.WECHAT_REDIRECT_URI]: process.env.WECHAT_REDIRECT_URI,
+
+  // Content Generation
+  [ConfigKey.DEFAULT_VIDEO_RESOLUTION]: process.env.DEFAULT_VIDEO_RESOLUTION,
+  [ConfigKey.DEFAULT_VIDEO_FPS]: Number(process.env.DEFAULT_VIDEO_FPS),
+  [ConfigKey.DEFAULT_AUDIO_BITRATE]: Number(process.env.DEFAULT_AUDIO_BITRATE),
+  [ConfigKey.DEFAULT_VIDEO_BITRATE]: Number(process.env.DEFAULT_VIDEO_BITRATE),
 });
 
 export default appConfig;

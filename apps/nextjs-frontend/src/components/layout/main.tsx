@@ -1,23 +1,23 @@
-import React from 'react'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import {cn} from '@/lib/utils';
 
-interface MainProps extends React.HTMLAttributes<HTMLElement> {
-  fixed?: boolean
-  ref?: React.Ref<HTMLElement>
-}
+type MainProps = {
+  readonly fixed?: boolean;
+  readonly ref?: React.Ref<HTMLElement>;
+} & React.HTMLAttributes<HTMLElement>
 
-export const Main = ({ fixed, className, ...props }: MainProps) => {
+export function Main({fixed, className, ...props}: MainProps) {
   return (
     <main
       className={cn(
         'peer-[.header-fixed]/header:mt-16',
         'px-4 py-6',
         fixed && 'fixed-main flex grow flex-col overflow-hidden',
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-Main.displayName = 'Main'
+Main.displayName = 'Main';

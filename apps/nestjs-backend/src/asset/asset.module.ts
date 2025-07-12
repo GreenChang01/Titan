@@ -1,14 +1,14 @@
-import { Module } from '@nestjs/common';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { MulterModule } from '@nestjs/platform-express';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AssetController } from './asset.controller';
-import { AssetService } from './asset.service';
-import { ThumbnailService } from './services/thumbnail.service';
-import { MetadataExtractorService } from './services/metadata-extractor.service';
-import { Asset } from './entities/asset.entity';
-import { ProjectAsset } from './entities/project-asset.entity';
-import { ConfigKey } from '../config/config-key.enum';
+import {Module} from '@nestjs/common';
+import {MikroOrmModule} from '@mikro-orm/nestjs';
+import {MulterModule} from '@nestjs/platform-express';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {ConfigKey} from '../config/config-key.enum';
+import {AssetController} from './asset.controller';
+import {AssetService} from './asset.service';
+import {ThumbnailService} from './services/thumbnail.service';
+import {MetadataExtractorService} from './services/metadata-extractor.service';
+import {Asset} from './entities/asset.entity';
+import {ProjectAsset} from './entities/project-asset.entity';
 
 @Module({
   imports: [
@@ -17,15 +17,17 @@ import { ConfigKey } from '../config/config-key.enum';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         limits: {
-          fileSize: configService.get<number>(ConfigKey.MAX_FILE_SIZE) || 524288000, // 500MB
+          fileSize: configService.get<number>(ConfigKey.MAX_FILE_SIZE) || 524_288_000, // 500MB
         },
-        fileFilter: (req, file, cb) => {
+        fileFilter(req, file, cb) {
           // Basic filter - more detailed validation in pipe
-          const allowedMimes = (configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*')
+          const allowedMimes = (
+            configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*'
+          )
             .split(',')
-            .map(type => type.trim());
-          
-          const isAllowed = allowedMimes.some(allowedType => {
+            .map((type) => type.trim());
+
+          const isAllowed = allowedMimes.some((allowedType) => {
             if (allowedType.endsWith('/*')) {
               const category = allowedType.replace('/*', '');
               return file.mimetype.startsWith(category + '/');
@@ -44,11 +46,7 @@ import { ConfigKey } from '../config/config-key.enum';
     }),
   ],
   controllers: [AssetController],
-  providers: [
-    AssetService,
-    ThumbnailService,
-    MetadataExtractorService,
-  ],
+  providers: [AssetService, ThumbnailService, MetadataExtractorService],
   exports: [AssetService],
 })
 export class AssetModule {}

@@ -1,23 +1,27 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EntityManager } from '@mikro-orm/core';
-import { getRepositoryToken } from '@mikro-orm/nestjs';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { ProjectService } from './project.service';
-import { Project } from './entities/project.entity';
-import { ProjectMaterial } from '../project-material/entities/project-material.entity';
-import { 
-  createMockUser, 
-  createMockProject, 
+import {Test, TestingModule} from '@nestjs/testing';
+import {EntityManager} from '@mikro-orm/core';
+import {getRepositoryToken} from '@mikro-orm/nestjs';
+import {HttpException, HttpStatus} from '@nestjs/common';
+import {ProjectMaterial} from '../project-material/entities/project-material.entity';
+import {Asset} from '../asset/entities/asset.entity';
+import {ProjectAsset} from '../asset/entities/project-asset.entity';
+import {
+  createMockUser,
+  createMockProject,
   createMockProjectMaterial,
   createMockRepository,
-  MockRepository 
+  MockRepository,
 } from '../../test/factories/entity-factory';
+import {ProjectService} from './project.service';
+import {Project} from './entities/project.entity';
 
 describe('ProjectService', () => {
   let service: ProjectService;
   let projectRepository: MockRepository<Project>;
   let projectMaterialRepository: MockRepository<ProjectMaterial>;
-  let entityManager: { persistAndFlush: jest.Mock; flush: jest.Mock };
+  let assetRepository: MockRepository<Asset>;
+  let projectAssetRepository: MockRepository<ProjectAsset>;
+  let entityManager: {persistAndFlush: jest.Mock; flush: jest.Mock};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +36,14 @@ describe('ProjectService', () => {
           useValue: createMockRepository<ProjectMaterial>(),
         },
         {
+          provide: getRepositoryToken(Asset),
+          useValue: createMockRepository<Asset>(),
+        },
+        {
+          provide: getRepositoryToken(ProjectAsset),
+          useValue: createMockRepository<ProjectAsset>(),
+        },
+        {
           provide: EntityManager,
           useValue: {
             persistAndFlush: jest.fn(),
@@ -44,6 +56,8 @@ describe('ProjectService', () => {
     service = module.get<ProjectService>(ProjectService);
     projectRepository = module.get(getRepositoryToken(Project));
     projectMaterialRepository = module.get(getRepositoryToken(ProjectMaterial));
+    assetRepository = module.get(getRepositoryToken(Asset));
+    projectAssetRepository = module.get(getRepositoryToken(ProjectAsset));
     entityManager = module.get(EntityManager);
   });
 
@@ -69,12 +83,7 @@ describe('ProjectService', () => {
       entityManager.persistAndFlush.mockResolvedValue(undefined);
 
       // Act
-      const result = await service.create(
-        mockUser,
-        'New Project',
-        'New Description',
-        '#123456'
-      );
+      const result = await service.create(mockUser, 'New Project', 'New Description', '#123456');
 
       // Assert
       expect(entityManager.persistAndFlush).toHaveBeenCalled();
@@ -104,8 +113,8 @@ describe('ProjectService', () => {
       // Arrange
       const mockUser = createMockUser();
       const mockProjects = [
-        createMockProject({ id: 'project-1', user: mockUser }),
-        createMockProject({ id: 'project-2', user: mockUser }),
+        createMockProject({id: 'project-1', user: mockUser}),
+        createMockProject({id: 'project-2', user: mockUser}),
       ];
 
       projectRepository.find.mockResolvedValue(mockProjects);
@@ -115,10 +124,10 @@ describe('ProjectService', () => {
 
       // Assert
       expect(projectRepository.find).toHaveBeenCalledWith(
-        { user: mockUser, isActive: true },
+        {user: mockUser, isActive: true},
         expect.objectContaining({
-          orderBy: expect.any(Object)
-        })
+          orderBy: expect.any(Object),
+        }),
       );
       expect(result).toBe(mockProjects);
     });
@@ -140,7 +149,7 @@ describe('ProjectService', () => {
     it('should return project when user owns it', async () => {
       // Arrange
       const mockUser = createMockUser();
-      const mockProject = createMockProject({ user: mockUser });
+      const mockProject = createMockProject({user: mockUser});
       projectRepository.findOne.mockResolvedValue(mockProject);
 
       // Act
@@ -148,8 +157,8 @@ describe('ProjectService', () => {
 
       // Assert
       expect(projectRepository.findOne).toHaveBeenCalledWith(
-        { id: 'project-123', user: mockUser },
-        { populate: ['materials'] }
+        {id: 'project-123', user: mockUser},
+        {populate: ['materials']},
       );
       expect(result).toBe(mockProject);
     });
@@ -160,9 +169,9 @@ describe('ProjectService', () => {
       projectRepository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(
-        service.validateProjectOwnership('nonexistent', mockUser)
-      ).rejects.toThrow('Project not found or you do not have access to it');
+      await expect(service.validateProjectOwnership('nonexistent', mockUser)).rejects.toThrow(
+        'Project not found or you do not have access to it',
+      );
     });
   });
 
@@ -173,12 +182,7 @@ describe('ProjectService', () => {
       entityManager.persistAndFlush.mockResolvedValue(undefined);
 
       // Act
-      const result = await service.update(
-        mockProject,
-        'Updated Name',
-        'Updated Description',
-        '#ABCDEF'
-      );
+      const result = await service.update(mockProject, 'Updated Name', 'Updated Description', '#ABCDEF');
 
       // Assert
       expect(mockProject.name).toBe('Updated Name');
@@ -209,7 +213,7 @@ describe('ProjectService', () => {
       // Arrange
       const mockProject = createMockProject();
       const beforeTime = new Date();
-      
+
       entityManager.persistAndFlush.mockResolvedValue(undefined);
 
       // Act
@@ -258,11 +262,11 @@ describe('ProjectService', () => {
     it('should remove material from project successfully', async () => {
       // Arrange
       const mockProject = createMockProject();
-      const mockMaterial = createMockProjectMaterial({ 
+      const mockMaterial = createMockProjectMaterial({
         id: 'material-123',
-        project: mockProject 
+        project: mockProject,
       });
-      
+
       projectMaterialRepository.findOne.mockResolvedValue(mockMaterial);
       entityManager.persistAndFlush.mockResolvedValue(undefined);
 
@@ -285,9 +289,9 @@ describe('ProjectService', () => {
       projectMaterialRepository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(
-        service.removeMaterial(mockProject, 'nonexistent')
-      ).rejects.toThrow('Material not found in this project');
+      await expect(service.removeMaterial(mockProject, 'nonexistent')).rejects.toThrow(
+        'Material not found in this project',
+      );
     });
   });
 
@@ -296,10 +300,10 @@ describe('ProjectService', () => {
       // Arrange
       const mockProject = createMockProject();
       const mockMaterials = [
-        createMockProjectMaterial({ id: 'material-1', project: mockProject }),
-        createMockProjectMaterial({ id: 'material-2', project: mockProject }),
+        createMockProjectMaterial({id: 'material-1', project: mockProject}),
+        createMockProjectMaterial({id: 'material-2', project: mockProject}),
       ];
-      
+
       projectMaterialRepository.find.mockResolvedValue(mockMaterials);
 
       // Act
@@ -307,8 +311,8 @@ describe('ProjectService', () => {
 
       // Assert
       expect(projectMaterialRepository.find).toHaveBeenCalledWith(
-        { project: mockProject, isActive: true },
-        { orderBy: { createdAt: 'DESC' } }
+        {project: mockProject, isActive: true},
+        {orderBy: {createdAt: 'DESC'}},
       );
       expect(result).toBe(mockMaterials);
     });

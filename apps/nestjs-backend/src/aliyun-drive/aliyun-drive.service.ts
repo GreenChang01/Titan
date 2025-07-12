@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import {Readable} from 'node:stream';
 import {Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
-import {EntityRepository} from '@mikro-orm/core';
+import {EntityRepository, EntityManager} from '@mikro-orm/core';
 import {ConfigService} from '@nestjs/config';
 import axios, {AxiosInstance} from 'axios';
 import {ConfigKey} from '../config/config-key.enum';
@@ -33,6 +33,7 @@ export class AliyunDriveService {
   constructor(
     @InjectRepository(AliyunDriveConfig)
     private readonly aliyunDriveConfigRepository: EntityRepository<AliyunDriveConfig>,
+    private readonly em: EntityManager,
     private readonly cryptoService: CryptoService,
     private readonly configService: ConfigService,
   ) {
@@ -53,7 +54,7 @@ export class AliyunDriveService {
       basePath: createDto.basePath ?? '/',
     });
 
-    await this.aliyunDriveConfigRepository.getEntityManager().persistAndFlush(config);
+    await this.em.persistAndFlush(config);
     return config;
   }
 
@@ -74,7 +75,7 @@ export class AliyunDriveService {
     if (updateDto.basePath !== undefined) config.basePath = updateDto.basePath;
 
     config.lastSyncAt = new Date();
-    await this.aliyunDriveConfigRepository.getEntityManager().persistAndFlush(config);
+    await this.em.persistAndFlush(config);
     return config;
   }
 
@@ -92,12 +93,12 @@ export class AliyunDriveService {
   }
 
   async deleteConfig(config: AliyunDriveConfig): Promise<void> {
-    await this.aliyunDriveConfigRepository.getEntityManager().removeAndFlush(config);
+    await this.em.removeAndFlush(config);
   }
 
   async updateLastSyncTime(config: AliyunDriveConfig): Promise<void> {
     config.lastSyncAt = new Date();
-    await this.aliyunDriveConfigRepository.getEntityManager().persistAndFlush(config);
+    await this.em.persistAndFlush(config);
   }
 
   // WebDAV 客户端方法
@@ -146,13 +147,11 @@ export class AliyunDriveService {
       });
 
       let allFiles = this.parseWebDavResponse(response.data as string, targetPath);
-      
+
       // Apply search filter if provided
       if (listDto.search) {
         const searchLower = listDto.search.toLowerCase();
-        allFiles = allFiles.filter(file => 
-          file.name.toLowerCase().includes(searchLower)
-        );
+        allFiles = allFiles.filter((file) => file.name.toLowerCase().includes(searchLower));
       }
 
       // Sort files for consistent pagination (directories first, then by name)
@@ -165,7 +164,7 @@ export class AliyunDriveService {
       const total = allFiles.length;
       const offset = listDto.offset ?? 0;
       const limit = listDto.limit ?? 100;
-      
+
       // Apply pagination
       const paginatedFiles = allFiles.slice(offset, offset + limit);
 

@@ -1,15 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EntityManager } from '@mikro-orm/core';
-import { getRepositoryToken } from '@mikro-orm/nestjs';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AliyunDriveService } from './aliyun-drive.service';
-import { AliyunDriveConfig } from './entities/aliyun-drive-config.entity';
-import { User } from '../users/entities/user.entity';
-import { CryptoService } from '../crypto/crypto.service';
-import { CreateAliyunDriveConfigDto } from './dto/create-aliyun-drive-config.dto';
-import { UpdateAliyunDriveConfigDto } from './dto/update-aliyun-drive-config.dto';
-import { UserStatus } from '@titan/shared';
+import {Test, TestingModule} from '@nestjs/testing';
+import {EntityManager} from '@mikro-orm/core';
+import {getRepositoryToken} from '@mikro-orm/nestjs';
+import {HttpException, HttpStatus} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {UserStatus} from '@titan/shared';
+import {User} from '../users/entities/user.entity';
+import {CryptoService} from '../crypto/crypto.service';
+import {AliyunDriveService} from './aliyun-drive.service';
+import {AliyunDriveConfig} from './entities/aliyun-drive-config.entity';
+import {CreateAliyunDriveConfigDto} from './dto/create-aliyun-drive-config.dto';
+import {UpdateAliyunDriveConfigDto} from './dto/update-aliyun-drive-config.dto';
 
 describe('AliyunDriveService', () => {
   let service: AliyunDriveService;
@@ -34,7 +34,7 @@ describe('AliyunDriveService', () => {
     username: 'testuser',
     encryptedPassword: 'encrypted_password',
     displayName: 'Test Config',
-    timeout: 30000,
+    timeout: 30_000,
     basePath: '/',
     isActive: true,
     lastSyncAt: new Date(),
@@ -55,7 +55,7 @@ describe('AliyunDriveService', () => {
   };
 
   const mockConfigService = {
-    get: jest.fn().mockReturnValue(30000), // Default timeout
+    get: jest.fn().mockReturnValue(30_000), // Default timeout
   };
 
   const mockEntityManager = {
@@ -108,11 +108,11 @@ describe('AliyunDriveService', () => {
         username: 'testuser',
         password: 'testpassword',
         displayName: 'Test Config',
-        timeout: 30000,
+        timeout: 30_000,
         basePath: '/',
       };
 
-      mockCryptoService.encrypt.mockReturnValue({ data: 'encrypted_password', iv: 'iv' });
+      mockCryptoService.encrypt.mockReturnValue({data: 'encrypted_password', iv: 'iv'});
       mockEntityManager.persistAndFlush.mockResolvedValue(undefined);
 
       const result = await service.createConfig(mockUser, createDto);
@@ -132,12 +132,12 @@ describe('AliyunDriveService', () => {
         password: 'testpassword',
       };
 
-      mockCryptoService.encrypt.mockReturnValue({ data: 'encrypted_password', iv: 'iv' });
+      mockCryptoService.encrypt.mockReturnValue({data: 'encrypted_password', iv: 'iv'});
       mockEntityManager.persistAndFlush.mockResolvedValue(undefined);
 
       const result = await service.createConfig(mockUser, createDto);
 
-      expect(result.timeout).toBe(30000); // Default from ConfigService
+      expect(result.timeout).toBe(30_000); // Default from ConfigService
       expect(result.basePath).toBe('/'); // Default
       expect(result.displayName).toBeUndefined();
     });
@@ -149,7 +149,7 @@ describe('AliyunDriveService', () => {
 
       const result = await service.findByUser(mockUser);
 
-      expect(mockConfigRepository.findOne).toHaveBeenCalledWith({ user: mockUser });
+      expect(mockConfigRepository.findOne).toHaveBeenCalledWith({user: mockUser});
       expect(result).toBe(mockConfig);
     });
 
@@ -169,11 +169,11 @@ describe('AliyunDriveService', () => {
         username: 'newuser',
         password: 'newpassword',
         displayName: 'Updated Config',
-        timeout: 60000,
+        timeout: 60_000,
         basePath: '/updated',
       };
 
-      mockCryptoService.encrypt.mockReturnValue({ data: 'encrypted_new_password', iv: 'iv' });
+      mockCryptoService.encrypt.mockReturnValue({data: 'encrypted_new_password', iv: 'iv'});
       mockEntityManager.persistAndFlush.mockResolvedValue(undefined);
 
       const result = await service.updateConfig(mockConfig, updateDto);
@@ -191,7 +191,7 @@ describe('AliyunDriveService', () => {
     it('should update config without password', async () => {
       const updateDto: UpdateAliyunDriveConfigDto = {
         displayName: 'Updated Config Only',
-        timeout: 45000,
+        timeout: 45_000,
       };
 
       mockEntityManager.persistAndFlush.mockResolvedValue(undefined);
@@ -241,12 +241,14 @@ describe('AliyunDriveService', () => {
       const testConfig = {
         ...mockConfig,
         encryptedPassword: '{"data":"encrypted","iv":"iv"}',
-        get userConfigKey() { return this.user.id; }
+        get userConfigKey() {
+          return this.user.id;
+        },
       } as AliyunDriveConfig;
-      
+
       const result = await service.getDecryptedPassword(testConfig);
-      
-      expect(mockCryptoService.decrypt).toHaveBeenCalledWith({ data: 'encrypted', iv: 'iv' });
+
+      expect(mockCryptoService.decrypt).toHaveBeenCalledWith({data: 'encrypted', iv: 'iv'});
       expect(result).toBe('decrypted_password');
     });
   });

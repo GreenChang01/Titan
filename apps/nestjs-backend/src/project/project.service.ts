@@ -5,11 +5,11 @@ import {ProjectMaterial} from '../project-material/entities/project-material.ent
 import {User} from '../users/entities/user.entity';
 import {Asset} from '../asset/entities/asset.entity';
 import {ProjectAsset} from '../asset/entities/project-asset.entity';
+import {ProjectStatus} from '../common/enums';
 import {Project} from './entities/project.entity';
 import {AddMaterialDto} from './dto/add-material.dto';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UpdateProjectDto} from './dto/update-project.dto';
-import {ProjectStatus} from '../common/enums';
 
 /**
  * 项目服务
@@ -222,12 +222,18 @@ export class ProjectService {
    * 使用DTO创建项目
    */
   async createProject(createProjectDto: CreateProjectDto, userId: string): Promise<Project> {
-    const project = new Project();
-    project.name = createProjectDto.name;
-    project.description = createProjectDto.description;
-    project.color = createProjectDto.color || '#3B82F6';
-    project.userId = userId;
-    project.status = ProjectStatus.ACTIVE;
+    // 获取用户实体
+    const user = await this.em.findOne(User, {id: userId});
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const project = new Project({
+      name: createProjectDto.name,
+      description: createProjectDto.description,
+      color: createProjectDto.color || '#3B82F6',
+      user,
+    });
 
     await this.em.persistAndFlush(project);
     return project;
@@ -237,35 +243,29 @@ export class ProjectService {
    * 获取用户的所有项目
    */
   async getProjectsByUser(userId: string): Promise<Project[]> {
-    return this.projectRepository.find(
-      { userId, status: ProjectStatus.ACTIVE },
-      { orderBy: { updatedAt: 'DESC' } }
-    );
+    return this.projectRepository.find({userId, status: ProjectStatus.ACTIVE}, {orderBy: {updatedAt: 'DESC'}});
   }
 
   /**
    * 获取项目及其关联的素材
    */
-  async getProjectWithAssets(projectId: string, userId: string): Promise<Project & { assets: Asset[] }> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+  async getProjectWithAssets(projectId: string, userId: string): Promise<Project & {assets: Asset[]}> {
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
 
-    const projectAssets = await this.projectAssetRepository.find(
-      { projectId },
-      { populate: ['asset'] }
-    );
+    const projectAssets = await this.projectAssetRepository.find({projectId}, {populate: ['asset']});
 
-    const assets = projectAssets.map(pa => pa.asset);
-    return { ...project, assets };
+    const assets = projectAssets.map((pa) => pa.asset);
+    return {...project, assets};
   }
 
   /**
    * 更新项目
    */
   async updateProject(projectId: string, updateDto: UpdateProjectDto, userId: string): Promise<Project> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
@@ -273,12 +273,15 @@ export class ProjectService {
     if (updateDto.name !== undefined) {
       project.name = updateDto.name;
     }
+
     if (updateDto.description !== undefined) {
       project.description = updateDto.description;
     }
+
     if (updateDto.color !== undefined) {
       project.color = updateDto.color;
     }
+
     if (updateDto.status !== undefined) {
       project.status = updateDto.status;
     }
@@ -291,7 +294,7 @@ export class ProjectService {
    * 删除项目
    */
   async deleteProject(projectId: string, userId: string): Promise<void> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
@@ -304,13 +307,13 @@ export class ProjectService {
    * 添加素材到项目
    */
   async addAssetsToProject(projectId: string, assetIds: string[], userId: string): Promise<void> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
 
     const assets = await this.assetRepository.find({
-      id: { $in: assetIds },
+      id: {$in: assetIds},
       userId,
     });
 
@@ -320,11 +323,11 @@ export class ProjectService {
 
     const existingProjectAssets = await this.projectAssetRepository.find({
       projectId,
-      assetId: { $in: assetIds },
+      assetId: {$in: assetIds},
     });
 
-    const existingAssetIds = existingProjectAssets.map(pa => pa.assetId);
-    const newAssetIds = assetIds.filter(id => !existingAssetIds.includes(id));
+    const existingAssetIds = new Set(existingProjectAssets.map((pa) => pa.assetId));
+    const newAssetIds = assetIds.filter((id) => !existingAssetIds.has(id));
 
     for (const assetId of newAssetIds) {
       const projectAsset = new ProjectAsset();
@@ -341,7 +344,7 @@ export class ProjectService {
    * 从项目移除素材
    */
   async removeAssetFromProject(projectId: string, assetId: string, userId: string): Promise<void> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
@@ -365,16 +368,13 @@ export class ProjectService {
    * 获取项目的素材列表
    */
   async getProjectAssets(projectId: string, userId: string): Promise<Asset[]> {
-    const project = await this.projectRepository.findOne({ id: projectId, userId });
+    const project = await this.projectRepository.findOne({id: projectId, userId});
     if (!project) {
       throw new NotFoundException('Project not found');
     }
 
-    const projectAssets = await this.projectAssetRepository.find(
-      { projectId },
-      { populate: ['asset'] }
-    );
+    const projectAssets = await this.projectAssetRepository.find({projectId}, {populate: ['asset']});
 
-    return projectAssets.map(pa => pa.asset);
+    return projectAssets.map((pa) => pa.asset);
   }
 }

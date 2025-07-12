@@ -1,5 +1,9 @@
-'use client'
+'use client';
 
+import {HomeIcon, ProjectorIcon, SettingsIcon, UserIcon, FolderIcon, BarChart3Icon, FileTextIcon} from 'lucide-react';
+import Link from 'next/link';
+import {useTranslations} from 'next-intl';
+import {NavUser} from './nav-user.js';
 import {
   Sidebar,
   SidebarContent,
@@ -12,37 +16,25 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from '@/components/ui/sidebar'
-import { 
-  HomeIcon, 
-  ProjectorIcon, 
-  SettingsIcon, 
-  UserIcon,
-  FolderIcon,
-  BarChart3Icon,
-  FileTextIcon
-} from 'lucide-react'
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-import { NavUser } from './nav-user'
+} from '@/components/ui/sidebar';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const t = useTranslations('Component-Sidebar')
-  
+export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations('Component-Sidebar');
+
   return (
-    <Sidebar collapsible='icon' variant='sidebar' {...props}>
+    <Sidebar collapsible="icon" variant="sidebar" {...props}>
       <SidebarHeader>
-        <div className='flex items-center gap-2 p-2'>
-          <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
-            <ProjectorIcon className='size-4' />
+        <div className="flex items-center gap-2 p-2">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <ProjectorIcon className="size-4" />
           </div>
-          <div className='flex flex-col gap-0.5 leading-none'>
-            <span className='font-semibold'>Titan</span>
-            <span className='text-xs text-muted-foreground'>{t('subtitle')}</span>
+          <div className="flex flex-col gap-0.5 leading-none">
+            <span className="font-semibold">Titan</span>
+            <span className="text-xs text-muted-foreground">{t('subtitle')}</span>
           </div>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>{t('main-features')}</SidebarGroupLabel>
@@ -50,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/dashboard'>
+                  <Link href="/dashboard">
                     <HomeIcon />
                     <span>{t('dashboard')}</span>
                   </Link>
@@ -66,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/projects/overview'>
+                  <Link href="/projects/overview">
                     <FileTextIcon />
                     <span>{t('overview')}</span>
                   </Link>
@@ -74,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/projects/management'>
+                  <Link href="/projects/management">
                     <ProjectorIcon />
                     <span>{t('project-management')}</span>
                   </Link>
@@ -82,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/projects/materials'>
+                  <Link href="/projects/materials">
                     <FolderIcon />
                     <span>{t('materials')}</span>
                   </Link>
@@ -90,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/projects/analytics'>
+                  <Link href="/projects/analytics">
                     <BarChart3Icon />
                     <span>{t('analytics')}</span>
                   </Link>
@@ -99,14 +91,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
+
         <SidebarGroup>
           <SidebarGroupLabel>{t('settings')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/profile'>
+                  <Link href="/profile">
                     <UserIcon />
                     <span>{t('profile')}</span>
                   </Link>
@@ -114,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href='/settings'>
+                  <Link href="/settings">
                     <SettingsIcon />
                     <span>{t('settings')}</span>
                   </Link>
@@ -124,12 +116,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      
+
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
-      
+
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

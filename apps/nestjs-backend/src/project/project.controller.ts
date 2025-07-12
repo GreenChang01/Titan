@@ -12,7 +12,7 @@ import {AddMaterialDto} from './dto/add-material.dto';
  * 项目控制器
  * 处理项目相关的 API 端点，包括项目的 CRUD 操作和项目素材管理
  */
-@ApiTags('projects')
+@ApiTags('项目管理')
 @Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
@@ -24,16 +24,16 @@ export class ProjectController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Create new project',
-    description: 'Create a new project for the authenticated user'
+    summary: '创建新项目',
+    description: '为当前用户创建一个新的内容项目，用于组织和管理ASMR内容生产相关的资源',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Project created successfully'
+    description: '项目创建成功',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid input data'
+    description: '输入数据验证失败',
   })
   async create(
     @User() user: UserEntity,
@@ -68,12 +68,12 @@ export class ProjectController {
    */
   @Get()
   @ApiOperation({
-    summary: 'Get all user projects',
-    description: 'Get all active projects owned by the authenticated user'
+    summary: '获取用户所有项目',
+    description: '获取当前用户拥有的所有激活项目列表',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Projects retrieved successfully'
+    description: '项目列表获取成功',
   })
   async findAll(@User() user: UserEntity): Promise<
     Array<{
@@ -107,16 +107,16 @@ export class ProjectController {
    */
   @Get(':id')
   @ApiOperation({
-    summary: 'Get project by ID',
-    description: 'Get project details and update last accessed time'
+    summary: '根据ID获取项目详情',
+    description: '获取指定项目的详细信息并更新最后访问时间',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Project retrieved successfully'
+    description: '项目详情获取成功',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Project not found or access denied'
+    description: '项目不存在或无访问权限',
   })
   async findOne(
     @Param('id') id: string,
@@ -154,16 +154,16 @@ export class ProjectController {
    */
   @Patch(':id')
   @ApiOperation({
-    summary: 'Update project',
-    description: 'Update project name, description, or color'
+    summary: '更新项目信息',
+    description: '更新项目的名称、描述或颜色标识',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Project updated successfully'
+    description: '项目更新成功',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Project not found or access denied'
+    description: '项目不存在或无访问权限',
   })
   async update(
     @Param('id') id: string,
@@ -207,16 +207,16 @@ export class ProjectController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Delete project',
-    description: 'Soft delete project (set to inactive)'
+    summary: '删除项目',
+    description: '软删除项目（设置为非激活状态）',
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Project deleted successfully'
+    description: '项目删除成功',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Project not found or access denied'
+    description: '项目不存在或无访问权限',
   })
   async delete(@Param('id') id: string, @User() user: UserEntity): Promise<void> {
     const project = await this.projectService.validateProjectOwnership(id, user);
@@ -229,6 +229,18 @@ export class ProjectController {
    */
   @Post(':id/materials')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: '向项目添加素材',
+    description: '向指定项目中添加素材文件，支持从阿里云盘或本地上传的资源中选择',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: '素材添加成功',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '项目不存在或无访问权限',
+  })
   async addMaterial(
     @Param('id') projectId: string,
     @User() user: UserEntity,
@@ -275,6 +287,18 @@ export class ProjectController {
    */
   @Delete(':id/materials/:materialId')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: '从项目中移除素材',
+    description: '从指定项目中移除素材文件，仅移除关联关系，不删除原始文件',
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: '素材移除成功',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '项目或素材不存在',
+  })
   async removeMaterial(
     @Param('id') projectId: string,
     @Param('materialId') materialId: string,
@@ -289,6 +313,18 @@ export class ProjectController {
    * 验证用户权限后返回项目包含的所有素材列表
    */
   @Get(':id/materials')
+  @ApiOperation({
+    summary: '获取项目素材列表',
+    description: '获取指定项目中的所有素材文件，包括文件信息、缩略图等',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '项目素材列表获取成功',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: '项目不存在或无访问权限',
+  })
   async getProjectMaterials(
     @Param('id') projectId: string,
     @User() user: UserEntity,

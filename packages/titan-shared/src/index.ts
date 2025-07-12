@@ -9,4 +9,4 @@ export * from './dto/login-two-factor-auth.body.dto';
 export * from './dto/project.dto';
 export * from './dto/project-material.dto';
 export * from './dto/aliyun-drive.dto';
-export * from './types/asmr';
+export type * from './types/asmr.js';

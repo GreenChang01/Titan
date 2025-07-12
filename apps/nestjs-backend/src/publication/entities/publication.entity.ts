@@ -1,5 +1,5 @@
-import { Entity, Property, Enum, Index } from '@mikro-orm/core';
-import { BaseEntity } from '../../common/entities/base-entity.entity';
+import {Entity, Property, Enum, Index} from '@mikro-orm/core';
+import {BaseEntity} from '../../common/entities/base-entity.entity';
 
 export enum PublicationStatus {
   PENDING_UPLOAD = 'pending_upload',
@@ -20,34 +20,34 @@ export enum PublicationPlatform {
 }
 
 @Entity()
-@Index({ properties: ['contentJobId'] })
-@Index({ properties: ['platform', 'status'] })
-@Index({ properties: ['status', 'scheduledAt'] })
+@Index({properties: ['contentJobId']})
+@Index({properties: ['platform', 'status']})
+@Index({properties: ['status', 'scheduledAt']})
 export class Publication extends BaseEntity {
   @Property()
-  contentJobId: string;
+  contentJobId!: string;
 
   @Enum(() => PublicationPlatform)
-  platform: PublicationPlatform;
+  platform!: PublicationPlatform;
 
   @Enum(() => PublicationStatus)
   status: PublicationStatus = PublicationStatus.PENDING_UPLOAD;
 
-  @Property({ nullable: true })
+  @Property({nullable: true})
   platformPostId?: string;
 
-  @Property({ type: 'text', nullable: true })
+  @Property({type: 'text', nullable: true})
   failureReason?: string;
 
-  @Property({ nullable: true })
+  @Property({nullable: true})
   scheduledAt?: Date;
 
-  @Property({ nullable: true })
+  @Property({nullable: true})
   publishedAt?: Date;
 
-  @Property({ type: 'json' })
+  @Property({type: 'json'})
   publishConfig: Record<string, any> = {};
 
-  @Property({ type: 'json' })
+  @Property({type: 'json'})
   platformMetadata: Record<string, any> = {};
 }

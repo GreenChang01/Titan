@@ -7,23 +7,23 @@ export type SoundscapeQuality = 'low' | 'medium' | 'high';
 
 // --- Configuration Sub-types ---
 
-export interface VoiceOptions {
+export type VoiceOptions = {
   voiceId: string;
   stability?: number; // 0.0 to 1.0
   similarity?: number; // 0.0 to 1.0
   style?: number; // 0.0 to 1.0
   speakerBoost?: boolean;
-}
+};
 
-export interface SoundscapeOptions {
+export type SoundscapeOptions = {
   prompt: string;
   duration: number; // Duration in seconds
   category: string;
   intensity: number; // 0.0 to 1.0
   quality: SoundscapeQuality;
-}
+};
 
-export interface MixingOptions {
+export type MixingOptions = {
   voiceVolume: number; // 0.0 to 1.0
   soundscapeVolume: number; // 0.0 to 1.0
   fadeInDuration: number; // Duration in seconds
@@ -33,37 +33,37 @@ export interface MixingOptions {
     midFreq: number; // EQ adjustment in dB
     highFreq: number; // EQ adjustment in dB
   };
-}
+};
 
 // Extracted from ASMRGenerationRequest for better reusability.
-export interface BinauralSettings {
+export type BinauralSettings = {
   enabled: boolean;
   spatialWidth: number; // 0.0 to 2.0
   leftDelay: number; // Delay in milliseconds
   rightDelay: number; // Delay in milliseconds
   reverbAmount: number; // 0.0 to 1.0
-}
+};
 
 // Extracted from ASMRGenerationRequest for better reusability.
-export interface QualityRequirements {
+export type QualityRequirements = {
   minimumScore: number; // 1.0 to 10.0
   enableAutoRetry: boolean;
   maxRetryAttempts: number;
-}
+};
 
 // --- Main API Payloads & Responses ---
 
-export interface ASMRGenerationRequest {
+export type AsmrGenerationRequest = {
   text: string;
   voiceSettings: VoiceOptions;
   soundscapeConfig: SoundscapeOptions;
   mixingSettings: MixingOptions;
   binauralSettings?: BinauralSettings;
   qualityRequirements?: QualityRequirements;
-}
+};
 
 // Represents a job from GET /api/jobs or the POST /api/jobs/create-single response
-export interface Job {
+export type Job = {
   id: string;
   status: JobStatus;
   createdAt: string; // ISO 8601 date string
@@ -71,33 +71,33 @@ export interface Job {
   resultUrl?: string;
   error?: string;
   // Including the original request can be useful for display purposes on the UI
-  requestPayload: Partial<ASMRGenerationRequest>;
-}
+  requestPayload: Partial<AsmrGenerationRequest>;
+};
 
 // Represents the response from GET /api/jobs/:id/progress
-export interface JobProgress {
+export type JobProgress = {
   jobId: string;
   status: JobStatus;
   progress: number; // 0-100
   currentStep: string; // e.g., "Generating voice", "Mixing soundscape"
   error?: string;
   estimatedTimeRemaining?: number; // Estimated seconds remaining
-}
+};
 
 // --- UI-specific types ---
 
-export interface ASMRPreset {
+export type AsmrPreset = {
   id: string;
   name: string;
   description: string;
   category: 'voice' | 'soundscape' | 'mixing';
   settings: VoiceOptions | SoundscapeOptions | MixingOptions;
-}
+};
 
-export interface WizardStep {
+export type WizardStep = {
   id: number;
   title: string;
   description: string;
   isCompleted: boolean;
   isActive: boolean;
-}
+};

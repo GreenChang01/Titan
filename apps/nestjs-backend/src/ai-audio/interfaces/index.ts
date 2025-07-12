@@ -5,7 +5,7 @@
 // 语音合成接口
 export * from './audio-provider.interface';
 
-// 音景生成接口  
+// 音景生成接口
 export * from './soundscape-provider.interface';
 
 // 音频混合处理接口

@@ -1,11 +1,11 @@
-import { Processor, Process } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
-import { ASMRContentService } from '../../ai-audio/services/asmr-content.service';
-import { promises as fs } from 'fs';
-import * as path from 'path';
+import {promises as fs} from 'node:fs';
+import * as path from 'node:path';
+import {Processor, Process} from '@nestjs/bull';
+import {Logger} from '@nestjs/common';
+import {Job} from 'bull';
+import {ASMRContentService} from '../../ai-audio/services/asmr-content.service';
 
-interface AudioGenerationJobData {
+type AudioGenerationJobData = {
   jobId: string;
   text: string;
   duration?: number;
@@ -14,7 +14,7 @@ interface AudioGenerationJobData {
   outputPath: string;
 }
 
-interface AudioGenerationResult {
+type AudioGenerationResult = {
   success: boolean;
   audioPath?: string;
   metadata?: any;
@@ -31,7 +31,14 @@ export class AudioGenerationConsumer {
   @Process('generate-asmr')
   async handleASMRGeneration(job: Job<AudioGenerationJobData>): Promise<AudioGenerationResult> {
     const startTime = Date.now();
-    const { jobId, text, duration = 30, voicePreset = 'ELDERLY_FRIENDLY', soundscapeType = 'RAIN_FOREST', outputPath } = job.data;
+    const {
+      jobId,
+      text,
+      duration = 30,
+      voicePreset = 'ELDERLY_FRIENDLY',
+      soundscapeType = 'RAIN_FOREST',
+      outputPath,
+    } = job.data;
 
     try {
       this.logger.log(`Starting ASMR generation for job ${jobId}: "${text}" (${duration}s)`);
@@ -43,7 +50,7 @@ export class AudioGenerationConsumer {
       const asmrRequest = this.asmrContentService.createElderlyFriendlyTemplate(
         text,
         voicePreset as any,
-        soundscapeType as any
+        soundscapeType as any,
       );
 
       // 设置持续时间
@@ -59,7 +66,7 @@ export class AudioGenerationConsumer {
 
       // 确保输出目录存在
       const outputDir = path.dirname(outputPath);
-      await fs.mkdir(outputDir, { recursive: true });
+      await fs.mkdir(outputDir, {recursive: true});
 
       // 保存音频文件
       await fs.writeFile(outputPath, result.audioBuffer);
@@ -80,14 +87,15 @@ export class AudioGenerationConsumer {
         },
         processingTime,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      this.logger.error(`ASMR generation failed for job ${jobId}: ${error.message}`, error.stack);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`ASMR generation failed for job ${jobId}: ${errorMessage}`, errorStack);
 
       return {
         success: false,
-        error: error.message,
+        error: errorMessage,
         processingTime,
       };
     }
@@ -96,7 +104,7 @@ export class AudioGenerationConsumer {
   @Process('generate-voice')
   async handleVoiceGeneration(job: Job<AudioGenerationJobData>): Promise<AudioGenerationResult> {
     const startTime = Date.now();
-    const { jobId, text, voicePreset = 'ELDERLY_FRIENDLY', outputPath } = job.data;
+    const {jobId, text, voicePreset = 'ELDERLY_FRIENDLY', outputPath} = job.data;
 
     try {
       this.logger.log(`Starting voice generation for job ${jobId}: "${text}"`);
@@ -104,8 +112,8 @@ export class AudioGenerationConsumer {
       await job.progress(10);
 
       // 获取ElevenLabs提供者
-      const elevenLabsProvider = (this.asmrContentService as any).elevenLabsProvider;
-      
+      const {elevenLabsProvider} = (this.asmrContentService as any);
+
       // 创建语音选项
       const voiceOptions = {
         voiceId: '21m00Tcm4TlvDq8ikWAM', // 默认语音ID
@@ -124,7 +132,7 @@ export class AudioGenerationConsumer {
 
       // 确保输出目录存在
       const outputDir = path.dirname(outputPath);
-      await fs.mkdir(outputDir, { recursive: true });
+      await fs.mkdir(outputDir, {recursive: true});
 
       // 保存音频文件
       await fs.writeFile(outputPath, result.audioBuffer);
@@ -140,14 +148,15 @@ export class AudioGenerationConsumer {
         metadata: result.metadata,
         processingTime,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      this.logger.error(`Voice generation failed for job ${jobId}: ${error.message}`, error.stack);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Voice generation failed for job ${jobId}: ${errorMessage}`, errorStack);
 
       return {
         success: false,
-        error: error.message,
+        error: errorMessage,
         processingTime,
       };
     }
@@ -156,7 +165,7 @@ export class AudioGenerationConsumer {
   @Process('generate-soundscape')
   async handleSoundscapeGeneration(job: Job<AudioGenerationJobData>): Promise<AudioGenerationResult> {
     const startTime = Date.now();
-    const { jobId, text, duration = 30, soundscapeType = 'RAIN_FOREST', outputPath } = job.data;
+    const {jobId, text, duration = 30, soundscapeType = 'RAIN_FOREST', outputPath} = job.data;
 
     try {
       this.logger.log(`Starting soundscape generation for job ${jobId}: "${text}" (${duration}s)`);
@@ -165,7 +174,7 @@ export class AudioGenerationConsumer {
 
       // 获取ElevenLabs音景提供者
       const soundscapeProvider = (this.asmrContentService as any).elevenLabsSoundscapeProvider;
-      
+
       // 创建音景选项
       const soundscapeOptions = {
         duration,
@@ -186,7 +195,7 @@ export class AudioGenerationConsumer {
 
       // 确保输出目录存在
       const outputDir = path.dirname(outputPath);
-      await fs.mkdir(outputDir, { recursive: true });
+      await fs.mkdir(outputDir, {recursive: true});
 
       // 保存音频文件
       await fs.writeFile(outputPath, result.audioBuffer);
@@ -202,14 +211,15 @@ export class AudioGenerationConsumer {
         metadata: result.metadata,
         processingTime,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      this.logger.error(`Soundscape generation failed for job ${jobId}: ${error.message}`, error.stack);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Soundscape generation failed for job ${jobId}: ${errorMessage}`, errorStack);
 
       return {
         success: false,
-        error: error.message,
+        error: errorMessage,
         processingTime,
       };
     }

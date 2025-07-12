@@ -67,11 +67,11 @@ export class User extends BaseEntity {
 
   /** 订阅计划 */
   @Property({type: types.string, default: 'free'})
-  subscriptionPlan: string = 'free';
+  subscriptionPlan = 'free';
 
   /** 内容配额 */
   @Property({type: types.integer, default: 10})
-  contentQuota: number = 10;
+  contentQuota = 10;
 
   constructor({
     email,

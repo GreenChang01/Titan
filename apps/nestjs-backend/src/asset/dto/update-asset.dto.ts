@@ -1,5 +1,5 @@
-import { IsString, IsOptional, IsArray, IsEnum } from 'class-validator';
-import { AssetType } from '../../common/enums';
+import {IsString, IsOptional, IsArray, IsEnum} from 'class-validator';
+import {AssetType} from '../../common/enums';
 
 export class UpdateAssetDto {
   @IsString()
@@ -7,7 +7,7 @@ export class UpdateAssetDto {
   description?: string;
 
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   @IsOptional()
   tags?: string[];
 

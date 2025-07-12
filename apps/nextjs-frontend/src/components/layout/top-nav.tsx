@@ -1,42 +1,34 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Menu } from 'lucide-react'
+import Link from 'next/link';
+import {Menu} from 'lucide-react';
+import {cn} from '@/lib/utils';
+import {Button} from '@/components/ui/button';
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 
-interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
-  links: {
-    title: string
-    href: string
-    isActive: boolean
-    disabled?: boolean
-  }[]
-}
+type TopNavProps = {
+  readonly links: Array<{
+    title: string;
+    href: string;
+    isActive: boolean;
+    disabled?: boolean;
+  }>;
+} & React.HTMLAttributes<HTMLElement>
 
-export function TopNav({ className, links, ...props }: TopNavProps) {
+export function TopNav({className, links, ...props}: TopNavProps) {
   return (
     <>
-      <div className='md:hidden'>
+      <div className="md:hidden">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button size='icon' variant='outline'>
-              <Menu className='h-4 w-4' />
+            <Button size="icon" variant="outline">
+              <Menu className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side='bottom' align='start'>
-            {links.map(({ title, href, isActive, disabled }) => (
+          <DropdownMenuContent side="bottom" align="start">
+            {links.map(({title, href, isActive, disabled}) => (
               <DropdownMenuItem key={`${title}-${href}`} asChild>
-                <Link
-                  href={href}
-                  className={!isActive ? 'text-muted-foreground' : ''}
-                >
+                <Link href={href} className={isActive ? '' : 'text-muted-foreground'}>
                   {title}
                 </Link>
               </DropdownMenuItem>
@@ -45,14 +37,8 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
         </DropdownMenu>
       </div>
 
-      <nav
-        className={cn(
-          'hidden items-center space-x-4 md:flex lg:space-x-6',
-          className
-        )}
-        {...props}
-      >
-        {links.map(({ title, href, isActive, disabled }) => (
+      <nav className={cn('hidden items-center space-x-4 md:flex lg:space-x-6', className)} {...props}>
+        {links.map(({title, href, isActive, disabled}) => (
           <Link
             key={`${title}-${href}`}
             href={href}
@@ -63,5 +49,5 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
         ))}
       </nav>
     </>
-  )
+  );
 }

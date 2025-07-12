@@ -1,6 +1,6 @@
-import { Publication } from '../entities/publication.entity';
+import {Publication} from '../entities/publication.entity';
 
-export interface IPlatformPublisher {
+export type IPlatformPublisher = {
   /**
    * 发布内容到指定平台
    */

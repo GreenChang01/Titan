@@ -21,7 +21,7 @@ import {UsersService} from './users.service';
  * 用户控制器
  * 处理用户相关的 API 端点，包括创建、查询、更新、删除、确认和密码重置
  */
-@ApiTags('users')
+@ApiTags('用户管理')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -32,12 +32,12 @@ export class UsersController {
    */
   @Get('me')
   @ApiOperation({
-    summary: 'Get current user details',
-    description: 'This endpoint retrieves the details of the currently authenticated user.',
+    summary: '获取当前用户信息',
+    description: '获取当前认证用户的详细信息，包括用户名、邮箱、状态等',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Successfully retrieved user details.',
+    description: '成功获取用户信息',
     type: UserDto,
   })
   async getMe(@User() user: ActiveUser): Promise<UserDto> {
@@ -54,12 +54,12 @@ export class UsersController {
   @Public()
   @Throttle({default: {ttl: oneHour, limit: 60}}) // 每小时每 IP 地址允许 60 次请求
   @ApiOperation({
-    summary: 'Create a new user',
-    description: 'This endpoint creates a new user by providing an email, password, and username.',
+    summary: '创建新用户',
+    description: '通过提供邮箱、密码和用户名创建新用户账户，系统将发送确认邮件',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'User successfully created.',
+    description: '用户创建成功',
     type: UserDto,
   })
   async createUser(
@@ -81,17 +81,17 @@ export class UsersController {
   @Public()
   @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
-    summary: 'Confirm user registration',
-    description: 'This endpoint confirms a user registration using a confirmation code sent to their email.',
+    summary: '确认用户注册',
+    description: '使用邮件中的确认码激活用户账户，完成注册流程',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'User successfully confirmed.',
+    description: '用户账户确认成功',
     type: UserDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Invalid confirmation code.',
+    description: '无效的确认码',
   })
   async confirmUser(@Param() param: ConfirmUserParamDto): Promise<UserDto> {
     const {confirmationCode} = param;
@@ -106,12 +106,12 @@ export class UsersController {
    */
   @Delete()
   @ApiOperation({
-    summary: 'Delete the current user',
-    description: 'This endpoint deletes the currently authenticated user.',
+    summary: '删除当前用户',
+    description: '删除当前认证用户的账户，此操作不可恢复',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'User successfully deleted.',
+    description: '用户删除成功',
   })
   async deleteUser(@User() user: ActiveUser): Promise<void> {
     const {userId} = user;
@@ -126,12 +126,12 @@ export class UsersController {
   @Public()
   @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
-    summary: 'Request password reset',
-    description: 'This endpoint requests a password reset for the user using their email address.',
+    summary: '请求密码重置',
+    description: '使用邮箱地址请求密码重置，系统将发送重置链接到指定邮箱',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Password reset request successfully sent.',
+    description: '密码重置请求发送成功',
   })
   async requestPasswordReset(
     @Body() body: ResetPasswordRequestBodyDto,
@@ -155,16 +155,16 @@ export class UsersController {
   @Public()
   @Throttle({default: {ttl: oneMinute * 15, limit: 3}}) // 15 分钟内每 IP 地址允许 3 次请求
   @ApiOperation({
-    summary: 'Confirm password reset',
-    description: 'This endpoint confirms the password reset by providing a valid token and new password.',
+    summary: '确认密码重置',
+    description: '使用重置令牌和新密码完成密码重置操作',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Password reset successfully.',
+    description: '密码重置成功',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Invalid token or password.',
+    description: '无效的重置令牌或密码格式错误',
   })
   async confirmPasswordReset(@Body() body: ResetPasswordConfirmBodyDto): Promise<void> {
     const {token, password} = body;
@@ -178,12 +178,12 @@ export class UsersController {
   @Patch()
   @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
-    summary: 'Update current user details',
-    description: 'This endpoint allows the currently authenticated user to update their email, password, or username.',
+    summary: '更新当前用户信息',
+    description: '允许当前认证用户更新他们的邮箱、密码或用户名',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'User details successfully updated.',
+    description: '用户信息更新成功',
     type: UserDto,
   })
   async updateUser(@User() user: ActiveUser, @Body() body: UpdateUserBodyDto): Promise<UserDto> {
@@ -201,19 +201,18 @@ export class UsersController {
    */
   @Get('me/config-status')
   @ApiOperation({
-    summary: 'Get user configuration status',
-    description:
-      'This endpoint retrieves the configuration status of the currently authenticated user, including whether they have configured Aliyun Drive.',
+    summary: '获取用户配置状态',
+    description: '获取当前用户的配置状态，包括是否已配置阿里云盘等外部服务',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Successfully retrieved user configuration status.',
+    description: '成功获取用户配置状态',
     schema: {
       type: 'object',
       properties: {
         hasAliyunDriveConfig: {
           type: 'boolean',
-          description: 'Whether the user has configured Aliyun Drive',
+          description: '用户是否已配置阿里云盘',
         },
       },
     },

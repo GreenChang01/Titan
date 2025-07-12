@@ -1,18 +1,19 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/core';
-import { Asset } from '../entities/asset.entity';
-import { UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto, BatchOperationType } from '../dto';
-import { ThumbnailService } from './thumbnail.service';
-import { MetadataExtractorService } from './metadata-extractor.service';
-import { ConfigService } from '@nestjs/config';
-import { ConfigKey } from '../../config/config-key.enum';
-import { AssetType, UploadSource } from '../../common/enums';
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import { v4 as uuidv4 } from 'uuid';
+import * as path from 'node:path';
+import {promises as fsPromises} from 'node:fs';
+import {Injectable, Logger, NotFoundException, ForbiddenException} from '@nestjs/common';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {EntityRepository} from '@mikro-orm/core';
+import {EntityManager} from '@mikro-orm/postgresql';
+import {ConfigService} from '@nestjs/config';
+import {v4 as uuidv4} from 'uuid';
+import {ConfigKey} from '../config/config-key.enum';
+import {AssetType, UploadSource} from '../common/enums';
+import {Asset} from './entities/asset.entity';
+import {UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto, BatchOperationType} from './dto';
+import {ThumbnailService} from './thumbnail.service';
+import {MetadataExtractorService} from './metadata-extractor.service';
 
-interface PaginatedResult<T> {
+type PaginatedResult<T> = {
   data: T[];
   total: number;
   page: number;
@@ -28,6 +29,7 @@ export class AssetService {
   constructor(
     @InjectRepository(Asset)
     private readonly assetRepository: EntityRepository<Asset>,
+    private readonly em: EntityManager,
     private readonly thumbnailService: ThumbnailService,
     private readonly metadataExtractorService: MetadataExtractorService,
     private readonly configService: ConfigService,
@@ -35,14 +37,10 @@ export class AssetService {
     this.uploadDir = this.configService.get<string>(ConfigKey.UPLOAD_DIR) || './uploads';
   }
 
-  async uploadFile(
-    file: Express.Multer.File,
-    userId: string,
-    uploadAssetDto: UploadAssetDto,
-  ): Promise<Asset> {
+  async uploadFile(file: Express.Multer.File, userId: string, uploadAssetDto: UploadAssetDto): Promise<Asset> {
     try {
       // Ensure upload directory exists
-      await fs.ensureDir(this.uploadDir);
+      await fsPromises.mkdir(this.uploadDir, {recursive: true});
 
       // Generate unique filename
       const fileExtension = path.extname(file.originalname);
@@ -50,30 +48,41 @@ export class AssetService {
       const filePath = path.join(this.uploadDir, uniqueFileName);
 
       // Save file to disk
-      await fs.writeFile(filePath, file.buffer);
+      await fsPromises.writeFile(filePath, file.buffer);
 
       // Extract metadata
-      const metadata = await this.metadataExtractorService.extractMetadata(filePath, file.mimetype);
+      const metadata = await this.metadataExtractorService.extractMetadata(filePath);
 
       // Generate thumbnail
-      const thumbnailPath = await this.thumbnailService.generateThumbnail(filePath, file.mimetype);
+      const thumbnailPath = await this.thumbnailService.generateThumbnail(filePath);
 
       // Create asset entity
-      const asset = new Asset();
-      asset.userId = userId;
-      asset.fileName = uniqueFileName;
-      asset.originalName = file.originalname;
-      asset.filePath = filePath;
-      asset.fileSize = file.size;
-      asset.mimeType = file.mimetype;
-      asset.assetType = uploadAssetDto.assetType;
-      asset.tags = uploadAssetDto.tags || [];
-      asset.description = uploadAssetDto.description;
-      asset.metadata = metadata;
-      asset.uploadSource = UploadSource.LOCAL;
-      asset.thumbnailPath = thumbnailPath;
+      const asset = new Asset({
+        userId,
+        fileName: uniqueFileName,
+        originalName: file.originalname,
+        filePath,
+        fileSize: file.size,
+        mimeType: file.mimetype,
+        assetType: uploadAssetDto.assetType,
+        uploadSource: UploadSource.LOCAL,
+      });
 
-      await this.assetRepository.persistAndFlush(asset);
+      // Set optional properties
+      if (uploadAssetDto.tags) {
+        asset.tags = uploadAssetDto.tags;
+      }
+
+      if (uploadAssetDto.description) {
+        asset.description = uploadAssetDto.description;
+      }
+
+      asset.metadata = metadata;
+      if (thumbnailPath) {
+        asset.thumbnailPath = thumbnailPath;
+      }
+
+      await this.em.persistAndFlush(asset);
 
       this.logger.log(`Asset uploaded successfully: ${asset.id}`);
       return asset;
@@ -84,24 +93,23 @@ export class AssetService {
   }
 
   async searchAssets(userId: string, query: AssetSearchDto): Promise<PaginatedResult<Asset>> {
-    const qb = this.assetRepository.createQueryBuilder('a')
-      .where({ userId });
+    const qb = this.em.createQueryBuilder(Asset, 'a').where({userId});
 
     // Apply filters
     if (query.assetType) {
-      qb.andWhere({ assetType: query.assetType });
+      qb.andWhere({assetType: query.assetType});
     }
 
     if (query.tags && query.tags.length > 0) {
-      qb.andWhere({ tags: { $overlap: query.tags } });
+      qb.andWhere({tags: {$overlap: query.tags}});
     }
 
     if (query.searchKeyword) {
       qb.andWhere({
         $or: [
-          { originalName: { $ilike: `%${query.searchKeyword}%` } },
-          { description: { $ilike: `%${query.searchKeyword}%` } },
-          { tags: { $overlap: [query.searchKeyword] } },
+          {originalName: {$ilike: `%${query.searchKeyword}%`}},
+          {description: {$ilike: `%${query.searchKeyword}%`}},
+          {tags: {$overlap: [query.searchKeyword]}},
         ],
       });
     }
@@ -109,7 +117,7 @@ export class AssetService {
     // Apply sorting
     const sortField = query.sortBy || 'createdAt';
     const sortOrder = query.sortOrder || 'DESC';
-    qb.orderBy({ [sortField]: sortOrder });
+    qb.orderBy({[sortField]: sortOrder});
 
     // Apply pagination
     const page = query.page || 1;
@@ -130,10 +138,11 @@ export class AssetService {
   }
 
   async getAssetById(assetId: string, userId: string): Promise<Asset> {
-    const asset = await this.assetRepository.findOne({ id: assetId, userId });
+    const asset = await this.assetRepository.findOne({id: assetId, userId});
     if (!asset) {
       throw new NotFoundException(`Asset with ID ${assetId} not found`);
     }
+
     return asset;
   }
 
@@ -152,7 +161,7 @@ export class AssetService {
       asset.assetType = updateDto.assetType;
     }
 
-    await this.assetRepository.persistAndFlush(asset);
+    await this.em.persistAndFlush(asset);
     return asset;
   }
 
@@ -161,23 +170,32 @@ export class AssetService {
 
     // Delete files from disk
     try {
-      if (await fs.pathExists(asset.filePath)) {
-        await fs.remove(asset.filePath);
+      try {
+        await fsPromises.access(asset.filePath);
+        await fsPromises.unlink(asset.filePath);
+      } catch {
+        // File doesn't exist, ignore
       }
-      if (asset.thumbnailPath && await fs.pathExists(asset.thumbnailPath)) {
-        await fs.remove(asset.thumbnailPath);
+
+      if (asset.thumbnailPath) {
+        try {
+          await fsPromises.access(asset.thumbnailPath);
+          await fsPromises.unlink(asset.thumbnailPath);
+        } catch {
+          // Thumbnail doesn't exist, ignore
+        }
       }
     } catch (error) {
       this.logger.warn(`Failed to delete files for asset ${assetId}:`, error);
     }
 
-    await this.assetRepository.removeAndFlush(asset);
+    await this.em.removeAndFlush(asset);
     this.logger.log(`Asset deleted: ${assetId}`);
   }
 
-  async batchOperations(userId: string, batchDto: BatchOperationDto): Promise<{ success: number; failed: number }> {
+  async batchOperations(userId: string, batchDto: BatchOperationDto): Promise<{success: number; failed: number}> {
     const assets = await this.assetRepository.find({
-      id: { $in: batchDto.assetIds },
+      id: {$in: batchDto.assetIds},
       userId,
     });
 
@@ -191,24 +209,30 @@ export class AssetService {
     for (const asset of assets) {
       try {
         switch (batchDto.operation) {
-          case BatchOperationType.DELETE:
+          case BatchOperationType.DELETE: {
             await this.deleteAsset(asset.id, userId);
             break;
+          }
 
-          case BatchOperationType.UPDATE_TAGS:
+          case BatchOperationType.UPDATE_TAGS: {
             if (batchDto.tags) {
               asset.tags = batchDto.tags;
-              await this.assetRepository.persistAndFlush(asset);
+              await this.em.persistAndFlush(asset);
             }
-            break;
 
-          case BatchOperationType.UPDATE_TYPE:
+            break;
+          }
+
+          case BatchOperationType.UPDATE_TYPE: {
             if (batchDto.assetType) {
               asset.assetType = batchDto.assetType as AssetType;
-              await this.assetRepository.persistAndFlush(asset);
+              await this.em.persistAndFlush(asset);
             }
+
             break;
+          }
         }
+
         success++;
       } catch (error) {
         this.logger.error(`Batch operation failed for asset ${asset.id}:`, error);
@@ -216,23 +240,23 @@ export class AssetService {
       }
     }
 
-    return { success, failed };
+    return {success, failed};
   }
 
   async getAssetsByType(userId: string, assetType: AssetType): Promise<Asset[]> {
-    return this.assetRepository.find({ userId, assetType });
+    return this.assetRepository.find({userId, assetType});
   }
 
   async getAssetsByTags(userId: string, tags: string[]): Promise<Asset[]> {
     return this.assetRepository.find({
       userId,
-      tags: { $overlap: tags },
+      tags: {$overlap: tags},
     });
   }
 
   async getAssetsByProject(userId: string, projectId: string): Promise<Asset[]> {
     // This would require a join with ProjectAsset entity
     // For now, implementing a simpler version
-    return this.assetRepository.find({ userId });
+    return this.assetRepository.find({userId});
   }
 }

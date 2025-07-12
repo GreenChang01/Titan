@@ -1,16 +1,15 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance } from 'axios';
+import {Injectable, Logger, HttpException, HttpStatus} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import axios, {AxiosInstance} from 'axios';
 import {
   ISoundscapeProvider,
   SoundscapeOptions,
   SoundscapeCategory,
   SoundscapeGenerationResult,
-  ASMRSoundscapeTemplates,
-  ElderlyFriendlySoundscapes
+  ElderlyFriendlySoundscapes,
 } from '../interfaces';
 
-interface ElevenLabsSoundEffectsRequest {
+type ElevenLabsSoundEffectsRequest = {
   text: string;
   duration_seconds: number;
   prompt_influence?: number;
@@ -27,10 +26,10 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
   private readonly maxChunkDuration = 22; // ElevenLabs限制
   private readonly client: AxiosInstance;
   private readonly apiKey: string;
-  
+
   constructor(private readonly configService: ConfigService) {
     this.apiKey = this.configService.get<string>('ELEVENLABS_API_KEY') || '';
-    
+
     if (!this.apiKey) {
       throw new Error('ELEVENLABS_API_KEY is required for soundscape generation');
     }
@@ -41,7 +40,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
         'xi-api-key': this.apiKey,
         'Content-Type': 'application/json',
       },
-      timeout: 60000,
+      timeout: 60_000,
     });
 
     this.setupInterceptors();
@@ -54,10 +53,10 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
         this.logger.debug(`ElevenLabs Sound Effects API Request: ${config.method?.toUpperCase()} ${config.url}`);
         return config;
       },
-      (error) => {
+      async (error) => {
         this.logger.error('ElevenLabs Sound Effects API Request Error:', error.message);
-        return Promise.reject(error);
-      }
+        throw error;
+      },
     );
 
     this.client.interceptors.response.use(
@@ -69,7 +68,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
         const status = error.response?.status;
         const message = error.response?.data?.detail || error.message;
         this.logger.error(`ElevenLabs Sound Effects API Error: ${status} - ${message}`);
-        
+
         if (status === 401) {
           throw new HttpException('ElevenLabs Sound Effects API authentication failed', HttpStatus.UNAUTHORIZED);
         } else if (status === 429) {
@@ -77,18 +76,18 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
         } else if (status >= 500) {
           throw new HttpException('ElevenLabs Sound Effects API server error', HttpStatus.SERVICE_UNAVAILABLE);
         }
-        
+
         throw new HttpException(
           `ElevenLabs Sound Effects API error: ${message}`,
-          status || HttpStatus.INTERNAL_SERVER_ERROR
+          status || HttpStatus.INTERNAL_SERVER_ERROR,
         );
-      }
+      },
     );
   }
 
   async generateSoundscape(prompt: string, options: SoundscapeOptions): Promise<SoundscapeGenerationResult> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.log(`Generating soundscape: "${prompt}" (${options.duration}s)`);
 
@@ -114,7 +113,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
         audioBuffer: processedBuffer,
         metadata: {
           duration: options.duration,
-          sampleRate: 44100,
+          sampleRate: 44_100,
           format: 'wav',
           size: processedBuffer.length,
           provider: 'ElevenLabs Sound Effects',
@@ -124,15 +123,14 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
           isLoopable: options.loopable,
         },
       };
-
     } catch (error) {
       this.logger.error(`Soundscape generation failed: ${(error as Error).message}`);
-      
+
       // 如果API失败，提供备用的本地生成方案
       if (this.configService.get<boolean>('ENABLE_FALLBACK_GENERATION', true)) {
         return this.generateFallbackSoundscape(prompt, options);
       }
-      
+
       throw error;
     }
   }
@@ -150,7 +148,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
     const response = await this.client.post('/v1/text-to-sound-effects', requestData, {
       responseType: 'arraybuffer',
       headers: {
-        'Accept': 'audio/mpeg',
+        Accept: 'audio/mpeg',
       },
     });
 
@@ -161,9 +159,9 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
    * 生成长音频（分段拼接）
    */
   private async generateLongSoundscape(
-    prompt: string, 
-    options: SoundscapeOptions, 
-    startTime: number
+    prompt: string,
+    options: SoundscapeOptions,
+    startTime: number,
   ): Promise<SoundscapeGenerationResult> {
     const chunks = Math.ceil(options.duration / this.maxChunkDuration);
     this.logger.log(`Generating ${chunks} chunks for ${options.duration}s soundscape`);
@@ -172,28 +170,25 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
     let totalCost = 0;
 
     for (let i = 0; i < chunks; i++) {
-      const chunkDuration = Math.min(
-        this.maxChunkDuration,
-        options.duration - (i * this.maxChunkDuration)
-      );
+      const chunkDuration = Math.min(this.maxChunkDuration, options.duration - i * this.maxChunkDuration);
 
       this.logger.debug(`Generating chunk ${i + 1}/${chunks} (${chunkDuration}s)`);
-      
+
       const chunkBuffer = await this.generateSingleChunk(prompt, chunkDuration);
       audioChunks.push(chunkBuffer);
-      
+
       totalCost += await this.estimateCost(chunkDuration, options.quality);
-      
+
       // 短暂延迟避免API限制
       if (i < chunks - 1) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
 
     // 拼接所有音频块（这里需要FFmpeg集成）
     const concatenatedBuffer = await this.concatenateAudioChunks(audioChunks);
     const processedBuffer = await this.postProcessForASMR(concatenatedBuffer, options);
-    
+
     const processingTime = Date.now() - startTime;
     this.logger.log(`Long soundscape generation completed in ${processingTime}ms`);
 
@@ -201,7 +196,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
       audioBuffer: processedBuffer,
       metadata: {
         duration: options.duration,
-        sampleRate: 44100,
+        sampleRate: 44_100,
         format: 'wav',
         size: processedBuffer.length,
         provider: 'ElevenLabs Sound Effects',
@@ -261,11 +256,10 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
       ];
 
       // 过滤掉不适合中老年人的分类
-      return categories.filter(cat => 
-        ([...ElderlyFriendlySoundscapes.preferredCategories] as string[]).includes(cat.id) ||
-        cat.suitableForASMR
+      return categories.filter(
+        (cat) =>
+          ([...ElderlyFriendlySoundscapes.preferredCategories] as string[]).includes(cat.id) || cat.suitableForASMR,
       );
-
     } catch (error) {
       this.logger.error(`Failed to fetch categories: ${(error as Error).message}`);
       throw error;
@@ -277,13 +271,13 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
     // 大约 $0.18-0.30 per 22秒chunk，根据质量不同
     const chunks = Math.ceil(duration / this.maxChunkDuration);
     const baseRatePerChunk: Record<string, number> = {
-      'standard': 0.18,
-      'high': 0.24,
-      'premium': 0.30,
+      standard: 0.18,
+      high: 0.24,
+      premium: 0.3,
     };
 
     const rate = baseRatePerChunk[quality] || baseRatePerChunk.standard;
-    
+
     return chunks * rate;
   }
 
@@ -303,7 +297,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
    * 应用ASMR和中老年人友好的优化
    */
   private applyASMROptimization(options: SoundscapeOptions): SoundscapeOptions {
-    const optimized = { ...options };
+    const optimized = {...options};
 
     // 调整强度范围，避免过于激烈的音效
     if (optimized.intensity > ElderlyFriendlySoundscapes.recommendedIntensity.max) {
@@ -328,24 +322,16 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
     let optimizedPrompt = prompt;
 
     // 添加中老年人友好的修饰词
-    const elderlyFriendlyModifiers = [
-      'gentle',
-      'soft',
-      'peaceful',
-      'calm',
-      'soothing',
-      'warm',
-      'comfortable'
-    ];
+    const elderlyFriendlyModifiers = ['gentle', 'soft', 'peaceful', 'calm', 'soothing', 'warm', 'comfortable'];
 
     // 避免的刺激性词汇
     const avoidWords = ['loud', 'intense', 'sharp', 'sudden', 'harsh'];
-    
+
     // 检查并替换刺激性词汇
-    avoidWords.forEach(word => {
+    for (const word of avoidWords) {
       const regex = new RegExp(`\\b${word}\\b`, 'gi');
       optimizedPrompt = optimizedPrompt.replace(regex, 'gentle');
-    });
+    }
 
     // 为特定分类添加优化
     if (category === 'nature') {
@@ -366,7 +352,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
     // 2. 应用低通滤波器减少高频刺激
     // 3. 添加淡入淡出
     // 4. 如果需要，制作无缝循环
-    
+
     // 当前返回原始音频，实际应该集成FFmpeg处理
     this.logger.debug('ASMR post-processing applied (placeholder)');
     return audioBuffer;
@@ -375,19 +361,22 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
   /**
    * 备用本地音景生成
    */
-  private async generateFallbackSoundscape(prompt: string, options: SoundscapeOptions): Promise<SoundscapeGenerationResult> {
+  private async generateFallbackSoundscape(
+    prompt: string,
+    options: SoundscapeOptions,
+  ): Promise<SoundscapeGenerationResult> {
     this.logger.warn('Using fallback soundscape generation');
 
     // 生成简单的噪音作为备用方案
     // 实际应用中可以预先录制一些基础音景
-    const sampleRate = 44100;
+    const sampleRate = 44_100;
     const samples = sampleRate * options.duration;
     const audioBuffer = Buffer.alloc(samples * 2); // 16-bit audio
 
     // 生成简单的粉噪音
     for (let i = 0; i < samples; i++) {
       const noise = (Math.random() - 0.5) * 0.1 * options.intensity * 1000;
-      const sample = Math.max(-32768, Math.min(32767, noise));
+      const sample = Math.max(-32_768, Math.min(32_767, noise));
       audioBuffer.writeInt16LE(sample, i * 2);
     }
 
@@ -395,7 +384,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
       audioBuffer,
       metadata: {
         duration: options.duration,
-        sampleRate: 44100,
+        sampleRate: 44_100,
         format: 'wav',
         size: audioBuffer.length,
         provider: 'ElevenLabs Sound Effects (Fallback)',

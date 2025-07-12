@@ -1,17 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/core';
-import { ConfigService } from '@nestjs/config';
-import { promises as fs } from 'fs';
-import * as path from 'path';
+import {promises as fs} from 'node:fs';
+import * as path from 'node:path';
+import {Injectable, Logger} from '@nestjs/common';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {EntityRepository} from '@mikro-orm/core';
+import {ConfigService} from '@nestjs/config';
 import * as ffmpeg from 'fluent-ffmpeg';
-import { ASMRContentService } from '../../ai-audio/services/asmr-content.service';
-import { ContentJob } from '../entities/content-job.entity';
-import { Asset } from '../../asset/entities/asset.entity';
-import { ContentTemplate } from '../../template/entities/content-template.entity';
-import { AssetType } from '../../common/enums';
+import {ASMRContentService} from '../../ai-audio/services/asmr-content.service';
+import {ContentJob} from '../entities/content-job.entity';
+import {Asset} from '../../asset/entities/asset.entity';
+import {ContentTemplate} from '../../template/entities/content-template.entity';
 
-export interface ProcessingResult {
+export type ProcessingResult = {
   success: boolean;
   outputPath?: string;
   error?: string;
@@ -34,7 +33,7 @@ export class MediaProcessingService {
   ) {
     this.ffmpegPath = this.configService.get<string>('FFMPEG_PATH', 'ffmpeg');
     this.tempDir = this.configService.get<string>('TEMP_DIR', '/tmp/titan');
-    
+
     // 设置FFmpeg路径
     ffmpeg.setFfmpegPath(this.ffmpegPath);
   }
@@ -44,40 +43,40 @@ export class MediaProcessingService {
    */
   async generateASMRAudio(
     text: string,
-    duration: number = 30,
-    voicePreset: string = 'ELDERLY_FRIENDLY',
-    soundscapeType: string = 'RAIN_FOREST'
-  ): Promise<{ audioPath: string; metadata: any }> {
+    duration = 30,
+    voicePreset = 'ELDERLY_FRIENDLY',
+    soundscapeType = 'RAIN_FOREST',
+  ): Promise<{audioPath: string; metadata: any}> {
     const startTime = Date.now();
     const tempDir = path.join(this.tempDir, `asmr_${Date.now()}`);
-    
+
     try {
-      await fs.mkdir(tempDir, { recursive: true });
-      
+      await fs.mkdir(tempDir, {recursive: true});
+
       // 创建ASMR生成请求
       const asmrRequest = this.asmrContentService.createElderlyFriendlyTemplate(
         text,
         voicePreset as any,
-        soundscapeType as any
+        soundscapeType as any,
       );
-      
+
       // 设置持续时间
       asmrRequest.soundscapeConfig.duration = duration;
-      
+
       this.logger.log(`Generating ASMR audio: "${text}" (${duration}s)`);
-      
+
       // 生成ASMR内容
       const result = await this.asmrContentService.generateASMRContent(asmrRequest);
-      
+
       // 保存音频文件
       const audioFileName = `asmr_${Date.now()}.${result.metadata.format}`;
       const audioPath = path.join(tempDir, audioFileName);
-      
+
       await fs.writeFile(audioPath, result.audioBuffer);
-      
+
       const processingTime = Date.now() - startTime;
       this.logger.log(`ASMR audio generation completed in ${processingTime}ms`);
-      
+
       return {
         audioPath,
         metadata: {
@@ -85,11 +84,10 @@ export class MediaProcessingService {
           processingTime,
           qualityScore: result.qualityReport?.overallScore,
           components: result.components,
-        }
+        },
       };
-      
     } catch (error) {
-      this.logger.error(`ASMR audio generation failed: ${error.message}`);
+      this.logger.error(`ASMR audio generation failed: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
     }
   }
@@ -103,49 +101,45 @@ export class MediaProcessingService {
 
     try {
       // 创建临时工作目录
-      await fs.mkdir(tempJobDir, { recursive: true });
+      await fs.mkdir(tempJobDir, {recursive: true});
 
       // 获取模板和素材信息
-      const template = await this.templateRepository.findOne({ id: job.templateId });
+      const template = await this.templateRepository.findOne({id: job.templateId});
       if (!template) {
         throw new Error('Template not found');
       }
 
       const assets = await this.loadJobAssets(job);
-      
+
       // 根据模板类型生成视频
-      const outputPath = await this.generateVideoFromTemplate(
-        template,
-        assets,
-        job.inputAssets,
-        tempJobDir,
-      );
+      const outputPath = await this.generateVideoFromTemplate(template, assets, job.inputAssets, tempJobDir);
 
       const processingTime = Date.now() - startTime;
-      
+
       this.logger.log(`Job ${job.id} completed in ${processingTime}ms`);
-      
+
       return {
         success: true,
         outputPath,
         processingTime,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      this.logger.error(`Job ${job.id} failed: ${error.message}`, error.stack);
-      
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Job ${job.id} failed: ${errorMessage}`, errorStack);
+
       return {
         success: false,
-        error: error.message,
+        error: errorMessage,
         processingTime,
       };
     } finally {
       // 清理临时目录
       try {
-        await fs.rm(tempJobDir, { recursive: true, force: true });
+        await fs.rm(tempJobDir, {recursive: true, force: true});
       } catch (cleanupError) {
-        this.logger.warn(`Failed to cleanup temp directory: ${cleanupError.message}`);
+        this.logger.warn(`Failed to cleanup temp directory: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
       }
     }
   }
@@ -156,7 +150,7 @@ export class MediaProcessingService {
   private async generateVideoFromTemplate(
     template: ContentTemplate,
     assets: Map<string, Asset>,
-    inputAssets: Array<{ assetId: string; slotName: string; parameters?: Record<string, any> }>,
+    inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
     tempDir: string,
   ): Promise<string> {
     const templateType = template.templateConfig?.type;
@@ -164,12 +158,17 @@ export class MediaProcessingService {
     const outputPath = path.join(tempDir, outputFileName);
 
     switch (templateType) {
-      case 'asmr':
+      case 'asmr': {
         return this.generateASMRVideo(template, assets, inputAssets, outputPath);
-      case 'dynamic_background':
+      }
+
+      case 'dynamic_background': {
         return this.generateDynamicBackgroundVideo(template, assets, inputAssets, outputPath);
-      default:
+      }
+
+      default: {
         return this.generateDefaultVideo(template, assets, inputAssets, outputPath);
+      }
     }
   }
 
@@ -179,45 +178,39 @@ export class MediaProcessingService {
   private async generateASMRVideo(
     template: ContentTemplate,
     assets: Map<string, Asset>,
-    inputAssets: Array<{ assetId: string; slotName: string; parameters?: Record<string, any> }>,
+    inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
     outputPath: string,
   ): Promise<string> {
+    const backgroundImage = this.getAssetBySlot(assets, inputAssets, 'background_image');
+    const bgmAudio = this.getAssetBySlot(assets, inputAssets, 'bgm_audio');
+
+    if (!backgroundImage || !bgmAudio) {
+      throw new Error('Missing required assets for ASMR template');
+    }
+
+    const config = template.templateConfig;
+    const duration = config?.imageDisplayDuration || 30;
+
+    // 预处理文本内容（如果有）
+    let textData: string | undefined = null;
+    const textContent = this.getAssetBySlot(assets, inputAssets, 'text_content');
+    if (textContent && config?.textStyle) {
+      textData = textContent.metadata?.textContent || await this.readTextFromFile(textContent.filePath);
+    }
+
     return new Promise((resolve, reject) => {
-      const backgroundImage = this.getAssetBySlot(assets, inputAssets, 'background_image');
-      const bgmAudio = this.getAssetBySlot(assets, inputAssets, 'bgm_audio');
-      
-      if (!backgroundImage || !bgmAudio) {
-        return reject(new Error('Missing required assets for ASMR template'));
-      }
-
-      const config = template.templateConfig;
-      const duration = config?.imageDisplayDuration || 30;
-
       const command = ffmpeg()
         .input(backgroundImage.filePath)
         .inputOptions(['-loop 1'])
         .input(bgmAudio.filePath)
-        .outputOptions([
-          '-c:v libx264',
-          '-t ' + duration,
-          '-pix_fmt yuv420p',
-          '-c:a aac',
-          '-b:a 192k',
-          '-shortest',
-        ])
+        .outputOptions(['-c:v libx264', '-t ' + duration, '-pix_fmt yuv420p', '-c:a aac', '-b:a 192k', '-shortest'])
         .size(template.videoSettings?.resolution || '1080x1920')
         .fps(template.videoSettings?.fps || 30);
 
       // 添加文本覆盖（如果有）
-      const textContent = this.getAssetBySlot(assets, inputAssets, 'text_content');
-      if (textContent && config?.textStyle) {
-        // 从文件中读取文本内容或从metadata中获取
-        const textData = textContent.metadata?.textContent || 
-                        (await this.readTextFromFile(textContent.filePath));
-        if (textData) {
-          const textFilter = this.buildTextFilter(textData, config.textStyle);
-          command.videoFilters([textFilter]);
-        }
+      if (textData && config?.textStyle) {
+        const textFilter = this.buildTextFilter(textData, config.textStyle);
+        command.videoFilters([textFilter]);
       }
 
       command
@@ -246,14 +239,14 @@ export class MediaProcessingService {
   private async generateDynamicBackgroundVideo(
     template: ContentTemplate,
     assets: Map<string, Asset>,
-    inputAssets: Array<{ assetId: string; slotName: string; parameters?: Record<string, any> }>,
+    inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
     outputPath: string,
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const backgroundVideo = this.getAssetBySlot(assets, inputAssets, 'background_video');
-      
+
       if (!backgroundVideo) {
-        return reject(new Error('Missing background video for dynamic template'));
+        reject(new Error('Missing background video for dynamic template')); return;
       }
 
       const command = ffmpeg().input(backgroundVideo.filePath);
@@ -283,11 +276,7 @@ export class MediaProcessingService {
       }
 
       command
-        .outputOptions([
-          '-c:v libx264',
-          '-c:a aac',
-          '-b:a 192k',
-        ])
+        .outputOptions(['-c:v libx264', '-c:a aac', '-b:a 192k'])
         .size(template.videoSettings?.resolution || '1080x1920')
         .fps(template.videoSettings?.fps || 30)
         .output(outputPath)
@@ -315,7 +304,7 @@ export class MediaProcessingService {
   private async generateDefaultVideo(
     template: ContentTemplate,
     assets: Map<string, Asset>,
-    inputAssets: Array<{ assetId: string; slotName: string; parameters?: Record<string, any> }>,
+    inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
     outputPath: string,
   ): Promise<string> {
     // 基础的视频合成逻辑
@@ -326,13 +315,13 @@ export class MediaProcessingService {
    * 加载任务所需的素材
    */
   private async loadJobAssets(job: ContentJob): Promise<Map<string, Asset>> {
-    const assetIds = job.inputAssets.map(asset => asset.assetId);
-    const assets = await this.assetRepository.find({ id: { $in: assetIds } });
-    
+    const assetIds = job.inputAssets.map((asset) => asset.assetId);
+    const assets = await this.assetRepository.find({id: {$in: assetIds}});
+
     const assetMap = new Map<string, Asset>();
-    assets.forEach(asset => {
+    for (const asset of assets) {
       assetMap.set(asset.id, asset);
-    });
+    }
 
     return assetMap;
   }
@@ -342,10 +331,10 @@ export class MediaProcessingService {
    */
   private getAssetBySlot(
     assets: Map<string, Asset>,
-    inputAssets: Array<{ assetId: string; slotName: string; parameters?: Record<string, any> }>,
+    inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
     slotName: string,
-  ): Asset | null {
-    const assetMapping = inputAssets.find(mapping => mapping.slotName === slotName);
+  ): Asset | undefined {
+    const assetMapping = inputAssets.find((mapping) => mapping.slotName === slotName);
     if (!assetMapping) {
       return null;
     }
@@ -360,19 +349,19 @@ export class MediaProcessingService {
     const fontSize = textStyle.fontSize || 24;
     const color = textStyle.color || '#FFFFFF';
     const fontFamily = textStyle.fontFamily || 'Arial';
-    
+
     return `drawtext=text='${text}':fontsize=${fontSize}:fontcolor=${color}:x=(w-text_w)/2:y=h-text_h-50`;
   }
 
   /**
    * 读取文本文件内容
    */
-  private async readTextFromFile(filePath: string): Promise<string | null> {
+  private async readTextFromFile(filePath: string): Promise<string | undefined> {
     try {
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await fs.readFile(filePath, 'utf8');
       return content.trim();
     } catch (error) {
-      this.logger.warn(`Failed to read text file ${filePath}:`, error.message);
+      this.logger.warn(`Failed to read text file ${filePath}:`, error instanceof Error ? error.message : String(error));
       return null;
     }
   }
@@ -385,9 +374,9 @@ export class MediaProcessingService {
       const command = ffmpeg();
 
       // 添加所有音频输入
-      audioFiles.forEach(audioFile => {
+      for (const audioFile of audioFiles) {
         command.input(audioFile);
-      });
+      }
 
       // 构建音频混合过滤器
       const filterInputs = audioFiles.map((_, index) => `[${index}:a]`).join('');

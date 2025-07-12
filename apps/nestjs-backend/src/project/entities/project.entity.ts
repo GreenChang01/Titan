@@ -9,12 +9,12 @@ import {ProjectStatus} from '../../common/enums';
  * 存储用户创建的项目信息和相关的素材资源
  */
 @Entity()
-@Index({ properties: ['userId', 'createdAt'] })
-@Index({ properties: ['status'] })
+@Index({properties: ['userId', 'createdAt']})
+@Index({properties: ['status']})
 export class Project extends BaseEntity {
   /** 项目名称 */
   @Property({type: types.string, nullable: false})
-  name: string;
+  name!: string;
 
   /** 项目描述 */
   @Property({type: types.text, nullable: true})
@@ -30,19 +30,19 @@ export class Project extends BaseEntity {
 
   /** 关联素材数量 */
   @Property({type: types.integer, default: 0})
-  assetCount: number = 0;
+  assetCount = 0;
 
   /** 生成内容数量 */
   @Property({type: types.integer, default: 0})
-  contentCount: number = 0;
+  contentCount = 0;
 
   /** 项目所有者ID */
   @Property()
-  userId: string;
+  userId!: string;
 
   /** 项目所有者 */
   @ManyToOne(() => User, {nullable: false})
-  user: User;
+  user!: User;
 
   /** 项目包含的素材列表 */
   @OneToMany(() => ProjectMaterial, (material) => material.project, {

@@ -1,17 +1,16 @@
-import { spawn } from 'node:child_process';
-import { promises as fs } from 'node:fs';
-import { join } from 'node:path';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
+import {spawn} from 'node:child_process';
+import {promises as fs} from 'node:fs';
+import {join} from 'node:path';
+import {Injectable, Logger} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {v4 as uuidv4} from 'uuid';
 import {
   IAudioMixer,
   MixingOptions,
   BinauralSettings,
   AudioProcessingResult,
   AudioQualityReport,
-  ASMRMixingPresets,
-  AudioQualityStandards
+  AudioQualityStandards,
 } from '../interfaces';
 
 @Injectable()
@@ -25,18 +24,18 @@ export class FFmpegAudioMixer implements IAudioMixer {
     this.tempDir = this.configService.get<string>('AUDIO_TEMP_DIR', '/tmp/titan/audio');
     this.ffmpegPath = this.configService.get<string>('FFMPEG_PATH', 'ffmpeg');
     this.ffprobePath = this.configService.get<string>('FFPROBE_PATH', 'ffprobe');
-    
+
     this.ensureTempDirectory();
   }
 
   async mixVoiceAndSoundscape(
     voice: Buffer,
     soundscape: Buffer,
-    options: MixingOptions
+    options: MixingOptions,
   ): Promise<AudioProcessingResult> {
     const startTime = Date.now();
     const sessionId = uuidv4();
-    
+
     try {
       this.logger.log(`Starting audio mixing session: ${sessionId}`);
 
@@ -52,15 +51,22 @@ export class FFmpegAudioMixer implements IAudioMixer {
       // 构建FFmpeg命令
       const filterComplex = this.buildMixingFilterComplex(options);
       const command = [
-        '-i', voiceFile,
-        '-i', soundscapeFile,
-        '-filter_complex', filterComplex,
-        '-map', '[final]',
-        '-c:a', 'pcm_s16le',
-        '-ar', '44100',
-        '-ac', '2',
+        '-i',
+        voiceFile,
+        '-i',
+        soundscapeFile,
+        '-filter_complex',
+        filterComplex,
+        '-map',
+        '[final]',
+        '-c:a',
+        'pcm_s16le',
+        '-ar',
+        '44100',
+        '-ac',
+        '2',
         outputFile,
-        '-y'
+        '-y',
       ];
 
       // 执行FFmpeg
@@ -68,10 +74,10 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
       // 读取输出文件
       const outputBuffer = await fs.readFile(outputFile);
-      
+
       // 分析音频质量
       const qualityReport = await this.analyzeAudioQuality(outputBuffer);
-      
+
       // 清理临时文件
       await this.cleanupFiles([voiceFile, soundscapeFile, outputFile]);
 
@@ -82,7 +88,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
         outputBuffer,
         metadata: {
           duration: await this.getAudioDuration(outputBuffer),
-          sampleRate: 44100,
+          sampleRate: 44_100,
           channels: 2,
           format: 'wav',
           size: outputBuffer.length,
@@ -90,7 +96,6 @@ export class FFmpegAudioMixer implements IAudioMixer {
         },
         qualityReport,
       };
-
     } catch (error) {
       this.logger.error(`Audio mixing failed for session ${sessionId}: ${(error as Error).message}`);
       throw error;
@@ -103,7 +108,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
 
     const sessionId = uuidv4();
-    
+
     try {
       this.logger.log(`Applying binaural effects: ${sessionId}`);
 
@@ -114,13 +119,18 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
       const filterComplex = this.buildBinauralFilterComplex(settings);
       const command = [
-        '-i', inputFile,
-        '-filter_complex', filterComplex,
-        '-map', '[binaural]',
-        '-c:a', 'pcm_s16le',
-        '-ar', '44100',
+        '-i',
+        inputFile,
+        '-filter_complex',
+        filterComplex,
+        '-map',
+        '[binaural]',
+        '-c:a',
+        'pcm_s16le',
+        '-ar',
+        '44100',
         outputFile,
-        '-y'
+        '-y',
       ];
 
       await this.executeFFmpeg(command, `Binaural processing for ${sessionId}`);
@@ -130,7 +140,6 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
       this.logger.log(`Binaural effects applied successfully`);
       return result;
-
     } catch (error) {
       this.logger.error(`Binaural processing failed: ${(error as Error).message}`);
       throw error;
@@ -139,7 +148,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
   async optimizeForASMR(audio: Buffer): Promise<Buffer> {
     const sessionId = uuidv4();
-    
+
     try {
       this.logger.log(`Optimizing audio for ASMR: ${sessionId}`);
 
@@ -159,17 +168,10 @@ export class FFmpegAudioMixer implements IAudioMixer {
         // 轻微的混响增加空间感
         'aecho=0.8:0.9:20:0.1',
         // 最终音量标准化
-        'loudnorm=I=-23:TP=-2:LRA=7'
+        'loudnorm=I=-23:TP=-2:LRA=7',
       ].join(',');
 
-      const command = [
-        '-i', inputFile,
-        '-af', asmrFilters,
-        '-c:a', 'pcm_s16le',
-        '-ar', '44100',
-        outputFile,
-        '-y'
-      ];
+      const command = ['-i', inputFile, '-af', asmrFilters, '-c:a', 'pcm_s16le', '-ar', '44100', outputFile, '-y'];
 
       await this.executeFFmpeg(command, `ASMR optimization for ${sessionId}`);
 
@@ -178,7 +180,6 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
       this.logger.log(`ASMR optimization completed`);
       return result;
-
     } catch (error) {
       this.logger.error(`ASMR optimization failed: ${(error as Error).message}`);
       throw error;
@@ -187,32 +188,31 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
   async analyzeAudioQuality(audio: Buffer): Promise<AudioQualityReport> {
     const sessionId = uuidv4();
-    
+
     try {
       const inputFile = join(this.tempDir, `analyze_${sessionId}.wav`);
       await fs.writeFile(inputFile, audio);
 
       // 使用ffprobe分析音频
       const metadata = await this.getDetailedAudioInfo(inputFile);
-      
+
       // 基于分析结果生成质量报告
       const report = this.generateQualityReport(metadata);
-      
-      await this.cleanupFiles([inputFile]);
-      
-      return report;
 
+      await this.cleanupFiles([inputFile]);
+
+      return report;
     } catch (error) {
       this.logger.error(`Audio quality analysis failed: ${(error as Error).message}`);
-      
+
       // 返回默认报告
       return this.getDefaultQualityReport();
     }
   }
 
-  async normalizeAudio(audio: Buffer, targetLUFS: number = -23): Promise<Buffer> {
+  async normalizeAudio(audio: Buffer, targetLUFS = -23): Promise<Buffer> {
     const sessionId = uuidv4();
-    
+
     try {
       const inputFile = join(this.tempDir, `input_${sessionId}.wav`);
       const outputFile = join(this.tempDir, `normalized_${sessionId}.wav`);
@@ -220,11 +220,14 @@ export class FFmpegAudioMixer implements IAudioMixer {
       await fs.writeFile(inputFile, audio);
 
       const command = [
-        '-i', inputFile,
-        '-af', `loudnorm=I=${targetLUFS}:TP=-2:LRA=7`,
-        '-c:a', 'pcm_s16le',
+        '-i',
+        inputFile,
+        '-af',
+        `loudnorm=I=${targetLUFS}:TP=-2:LRA=7`,
+        '-c:a',
+        'pcm_s16le',
         outputFile,
-        '-y'
+        '-y',
       ];
 
       await this.executeFFmpeg(command, `Audio normalization`);
@@ -233,7 +236,6 @@ export class FFmpegAudioMixer implements IAudioMixer {
       await this.cleanupFiles([inputFile, outputFile]);
 
       return result;
-
     } catch (error) {
       this.logger.error(`Audio normalization failed: ${(error as Error).message}`);
       throw error;
@@ -243,22 +245,17 @@ export class FFmpegAudioMixer implements IAudioMixer {
   async convertFormat(
     audio: Buffer,
     targetFormat: 'mp3' | 'wav' | 'aac',
-    quality: 'standard' | 'high' | 'premium' = 'high'
+    quality: 'standard' | 'high' | 'premium' = 'high',
   ): Promise<Buffer> {
     const sessionId = uuidv4();
-    
+
     try {
       const inputFile = join(this.tempDir, `input_${sessionId}.wav`);
       const outputFile = join(this.tempDir, `output_${sessionId}.${targetFormat}`);
 
       await fs.writeFile(inputFile, audio);
 
-      const command = this.buildFormatConversionCommand(
-        inputFile,
-        outputFile,
-        targetFormat,
-        quality
-      );
+      const command = this.buildFormatConversionCommand(inputFile, outputFile, targetFormat, quality);
 
       await this.executeFFmpeg(command, `Format conversion to ${targetFormat}`);
 
@@ -266,7 +263,6 @@ export class FFmpegAudioMixer implements IAudioMixer {
       await this.cleanupFiles([inputFile, outputFile]);
 
       return result;
-
     } catch (error) {
       this.logger.error(`Format conversion failed: ${(error as Error).message}`);
       throw error;
@@ -280,11 +276,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
     const filters = [];
 
     // 音量调整
-    filters.push(`[0:a]volume=${options.voiceVolume}[voice]`);
-    filters.push(`[1:a]volume=${options.soundscapeVolume}[bg]`);
-
-    // 混音
-    filters.push(`[voice][bg]amix=inputs=2:duration=shortest:dropout_transition=3[mixed]`);
+    filters.push(`[0:a]volume=${options.voiceVolume}[voice]`, `[1:a]volume=${options.soundscapeVolume}[bg]`, `[voice][bg]amix=inputs=2:duration=shortest:dropout_transition=3[mixed]`);
 
     // 淡入淡出
     let finalFilter = '[mixed]';
@@ -294,16 +286,19 @@ export class FFmpegAudioMixer implements IAudioMixer {
     }
 
     if (options.fadeOutDuration > 0) {
-      filters.push(`${finalFilter}afade=t=out:st=end-${options.fadeOutDuration}:d=${options.fadeOutDuration}:curve=exp[fadeout]`);
+      filters.push(
+        `${finalFilter}afade=t=out:st=end-${options.fadeOutDuration}:d=${options.fadeOutDuration}:curve=exp[fadeout]`,
+      );
       finalFilter = '[fadeout]';
     }
 
     // EQ设置
     if (options.eqSettings) {
       const eq = options.eqSettings;
-      const eqFilter = `equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:` +
-                      `equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:` +
-                      `equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
+      const eqFilter =
+        `equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:` +
+        `equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:` +
+        `equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
       filters.push(`${finalFilter}${eqFilter}[eqed]`);
       finalFilter = '[eqed]';
     }
@@ -326,15 +321,17 @@ export class FFmpegAudioMixer implements IAudioMixer {
     const filters = [];
 
     // 立体声宽度调整
-    if (settings.spatialWidth !== 1.0) {
-      filters.push(`[0:a]stereotools=mlev=0.8:mwid=${settings.spatialWidth}[stereo]`);
-    } else {
+    if (settings.spatialWidth === 1) {
       filters.push(`[0:a]anull[stereo]`);
+    } else {
+      filters.push(`[0:a]stereotools=mlev=0.8:mwid=${settings.spatialWidth}[stereo]`);
     }
 
     // 延迟效果
     if (settings.leftDelay > 0 || settings.rightDelay > 0) {
-      filters.push(`[stereo]aecho=0.8:0.9:${settings.rightDelay}|${settings.leftDelay}:${settings.reverbAmount}|${settings.reverbAmount}[delayed]`);
+      filters.push(
+        `[stereo]aecho=0.8:0.9:${settings.rightDelay}|${settings.leftDelay}:${settings.reverbAmount}|${settings.reverbAmount}[delayed]`,
+      );
     } else {
       filters.push(`[stereo]anull[delayed]`);
     }
@@ -351,42 +348,53 @@ export class FFmpegAudioMixer implements IAudioMixer {
     inputFile: string,
     outputFile: string,
     format: string,
-    quality: string
+    quality: string,
   ): string[] {
     const baseCommand = ['-i', inputFile];
 
     switch (format) {
-      case 'mp3':
+      case 'mp3': {
         const mp3Quality: Record<string, string> = {
-          'standard': '192k',
-          'high': '256k',
-          'premium': '320k'
+          standard: '192k',
+          high: '256k',
+          premium: '320k',
         };
-        return [...baseCommand, '-c:a', 'libmp3lame', '-b:a', mp3Quality[quality] || mp3Quality.standard, outputFile, '-y'];
+        return [
+          ...baseCommand,
+          '-c:a',
+          'libmp3lame',
+          '-b:a',
+          mp3Quality[quality] || mp3Quality.standard,
+          outputFile,
+          '-y',
+        ];
+      }
 
-      case 'aac':
+      case 'aac': {
         const aacQuality: Record<string, string> = {
-          'standard': '128k',
-          'high': '192k', 
-          'premium': '256k'
+          standard: '128k',
+          high: '192k',
+          premium: '256k',
         };
         return [...baseCommand, '-c:a', 'aac', '-b:a', aacQuality[quality] || aacQuality.standard, outputFile, '-y'];
+      }
 
       case 'wav':
-      default:
+      default: {
         return [...baseCommand, '-c:a', 'pcm_s16le', '-ar', '44100', outputFile, '-y'];
+      }
     }
   }
 
   /**
    * 执行FFmpeg命令
    */
-  private executeFFmpeg(args: string[], description: string): Promise<void> {
+  private async executeFFmpeg(args: string[], description: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.logger.debug(`Executing FFmpeg: ${this.ffmpegPath} ${args.join(' ')}`);
 
       const process = spawn(this.ffmpegPath, args, {
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       let stderr = '';
@@ -418,16 +426,10 @@ export class FFmpegAudioMixer implements IAudioMixer {
    */
   private async getDetailedAudioInfo(filePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const args = [
-        '-v', 'quiet',
-        '-print_format', 'json',
-        '-show_format',
-        '-show_streams',
-        filePath
-      ];
+      const args = ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', filePath];
 
       const process = spawn(this.ffprobePath, args, {
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
 
       let stdout = '';
@@ -460,15 +462,15 @@ export class FFmpegAudioMixer implements IAudioMixer {
    */
   private generateQualityReport(metadata: any): AudioQualityReport {
     const audioStream = metadata.streams.find((s: any) => s.codec_type === 'audio');
-    const format = metadata.format;
+    const {format} = metadata;
 
-    const sampleRate = parseInt(audioStream.sample_rate);
-    const bitRate = parseInt(format.bit_rate);
-    const duration = parseFloat(format.duration);
+    const sampleRate = Number.parseInt(audioStream.sample_rate);
+    const bitRate = Number.parseInt(format.bit_rate);
+    const duration = Number.parseFloat(format.duration);
 
     // 基于标准评估质量
     const standards = AudioQualityStandards.ASMR_RECOMMENDED;
-    
+
     const technicalScore = this.calculateTechnicalScore(sampleRate, bitRate, audioStream);
     const asmrScore = this.calculateASMRScore(sampleRate, bitRate);
 
@@ -478,7 +480,7 @@ export class FFmpegAudioMixer implements IAudioMixer {
         sampleRate,
         bitRate,
         dynamicRange: 16, // 需要更复杂的分析
-        noiseFloor: -60,  // 需要频谱分析
+        noiseFloor: -60, // 需要频谱分析
         frequencyResponse: {
           peakFrequency: 1000,
           averageFrequency: 800,
@@ -501,13 +503,13 @@ export class FFmpegAudioMixer implements IAudioMixer {
     let score = 5; // 基础分
 
     // 采样率评分
-    if (sampleRate >= 48000) score += 2;
-    else if (sampleRate >= 44100) score += 1;
+    if (sampleRate >= 48_000) score += 2;
+    else if (sampleRate >= 44_100) score += 1;
 
     // 比特率评分
-    if (bitRate >= 320000) score += 2;
-    else if (bitRate >= 256000) score += 1.5;
-    else if (bitRate >= 192000) score += 1;
+    if (bitRate >= 320_000) score += 2;
+    else if (bitRate >= 256_000) score += 1.5;
+    else if (bitRate >= 192_000) score += 1;
 
     // 声道评分
     if (stream.channels >= 2) score += 1;
@@ -519,8 +521,8 @@ export class FFmpegAudioMixer implements IAudioMixer {
     let score = 5;
 
     // ASMR特定评分标准
-    if (sampleRate >= 44100 && bitRate >= 256000) score += 3;
-    else if (sampleRate >= 44100 && bitRate >= 192000) score += 2;
+    if (sampleRate >= 44_100 && bitRate >= 256_000) score += 3;
+    else if (sampleRate >= 44_100 && bitRate >= 192_000) score += 2;
 
     return Math.min(10, score);
   }
@@ -528,11 +530,11 @@ export class FFmpegAudioMixer implements IAudioMixer {
   private generateRecommendations(sampleRate: number, bitRate: number, score: number): string[] {
     const recommendations = [];
 
-    if (sampleRate < 44100) {
+    if (sampleRate < 44_100) {
       recommendations.push('建议使用44.1kHz或更高的采样率');
     }
 
-    if (bitRate < 256000) {
+    if (bitRate < 256_000) {
       recommendations.push('建议使用256kbps或更高的比特率以确保ASMR质量');
     }
 
@@ -551,8 +553,8 @@ export class FFmpegAudioMixer implements IAudioMixer {
     return {
       overallScore: 5,
       technicalMetrics: {
-        sampleRate: 44100,
-        bitRate: 256000,
+        sampleRate: 44_100,
+        bitRate: 256_000,
         dynamicRange: 16,
         noiseFloor: -60,
         frequencyResponse: {
@@ -575,12 +577,12 @@ export class FFmpegAudioMixer implements IAudioMixer {
 
   private async getAudioDuration(audioBuffer: Buffer): Promise<number> {
     // 简化的时长计算，实际应使用ffprobe
-    return Math.floor(audioBuffer.length / (44100 * 2 * 2)); // 44.1kHz, 16-bit, stereo
+    return Math.floor(audioBuffer.length / (44_100 * 2 * 2)); // 44.1kHz, 16-bit, stereo
   }
 
   private async ensureTempDirectory(): Promise<void> {
     try {
-      await fs.mkdir(this.tempDir, { recursive: true });
+      await fs.mkdir(this.tempDir, {recursive: true});
     } catch (error) {
       this.logger.error(`Failed to create temp directory: ${(error as Error).message}`);
     }

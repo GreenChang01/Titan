@@ -47,10 +47,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   // 配置全局异常过滤器
-  app.useGlobalFilters(
-    new GlobalExceptionFilter(),
-    new MikroOrmExceptionFilter()
-  );
+  app.useGlobalFilters(new GlobalExceptionFilter(), new MikroOrmExceptionFilter());
 
   // 配置全局响应拦截器
   app.useGlobalInterceptors(new ResponseInterceptor());
@@ -58,9 +55,11 @@ async function bootstrap(): Promise<void> {
   // 配置 Swagger API 文档（仅在启用时）
   if (process.env.ENABLE_SWAGGER === 'true') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('Titan | 素材协作平台 API')
-      .setDescription('Titan 素材协作平台后端接口文档')
-      .setVersion('1.0')
+      .setTitle('Titan | 智能内容生产与分发平台 API')
+      .setDescription(
+        'Titan V1.1 智能内容生产与分发平台后端接口文档 - 专为中老年ASMR内容批量生产和微信视频号自动发布设计',
+      )
+      .setVersion('1.1')
       .addBearerAuth(
         {
           description: 'JWT Authorization header using the Bearer scheme',
@@ -68,9 +67,9 @@ async function bootstrap(): Promise<void> {
           bearerFormat: 'JWT',
           scheme: 'bearer',
           type: 'http',
-          in: 'Header'
+          in: 'Header',
         },
-        'access-token'
+        'access-token',
       )
       .build();
     const documentFactory = (): OpenAPIObject => SwaggerModule.createDocument(app, swaggerConfig);
@@ -89,7 +88,6 @@ async function bootstrap(): Promise<void> {
     logger.log(`Swagger is running on: ${await app.getUrl()}/api/docs`);
   }
 }
-
 
 // 启动应用程序
 // eslint-disable-next-line @typescript-eslint/no-floating-promises, unicorn/prefer-top-level-await

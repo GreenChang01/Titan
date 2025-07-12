@@ -1,4 +1,5 @@
 import {Test, TestingModule} from '@nestjs/testing';
+import {ConfigService} from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import {CryptoService} from './crypto.service';
 
@@ -17,7 +18,21 @@ describe('CryptoService', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CryptoService],
+      providers: [
+        CryptoService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'BCRYPT_ROUNDS') {
+                return 10;
+              }
+
+              return null;
+            }),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<CryptoService>(CryptoService);

@@ -16,6 +16,7 @@
 ### 1. 素材相关类型
 
 #### Asset 实体类型
+
 ```typescript
 // packages/shared/src/types/asset.types.ts
 export interface Asset {
@@ -39,17 +40,17 @@ export interface AssetMetadata {
   // 图片元数据
   width?: number;
   height?: number;
-  
+
   // 音视频元数据
-  duration?: number;          // 秒
+  duration?: number; // 秒
   bitrate?: number;
   sampleRate?: number;
   channels?: number;
-  
+
   // 视频特有
   fps?: number;
   codec?: string;
-  
+
   // 文件哈希值(去重用)
   hash?: string;
 }
@@ -61,17 +62,18 @@ export enum AssetType {
   BGM_AUDIO = 'bgm_audio',
   TEXT_CONTENT = 'text_content',
   SUBTITLE_FILE = 'subtitle_file',
-  WATERMARK_IMAGE = 'watermark_image'
+  WATERMARK_IMAGE = 'watermark_image',
 }
 
 export enum UploadSource {
   LOCAL = 'local',
   ALIYUN_DRIVE = 'aliyun_drive',
-  URL_IMPORT = 'url_import'
+  URL_IMPORT = 'url_import',
 }
 ```
 
 #### 素材搜索和筛选类型
+
 ```typescript
 // packages/shared/src/types/asset-search.types.ts
 export interface AssetSearchFilters {
@@ -109,6 +111,7 @@ export interface PaginatedResult<T> {
 ### 2. 项目相关类型
 
 #### Project 实体类型
+
 ```typescript
 // packages/shared/src/types/project.types.ts
 export interface Project {
@@ -121,7 +124,7 @@ export interface Project {
   contentCount: number;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // 关联数据(可选)
   assets?: Asset[];
   contents?: GeneratedContent[];
@@ -131,7 +134,7 @@ export enum ProjectStatus {
   ACTIVE = 'active',
   COMPLETED = 'completed',
   PAUSED = 'paused',
-  ARCHIVED = 'archived'
+  ARCHIVED = 'archived',
 }
 
 export interface ProjectAssetRelation {
@@ -145,6 +148,7 @@ export interface ProjectAssetRelation {
 ### 3. 内容模板类型
 
 #### ContentTemplate 实体类型
+
 ```typescript
 // packages/shared/src/types/template.types.ts
 export interface ContentTemplate {
@@ -173,8 +177,8 @@ export interface SlotDefinition {
   displayName: string;
   assetType: AssetType;
   required: boolean;
-  multiple: boolean;           // 是否支持多个素材
-  maxCount?: number;          // 最大素材数量
+  multiple: boolean; // 是否支持多个素材
+  maxCount?: number; // 最大素材数量
   constraints?: SlotConstraints;
 }
 
@@ -182,17 +186,17 @@ export interface SlotConstraints {
   // 文件大小限制
   maxFileSize?: number;
   minFileSize?: number;
-  
+
   // 时长限制(音视频)
   maxDuration?: number;
   minDuration?: number;
-  
+
   // 尺寸限制(图片/视频)
   maxWidth?: number;
   maxHeight?: number;
   minWidth?: number;
   minHeight?: number;
-  
+
   // 支持的文件格式
   allowedFormats?: string[];
 }
@@ -202,7 +206,7 @@ export interface VideoSettings {
   fps: number;
   bitrate?: number;
   codec?: string;
-  duration?: number;          // 固定时长或"auto"
+  duration?: number; // 固定时长或"auto"
   watermark?: WatermarkSettings;
   subtitle?: SubtitleSettings;
 }
@@ -210,14 +214,14 @@ export interface VideoSettings {
 export interface VideoResolution {
   width: number;
   height: number;
-  label: string;              // "1080p", "720p", etc.
+  label: string; // "1080p", "720p", etc.
 }
 
 export interface WatermarkSettings {
   enabled: boolean;
   position: WatermarkPosition;
-  opacity: number;            // 0-1
-  scale: number;              // 0-1
+  opacity: number; // 0-1
+  scale: number; // 0-1
 }
 
 export interface SubtitleSettings {
@@ -233,7 +237,7 @@ export enum TemplateType {
   ASMR_IMAGE_TEXT = 'asmr_image_text',
   ASMR_DIALOGUE = 'asmr_dialogue',
   LANDSCAPE_MEDITATION = 'landscape_meditation',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 export enum WatermarkPosition {
@@ -241,19 +245,20 @@ export enum WatermarkPosition {
   TOP_RIGHT = 'top_right',
   BOTTOM_LEFT = 'bottom_left',
   BOTTOM_RIGHT = 'bottom_right',
-  CENTER = 'center'
+  CENTER = 'center',
 }
 
 export enum SubtitlePosition {
   TOP = 'top',
   CENTER = 'center',
-  BOTTOM = 'bottom'
+  BOTTOM = 'bottom',
 }
 ```
 
 ### 4. 内容生产类型
 
 #### ContentJob 实体类型
+
 ```typescript
 // packages/shared/src/types/job.types.ts
 export interface ContentJob {
@@ -266,9 +271,9 @@ export interface ContentJob {
   priority: JobPriority;
   inputConfig: JobInputConfig;
   outputPath?: string;
-  progress: number;           // 0-100
+  progress: number; // 0-100
   errorMessage?: string;
-  processingTime?: number;    // 秒
+  processingTime?: number; // 秒
   createdAt: Date;
   updatedAt: Date;
   completedAt?: Date;
@@ -289,7 +294,7 @@ export interface SlotAssignment {
 
 export enum JobType {
   SINGLE = 'single',
-  BATCH = 'batch'
+  BATCH = 'batch',
 }
 
 export enum JobStatus {
@@ -297,25 +302,26 @@ export enum JobStatus {
   PROCESSING = 'processing',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum JobPriority {
   LOW = 'low',
   NORMAL = 'normal',
   HIGH = 'high',
-  URGENT = 'urgent'
+  URGENT = 'urgent',
 }
 
 export enum MatchingStrategy {
-  ONE_TO_ONE = 'one_to_one',           // 一对一匹配
-  CARTESIAN = 'cartesian',             // 笛卡尔积
-  RANDOM = 'random',                   // 随机组合
-  SEQUENTIAL = 'sequential'            // 顺序匹配
+  ONE_TO_ONE = 'one_to_one', // 一对一匹配
+  CARTESIAN = 'cartesian', // 笛卡尔积
+  RANDOM = 'random', // 随机组合
+  SEQUENTIAL = 'sequential', // 顺序匹配
 }
 ```
 
 #### GeneratedContent 实体类型
+
 ```typescript
 // packages/shared/src/types/content.types.ts
 export interface GeneratedContent {
@@ -341,7 +347,7 @@ export interface ContentMetadata {
   usedAssets: AssetUsage[];
   videoSettings: VideoSettings;
   processingTime: number;
-  generationBatch?: string;    // 批次标识
+  generationBatch?: string; // 批次标识
 }
 
 export interface AssetUsage {
@@ -357,20 +363,21 @@ export enum PublishStatus {
   SCHEDULED = 'scheduled',
   PUBLISHING = 'publishing',
   PUBLISHED = 'published',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export enum PublishPlatform {
   WECHAT_VIDEO = 'wechat_video',
   DOUYIN = 'douyin',
   XIAOHONGSHU = 'xiaohongshu',
-  BILIBILI = 'bilibili'
+  BILIBILI = 'bilibili',
 }
 ```
 
 ### 5. 发布排期类型
 
 #### PublishSchedule 实体类型
+
 ```typescript
 // packages/shared/src/types/schedule.types.ts
 export interface PublishSchedule {
@@ -402,7 +409,7 @@ export interface PublishConfig {
 export interface PublishResult {
   success: boolean;
   publishedUrl?: string;
-  platformId?: string;        // 平台返回的内容ID
+  platformId?: string; // 平台返回的内容ID
   error?: string;
   responseData?: any;
 }
@@ -413,20 +420,21 @@ export enum ScheduleStatus {
   PUBLISHING = 'publishing',
   PUBLISHED = 'published',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum ContentVisibility {
   PUBLIC = 'public',
   PRIVATE = 'private',
   FRIENDS = 'friends',
-  FOLLOWERS = 'followers'
+  FOLLOWERS = 'followers',
 }
 ```
 
 ### 6. 微信集成类型
 
 #### WechatIntegration 类型
+
 ```typescript
 // packages/shared/src/types/wechat.types.ts
 export interface WechatBinding {
@@ -435,8 +443,8 @@ export interface WechatBinding {
   wechatUserId: string;
   nickname: string;
   avatarUrl?: string;
-  accessToken: string;        // 加密存储
-  refreshToken: string;       // 加密存储
+  accessToken: string; // 加密存储
+  refreshToken: string; // 加密存储
   expiresAt: Date;
   scope: string[];
   bindingStatus: BindingStatus;
@@ -458,14 +466,14 @@ export enum BindingStatus {
   ACTIVE = 'active',
   EXPIRED = 'expired',
   REVOKED = 'revoked',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 export enum UploadStatus {
   PENDING = 'pending',
   UPLOADING = 'uploading',
   COMPLETED = 'completed',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 ```
 
@@ -477,7 +485,7 @@ export enum UploadStatus {
 
 ```typescript
 // packages/shared/src/dto/asset.dto.ts
-import { IsString, IsEnum, IsArray, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import {IsString, IsEnum, IsArray, IsOptional, IsNumber, Min, Max} from 'class-validator';
 
 export class CreateAssetDto {
   @IsString()
@@ -500,7 +508,7 @@ export class CreateAssetDto {
   assetType: AssetType;
 
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   tags: string[];
 
   @IsOptional()
@@ -520,7 +528,7 @@ export class UpdateAssetDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   tags?: string[];
 
   @IsOptional()
@@ -531,12 +539,12 @@ export class UpdateAssetDto {
 export class AssetSearchDto {
   @IsOptional()
   @IsArray()
-  @IsEnum(AssetType, { each: true })
+  @IsEnum(AssetType, {each: true})
   assetTypes?: AssetType[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   tags?: string[];
 
   @IsOptional()
@@ -561,7 +569,7 @@ export class AssetSearchDto {
 
 export class BatchAssetOperationDto {
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   assetIds: string[];
 
   @IsEnum(['delete', 'update_tags', 'move_to_project'])
@@ -611,7 +619,7 @@ export class UpdateProjectDto {
 
 export class AddAssetsToProjectDto {
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   assetIds: string[];
 }
 ```
@@ -636,7 +644,7 @@ export class CreateTemplateDto {
   templateConfig: TemplateConfig;
 
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => SlotDefinition)
   slotDefinitions: SlotDefinition[];
 
@@ -668,7 +676,7 @@ export class UpdateTemplateDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => SlotDefinition)
   slotDefinitions?: SlotDefinition[];
 
@@ -714,7 +722,7 @@ export class CreateBatchJobDto {
   templateId: string;
 
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => SlotAssignment)
   slotAssignments: SlotAssignment[];
 
@@ -775,7 +783,7 @@ export class UpdateScheduleDto {
 
 export class BatchCreateScheduleDto {
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   contentIds: string[];
 
   @IsEnum(PublishPlatform)
@@ -804,13 +812,13 @@ export class BatchScheduleRule {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  specificTimes?: string[];  // ["09:00", "17:00"]
+  @IsString({each: true})
+  specificTimes?: string[]; // ["09:00", "17:00"]
 
   @IsOptional()
   @IsArray()
-  @IsNumber({}, { each: true })
-  weekdays?: number[];       // [1,2,3,4,5] for Mon-Fri
+  @IsNumber({}, {each: true})
+  weekdays?: number[]; // [1,2,3,4,5] for Mon-Fri
 }
 ```
 
@@ -819,6 +827,7 @@ export class BatchScheduleRule {
 ## 🚀 构建和导出配置
 
 ### 更新 package.json
+
 ```json
 {
   "name": "@titan/shared",
@@ -846,6 +855,7 @@ export class BatchScheduleRule {
 ```
 
 ### 主入口文件更新
+
 ```typescript
 // packages/shared/src/index.ts
 // 实体类型
@@ -878,6 +888,7 @@ export * from './utils/type-utils';
 ```
 
 ### TypeScript 配置更新
+
 ```json
 // packages/shared/tsconfig.json
 {
@@ -906,11 +917,12 @@ export * from './utils/type-utils';
 ## 🧪 验证规则
 
 ### 自定义验证器
+
 ```typescript
 // packages/shared/src/validators/custom-validators.ts
-import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface} from 'class-validator';
 
-@ValidatorConstraint({ async: false })
+@ValidatorConstraint({async: false})
 export class IsValidAssetTypeConstraint implements ValidatorConstraintInterface {
   validate(assetType: AssetType) {
     return Object.values(AssetType).includes(assetType);
@@ -934,7 +946,7 @@ export function IsValidAssetType(validationOptions?: ValidationOptions) {
 }
 
 // 文件大小验证
-@ValidatorConstraint({ async: false })
+@ValidatorConstraint({async: false})
 export class IsValidFileSizeConstraint implements ValidatorConstraintInterface {
   validate(fileSize: number) {
     const maxSize = 500 * 1024 * 1024; // 500MB
@@ -964,23 +976,27 @@ export function IsValidFileSize(validationOptions?: ValidationOptions) {
 ## 📝 开发任务清单
 
 ### Phase 1: 基础类型定义
+
 - [ ] 创建所有实体类型接口
 - [ ] 定义所有枚举类型
 - [ ] 创建工具类型和泛型
 
 ### Phase 2: DTOs 和验证
+
 - [ ] 创建所有 Create/Update DTOs
 - [ ] 添加 class-validator 装饰器
 - [ ] 实现自定义验证器
 - [ ] 编写 DTO 单元测试
 
 ### Phase 3: 构建和集成
+
 - [ ] 更新构建配置
 - [ ] 更新导出配置
 - [ ] 测试前后端集成
 - [ ] 生成类型声明文件
 
 ### Phase 4: 文档和工具
+
 - [ ] 生成 API 文档
 - [ ] 创建类型使用示例
 - [ ] 添加 ESLint 规则
@@ -989,12 +1005,14 @@ export function IsValidFileSize(validationOptions?: ValidationOptions) {
 ---
 
 **关键更新点**:
+
 1. **类型安全**: 所有新功能都有完整的类型定义
 2. **验证完整**: DTOs 包含全面的验证规则
 3. **向后兼容**: 不影响现有用户认证功能
 4. **易于扩展**: 为未来功能预留扩展点
 
 **验收标准**:
+
 - [ ] 前后端能够正确导入和使用所有类型
 - [ ] 所有 DTOs 验证规则正确工作
 - [ ] 类型定义覆盖所有业务场景

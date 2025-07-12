@@ -10,9 +10,9 @@ import {loginCredentialsSchema} from './types/login-credentials.schema.ts';
 import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {type ApiError} from '@/utils/api/api-error.ts';
 import {Link, useRouter} from '@/i18n/navigation.ts';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 
 export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentialsProps): JSX.Element {
   const {loginCredentials} = useAuthApi();
@@ -54,11 +54,8 @@ export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentia
       <div className="text-center">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
       </div>
-      
-      <form
-        className="w-full max-w-sm space-y-4"
-        onSubmit={handleSubmitCredentials(onSubmitCredentials)}
-      >
+
+      <form className="w-full max-w-sm space-y-4" onSubmit={handleSubmitCredentials(onSubmitCredentials)}>
         <div className="space-y-2">
           <Label htmlFor="email">{t('email-input-label')}</Label>
           <Input
@@ -68,9 +65,11 @@ export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentia
             placeholder={t('email-input-label')}
             data-testid="login-email"
           />
-          {errorsCredentials.email ? <p className="text-sm text-destructive">{errorsCredentials.email.message}</p> : null}
+          {errorsCredentials.email ? (
+            <p className="text-sm text-destructive">{errorsCredentials.email.message}</p>
+          ) : null}
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="password">{t('password-input-label')}</Label>
           <Input
@@ -80,29 +79,24 @@ export function LoginCredentials({handleLoginCredentialsSuccess}: LoginCredentia
             placeholder={t('password-input-label')}
             data-testid="login-password"
           />
-          {errorsCredentials.password ? <p className="text-sm text-destructive">{errorsCredentials.password.message}</p> : null}
+          {errorsCredentials.password ? (
+            <p className="text-sm text-destructive">{errorsCredentials.password.message}</p>
+          ) : null}
         </div>
 
-        <Button
-          type="submit"
-          disabled={isSubmittingCredentials}
-          className="w-full"
-          data-testid="login-submit"
-        >
+        <Button type="submit" disabled={isSubmittingCredentials} className="w-full" data-testid="login-submit">
           {isSubmittingCredentials ? t('submit-button-loading-label') : t('submit-button-label')}
         </Button>
-        
-        {errorsCredentials.root ? <p className="text-sm text-destructive text-center">{errorsCredentials.root.message}</p> : null}
+
+        {errorsCredentials.root ? (
+          <p className="text-sm text-destructive text-center">{errorsCredentials.root.message}</p>
+        ) : null}
       </form>
-      
+
       <div className="text-center space-y-2">
         <p className="text-sm text-muted-foreground">
           {t('forgot-password-question')}{' '}
-          <Link 
-            className="text-primary hover:underline" 
-            href="/forgot-password" 
-            data-testid="login-forgot-password"
-          >
+          <Link className="text-primary hover:underline" href="/forgot-password" data-testid="login-forgot-password">
             {t('forgot-password-link-label')}
           </Link>
         </p>

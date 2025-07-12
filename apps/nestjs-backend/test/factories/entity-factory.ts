@@ -1,12 +1,12 @@
-import { Collection } from '@mikro-orm/core';
-import { User } from '../../src/users/entities/user.entity';
-import { Project } from '../../src/project/entities/project.entity';
-import { ProjectMaterial } from '../../src/project-material/entities/project-material.entity';
-import { AliyunDriveConfig } from '../../src/aliyun-drive/entities/aliyun-drive-config.entity';
-import { UserStatus } from '@titan/shared';
+import {Collection} from '@mikro-orm/core';
+import {UserStatus} from '@titan/shared';
+import {User} from '../../src/users/entities/user.entity';
+import {Project} from '../../src/project/entities/project.entity';
+import {ProjectMaterial} from '../../src/project-material/entities/project-material.entity';
+import {AliyunDriveConfig} from '../../src/aliyun-drive/entities/aliyun-drive-config.entity';
 
 // Collection 的 mock 实现
-type MockCollection<T extends object> = Partial<Collection<T>> & {
+type MockCollection<T extends object = any> = Partial<Collection<T>> & {
   getItems: () => T[];
   isInitialized: () => boolean;
   add: jest.Mock;
@@ -15,7 +15,7 @@ type MockCollection<T extends object> = Partial<Collection<T>> & {
 };
 
 // 创建 Collection mock 的辅助函数
-export function createMockCollection<T extends object>(items: T[] = []): MockCollection<T> {
+export function createMockCollection<T extends object = any>(items: T[] = []): MockCollection<T> {
   return {
     getItems: () => items,
     isInitialized: () => true,
@@ -44,12 +44,12 @@ export function createMockUser(overrides: Partial<User> = {}): User {
     aliyunDriveConfig: [],
   };
 
-  return { ...defaultUser, ...overrides } as User;
+  return {...defaultUser, ...overrides} as User;
 }
 
 // Project 实体工厂函数
 export function createMockProject(overrides: Partial<Project> = {}): Project {
-  const defaultUser = createMockUser({ id: 'owner-123', username: 'owner' });
+  const defaultUser = createMockUser({id: 'owner-123', username: 'owner'});
 
   const defaultProject = {
     id: 'project-123',
@@ -64,12 +64,12 @@ export function createMockProject(overrides: Partial<Project> = {}): Project {
     materials: createMockCollection<ProjectMaterial>([]),
   };
 
-  return { ...defaultProject, ...overrides } as Project;
+  return {...defaultProject, ...overrides} as Project;
 }
 
 // ProjectMaterial 实体工厂函数
 export function createMockProjectMaterial(overrides: Partial<ProjectMaterial> = {}): ProjectMaterial {
-  const defaultProject = createMockProject({ id: 'material-project-123' });
+  const defaultProject = createMockProject({id: 'material-project-123'});
 
   const defaultMaterial = {
     id: 'material-123',
@@ -84,12 +84,12 @@ export function createMockProjectMaterial(overrides: Partial<ProjectMaterial> = 
     updatedAt: new Date('2024-01-01T00:00:00Z'),
   };
 
-  return { ...defaultMaterial, ...overrides } as ProjectMaterial;
+  return {...defaultMaterial, ...overrides} as ProjectMaterial;
 }
 
 // AliyunDriveConfig 实体工厂函数
 export function createMockAliyunDriveConfig(overrides: Partial<AliyunDriveConfig> = {}): AliyunDriveConfig {
-  const defaultUser = createMockUser({ id: 'config-user-123' });
+  const defaultUser = createMockUser({id: 'config-user-123'});
 
   const defaultConfig = {
     id: 'config-123',
@@ -97,7 +97,7 @@ export function createMockAliyunDriveConfig(overrides: Partial<AliyunDriveConfig
     username: 'testuser',
     encryptedPassword: 'encrypted_password',
     displayName: 'Test Config',
-    timeout: 30000,
+    timeout: 30_000,
     basePath: '/',
     isActive: true,
     lastSyncAt: new Date('2024-01-01T00:00:00Z'),
@@ -107,11 +107,11 @@ export function createMockAliyunDriveConfig(overrides: Partial<AliyunDriveConfig
     updatedAt: new Date('2024-01-01T00:00:00Z'),
   };
 
-  return { ...defaultConfig, ...overrides } as AliyunDriveConfig;
+  return {...defaultConfig, ...overrides} as AliyunDriveConfig;
 }
 
 // Repository mock 辅助函数
-export type MockRepository<T extends object> = {
+export type MockRepository<T = any> = {
   create: jest.Mock;
   assign: jest.Mock;
   findOne: jest.Mock;
@@ -121,7 +121,7 @@ export type MockRepository<T extends object> = {
   flush: jest.Mock;
 };
 
-export function createMockRepository<T extends object>(): MockRepository<T> {
+export function createMockRepository<T = any>(): MockRepository<T> {
   return {
     create: jest.fn(),
     assign: jest.fn(),

@@ -1,4 +1,4 @@
-import { IsEnum, IsArray, IsString, IsOptional } from 'class-validator';
+import {IsEnum, IsArray, IsString, IsOptional} from 'class-validator';
 
 export enum BatchOperationType {
   DELETE = 'delete',
@@ -8,14 +8,14 @@ export enum BatchOperationType {
 
 export class BatchOperationDto {
   @IsArray()
-  @IsString({ each: true })
-  assetIds: string[];
+  @IsString({each: true})
+  assetIds!: string[];
 
   @IsEnum(BatchOperationType)
-  operation: BatchOperationType;
+  operation!: BatchOperationType;
 
   @IsArray()
-  @IsString({ each: true })
+  @IsString({each: true})
   @IsOptional()
   tags?: string[];
 

@@ -1,16 +1,15 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance } from 'axios';
+import {Injectable, Logger, HttpException, HttpStatus} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import axios, {AxiosInstance} from 'axios';
 import {
   IAudioProvider,
   VoiceOptions,
   Voice,
   VoiceGenerationResult,
   VoiceCloneResult,
-  ASMRVoicePresets
 } from '../interfaces';
 
-interface ElevenLabsVoice {
+type ElevenLabsVoice = {
   voice_id: string;
   name: string;
   category: string;
@@ -19,7 +18,7 @@ interface ElevenLabsVoice {
   labels?: Record<string, string>;
 }
 
-interface ElevenLabsResponse {
+type ElevenLabsResponse = {
   voices: ElevenLabsVoice[];
 }
 
@@ -44,7 +43,7 @@ export class ElevenLabsProvider implements IAudioProvider {
         'xi-api-key': this.apiKey,
         'Content-Type': 'application/json',
       },
-      timeout: 60000, // 60秒超时
+      timeout: 60_000, // 60秒超时
     });
 
     this.setupInterceptors();
@@ -56,10 +55,10 @@ export class ElevenLabsProvider implements IAudioProvider {
         this.logger.debug(`ElevenLabs API Request: ${config.method?.toUpperCase()} ${config.url}`);
         return config;
       },
-      (error) => {
+      async (error) => {
         this.logger.error('ElevenLabs API Request Error:', error.message);
-        return Promise.reject(error);
-      }
+        throw error;
+      },
     );
 
     this.client.interceptors.response.use(
@@ -71,7 +70,7 @@ export class ElevenLabsProvider implements IAudioProvider {
         const status = error.response?.status;
         const message = error.response?.data?.detail || error.message;
         this.logger.error(`ElevenLabs API Error: ${status} - ${message}`);
-        
+
         // 转换为标准HTTP异常
         if (status === 401) {
           throw new HttpException('ElevenLabs API authentication failed', HttpStatus.UNAUTHORIZED);
@@ -80,18 +79,15 @@ export class ElevenLabsProvider implements IAudioProvider {
         } else if (status >= 500) {
           throw new HttpException('ElevenLabs API server error', HttpStatus.SERVICE_UNAVAILABLE);
         }
-        
-        throw new HttpException(
-          `ElevenLabs API error: ${message}`,
-          status || HttpStatus.INTERNAL_SERVER_ERROR
-        );
-      }
+
+        throw new HttpException(`ElevenLabs API error: ${message}`, status || HttpStatus.INTERNAL_SERVER_ERROR);
+      },
     );
   }
 
   async generateVoice(text: string, options: VoiceOptions): Promise<VoiceGenerationResult> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.log(`Generating voice for text length: ${text.length} characters`);
 
@@ -109,16 +105,12 @@ export class ElevenLabsProvider implements IAudioProvider {
         },
       };
 
-      const response = await this.client.post(
-        `/v1/text-to-speech/${options.voiceId}`,
-        requestData,
-        {
-          responseType: 'arraybuffer',
-          headers: {
-            'Accept': 'audio/mpeg',
-          },
-        }
-      );
+      const response = await this.client.post(`/v1/text-to-speech/${options.voiceId}`, requestData, {
+        responseType: 'arraybuffer',
+        headers: {
+          Accept: 'audio/mpeg',
+        },
+      });
 
       const audioBuffer = Buffer.from(response.data);
       const processingTime = Date.now() - startTime;
@@ -137,7 +129,6 @@ export class ElevenLabsProvider implements IAudioProvider {
           cost: await this.estimateCost(text, options),
         },
       };
-
     } catch (error) {
       this.logger.error(`Voice generation failed: ${(error as Error).message}`);
       throw error;
@@ -149,12 +140,12 @@ export class ElevenLabsProvider implements IAudioProvider {
       this.logger.log('Fetching available voices from ElevenLabs');
 
       const response = await this.client.get<ElevenLabsResponse>('/v1/voices');
-      
-      let voices = response.data.voices.map(voice => this.transformVoice(voice));
+
+      let voices = response.data.voices.map((voice) => this.transformVoice(voice));
 
       // 按分类过滤
       if (category) {
-        voices = voices.filter(voice => voice.category?.toLowerCase() === category.toLowerCase());
+        voices = voices.filter((voice) => voice.category?.toLowerCase() === category.toLowerCase());
       }
 
       // 为ASMR用途标记推荐语音
@@ -162,7 +153,6 @@ export class ElevenLabsProvider implements IAudioProvider {
 
       this.logger.log(`Retrieved ${voices.length} voices`);
       return voices;
-
     } catch (error) {
       this.logger.error(`Failed to fetch voices: ${(error as Error).message}`);
       throw error;
@@ -184,10 +174,10 @@ export class ElevenLabsProvider implements IAudioProvider {
       this.logger.log(`Starting voice cloning for: ${name}`);
 
       const formData = new FormData();
-      const audioBlob = new Blob([audioSample], { type: 'audio/mpeg' });
+      const audioBlob = new Blob([audioSample], {type: 'audio/mpeg'});
       formData.append('files', audioBlob, 'sample.mp3');
       formData.append('name', name);
-      
+
       if (description) {
         formData.append('description', description);
       }
@@ -203,7 +193,6 @@ export class ElevenLabsProvider implements IAudioProvider {
         name: response.data.name,
         status: 'processing', // ElevenLabs通常需要处理时间
       };
-
     } catch (error) {
       this.logger.error(`Voice cloning failed: ${(error as Error).message}`);
       throw error;
@@ -213,7 +202,7 @@ export class ElevenLabsProvider implements IAudioProvider {
   async getCloneStatus(voiceId: string): Promise<VoiceCloneResult> {
     try {
       const voice = await this.getVoiceById(voiceId);
-      
+
       return {
         voiceId: voice.id,
         name: voice.name,
@@ -230,11 +219,11 @@ export class ElevenLabsProvider implements IAudioProvider {
     // ElevenLabs按字符计费，大约$0.18-0.30 per 1000 characters
     const characterCount = text.length;
     const baseRate = 0.0002; // $0.2 per 1000 characters
-    
+
     // 高质量模型可能更贵
-    const modelMultiplier = options.model?.includes('turbo') ? 1.5 : 1.0;
-    
-    return (characterCount * baseRate * modelMultiplier);
+    const modelMultiplier = options.model?.includes('turbo') ? 1.5 : 1;
+
+    return characterCount * baseRate * modelMultiplier;
   }
 
   async validateConnection(): Promise<boolean> {
@@ -253,7 +242,7 @@ export class ElevenLabsProvider implements IAudioProvider {
    */
   private applyASMROptimization(options: VoiceOptions): VoiceOptions {
     // 如果未指定参数，使用ASMR优化的默认值
-    const optimized = { ...options };
+    const optimized = {...options};
 
     if (optimized.stability === undefined) {
       optimized.stability = 0.8; // 高稳定性适合ASMR
@@ -293,15 +282,13 @@ export class ElevenLabsProvider implements IAudioProvider {
    * 标记适合ASMR的语音
    */
   private markASMRSuitableVoices(voices: Voice[]): Voice[] {
-    return voices.map(voice => {
+    return voices.map((voice) => {
       // 基于名称和描述判断是否适合ASMR
       const name = voice.name.toLowerCase();
       const description = voice.description?.toLowerCase() || '';
-      
+
       const asmrKeywords = ['calm', 'gentle', 'soft', 'soothing', 'warm', 'peaceful'];
-      const isASMRSuitable = asmrKeywords.some(keyword => 
-        name.includes(keyword) || description.includes(keyword)
-      );
+      const isASMRSuitable = asmrKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword));
 
       if (isASMRSuitable) {
         voice.description = `${voice.description || ''} [ASMR推荐]`.trim();
@@ -318,7 +305,7 @@ export class ElevenLabsProvider implements IAudioProvider {
     // 简化的元数据提取，实际应使用ffprobe
     return {
       duration: Math.floor(audioBuffer.length / 4410), // 粗略估算
-      sampleRate: 22050, // ElevenLabs默认输出
+      sampleRate: 22_050, // ElevenLabs默认输出
       format: 'mp3',
       size: audioBuffer.length,
     };

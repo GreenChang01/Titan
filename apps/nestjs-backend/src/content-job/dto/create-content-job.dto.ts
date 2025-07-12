@@ -1,45 +1,45 @@
-import { IsUUID, IsEnum, IsArray, ValidateNested, IsOptional, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { JobType } from '../../common/enums';
+import {IsUUID, IsEnum, IsArray, ValidateNested, IsOptional, IsString} from 'class-validator';
+import {Type} from 'class-transformer';
+import {ApiProperty} from '@nestjs/swagger';
+import {JobType} from '../../common/enums';
 
 export class AssetMapping {
-  @ApiProperty({ description: '素材ID' })
+  @ApiProperty({description: '素材ID'})
   @IsUUID()
-  assetId: string;
+  assetId!: string;
 
-  @ApiProperty({ description: '插槽名称' })
+  @ApiProperty({description: '插槽名称'})
   @IsString()
-  slotName: string;
+  slotName!: string;
 
-  @ApiProperty({ description: '参数配置', required: false })
+  @ApiProperty({description: '参数配置', required: false})
   @IsOptional()
   parameters?: Record<string, any>;
 }
 
 export class CreateContentJobDto {
-  @ApiProperty({ description: '项目ID' })
+  @ApiProperty({description: '项目ID'})
   @IsUUID()
-  projectId: string;
+  projectId!: string;
 
-  @ApiProperty({ description: '模板ID' })
+  @ApiProperty({description: '模板ID'})
   @IsUUID()
-  templateId: string;
+  templateId!: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: '任务类型',
     enum: JobType,
-    default: JobType.SINGLE
+    default: JobType.SINGLE,
   })
   @IsEnum(JobType)
   jobType: JobType = JobType.SINGLE;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: '输入素材映射',
-    type: [AssetMapping]
+    type: [AssetMapping],
   })
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => AssetMapping)
-  inputAssets: AssetMapping[];
+  inputAssets!: AssetMapping[];
 }

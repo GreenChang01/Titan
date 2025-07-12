@@ -6,10 +6,7 @@ import {AliyunDriveService} from './aliyun-drive.service';
 import {AliyunDriveController} from './aliyun-drive.controller';
 
 @Module({
-  imports: [
-    MikroOrmModule.forFeature([AliyunDriveConfig]),
-    CryptoModule,
-  ],
+  imports: [MikroOrmModule.forFeature([AliyunDriveConfig]), CryptoModule],
   providers: [AliyunDriveService],
   controllers: [AliyunDriveController],
   exports: [AliyunDriveService],

@@ -34,29 +34,37 @@ import {
   CopyItemDto,
 } from './dto/index.js';
 
-@ApiTags('aliyun-drive')
+/**
+ * 阿里云盘管理控制器
+ * 负责处理阿里云盘的配置、文件浏览、上传下载等操作
+ * 支持WebDAV协议进行文件管理
+ */
+@ApiTags('阿里云盘管理')
 @Controller('aliyun-drive')
 export class AliyunDriveController {
   constructor(private readonly aliyunDriveService: AliyunDriveService) {}
 
-  // 配置管理端点
+  /**
+   * 创建WebDAV配置
+   * 为当前用户创建新的阿里云盘WebDAV配置
+   */
   @Post('config')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Create WebDAV configuration',
-    description: 'Create a new WebDAV configuration for the authenticated user'
+    summary: '创建WebDAV配置',
+    description: '为当前认证用户创建新的阿里云盘WebDAV配置，用于后续文件操作',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Configuration created successfully'
+    description: 'Configuration created successfully',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid input data'
+    description: 'Invalid input data',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'User not authenticated'
+    description: 'User not authenticated',
   })
   async createConfig(
     @User() user: UserEntity,
@@ -92,15 +100,15 @@ export class AliyunDriveController {
   @Get('config')
   @ApiOperation({
     summary: 'Get WebDAV configuration',
-    description: 'Get the WebDAV configuration for the authenticated user'
+    description: 'Get the WebDAV configuration for the authenticated user',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Configuration retrieved successfully'
+    description: 'Configuration retrieved successfully',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'User not authenticated'
+    description: 'User not authenticated',
   })
   async getConfig(@User() user: UserEntity): Promise<{
     id: string;
@@ -189,31 +197,31 @@ export class AliyunDriveController {
   @Get('files')
   @ApiOperation({
     summary: 'List files in WebDAV directory',
-    description: 'List files and directories with pagination and search support for large directories'
+    description: 'List files and directories with pagination and search support for large directories',
   })
   @ApiQuery({
     name: 'path',
     description: 'Directory path to list files from',
     required: false,
-    example: '/'
+    example: '/',
   })
   @ApiQuery({
     name: 'limit',
     description: 'Maximum number of files to return (1-1000)',
     required: false,
-    example: 100
+    example: 100,
   })
   @ApiQuery({
     name: 'offset',
     description: 'Number of files to skip for pagination',
     required: false,
-    example: 0
+    example: 0,
   })
   @ApiQuery({
     name: 'search',
     description: 'Search term to filter files by name',
     required: false,
-    example: 'photo'
+    example: 'photo',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -226,26 +234,26 @@ export class AliyunDriveController {
           items: {
             type: 'object',
             properties: {
-              name: { type: 'string', example: 'document.pdf' },
-              path: { type: 'string', example: '/documents/document.pdf' },
-              isDirectory: { type: 'boolean', example: false },
-              size: { type: 'number', example: 1024768 },
-              contentType: { type: 'string', example: 'application/pdf' },
-              lastModified: { type: 'string', format: 'date-time' }
-            }
-          }
+              name: {type: 'string', example: 'document.pdf'},
+              path: {type: 'string', example: '/documents/document.pdf'},
+              isDirectory: {type: 'boolean', example: false},
+              size: {type: 'number', example: 1_024_768},
+              contentType: {type: 'string', example: 'application/pdf'},
+              lastModified: {type: 'string', format: 'date-time'},
+            },
+          },
         },
-        total: { type: 'number', example: 250 },
-        path: { type: 'string', example: '/' },
-        limit: { type: 'number', example: 100 },
-        offset: { type: 'number', example: 0 },
-        hasMore: { type: 'boolean', example: true }
-      }
-    }
+        total: {type: 'number', example: 250},
+        path: {type: 'string', example: '/'},
+        limit: {type: 'number', example: 100},
+        offset: {type: 'number', example: 0},
+        hasMore: {type: 'boolean', example: true},
+      },
+    },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'WebDAV config not found'
+    description: 'WebDAV config not found',
   })
   async listFiles(@User() user: UserEntity, @Query() listDto: ListFilesDto): Promise<any> {
     const config = await this.aliyunDriveService.findByUser(user);
@@ -261,7 +269,7 @@ export class AliyunDriveController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({
     summary: 'Upload file to WebDAV',
-    description: 'Upload a file to the configured WebDAV server'
+    description: 'Upload a file to the configured WebDAV server',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -286,15 +294,15 @@ export class AliyunDriveController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'File uploaded successfully'
+    description: 'File uploaded successfully',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid file or missing data'
+    description: 'Invalid file or missing data',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'WebDAV configuration not found'
+    description: 'WebDAV configuration not found',
   })
   async uploadFile(
     @User() user: UserEntity,

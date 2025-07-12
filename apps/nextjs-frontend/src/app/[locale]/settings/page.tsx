@@ -1,22 +1,15 @@
 import {getTranslations} from 'next-intl/server';
 import {type JSX} from 'react';
+import {UserIcon, CloudIcon, BellIcon, ShieldIcon, CheckIcon, AlertTriangleIcon} from 'lucide-react';
 import {Breadcrumb} from '@/components/breadcrumb/breadcrumb.component';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Header } from '@/components/layout/header';
-import { Main } from '@/components/layout/main';
-import { 
-  UserIcon, 
-  CloudIcon, 
-  BellIcon, 
-  ShieldIcon,
-  CheckIcon,
-  AlertTriangleIcon
-} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Badge} from '@/components/ui/badge';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {Header} from '@/components/layout/header';
+import {Main} from '@/components/layout/main';
 
 export default async function Settings(): Promise<JSX.Element> {
   const t = await getTranslations('Page-Settings');
@@ -30,12 +23,8 @@ export default async function Settings(): Promise<JSX.Element> {
       <Main>
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              {t('title', {defaultMessage: '设置'})}
-            </h1>
-            <p className="text-muted-foreground">
-              {t('subtitle', {defaultMessage: '管理您的账户和应用程序设置'})}
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('title', {defaultMessage: '设置'})}</h1>
+            <p className="text-muted-foreground">{t('subtitle', {defaultMessage: '管理您的账户和应用程序设置'})}</p>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-4">
@@ -65,15 +54,11 @@ export default async function Settings(): Promise<JSX.Element> {
                     <UserIcon className="h-5 w-5" />
                     {t('profile-settings', {defaultMessage: '个人资料'})}
                   </CardTitle>
-                  <CardDescription>
-                    更新您的个人信息和账户详情
-                  </CardDescription>
+                  <CardDescription>更新您的个人信息和账户详情</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="username">
-                      {t('username', {defaultMessage: '用户名'})}
-                    </Label>
+                    <Label htmlFor="username">{t('username', {defaultMessage: '用户名'})}</Label>
                     <Input
                       id="username"
                       type="text"
@@ -81,18 +66,14 @@ export default async function Settings(): Promise<JSX.Element> {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">
-                      {t('email', {defaultMessage: '邮箱地址'})}
-                    </Label>
+                    <Label htmlFor="email">{t('email', {defaultMessage: '邮箱地址'})}</Label>
                     <Input
                       id="email"
                       type="email"
                       placeholder={t('email-placeholder', {defaultMessage: '请输入邮箱地址'})}
                     />
                   </div>
-                  <Button>
-                    {t('save-profile', {defaultMessage: '保存资料'})}
-                  </Button>
+                  <Button>{t('save-profile', {defaultMessage: '保存资料'})}</Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -104,9 +85,7 @@ export default async function Settings(): Promise<JSX.Element> {
                     <CloudIcon className="h-5 w-5" />
                     {t('aliyun-settings', {defaultMessage: '阿里云盘配置'})}
                   </CardTitle>
-                  <CardDescription>
-                    配置阿里云盘WebDAV连接以管理您的文件
-                  </CardDescription>
+                  <CardDescription>配置阿里云盘WebDAV连接以管理您的文件</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* 配置状态 */}
@@ -121,19 +100,11 @@ export default async function Settings(): Promise<JSX.Element> {
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="webdav-url">
-                        {t('webdav-url', {defaultMessage: 'WebDAV 地址'})}
-                      </Label>
-                      <Input
-                        id="webdav-url"
-                        type="url"
-                        placeholder="http://localhost:5244/dav"
-                      />
+                      <Label htmlFor="webdav-url">{t('webdav-url', {defaultMessage: 'WebDAV 地址'})}</Label>
+                      <Input id="webdav-url" type="url" placeholder="http://localhost:5244/dav" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="webdav-username">
-                        {t('webdav-username', {defaultMessage: '用户名'})}
-                      </Label>
+                      <Label htmlFor="webdav-username">{t('webdav-username', {defaultMessage: '用户名'})}</Label>
                       <Input
                         id="webdav-username"
                         type="text"
@@ -141,9 +112,7 @@ export default async function Settings(): Promise<JSX.Element> {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="webdav-password">
-                        {t('webdav-password', {defaultMessage: '密码'})}
-                      </Label>
+                      <Label htmlFor="webdav-password">{t('webdav-password', {defaultMessage: '密码'})}</Label>
                       <Input
                         id="webdav-password"
                         type="password"
@@ -151,12 +120,8 @@ export default async function Settings(): Promise<JSX.Element> {
                       />
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline">
-                        {t('test-connection', {defaultMessage: '测试连接'})}
-                      </Button>
-                      <Button>
-                        {t('save-config', {defaultMessage: '保存配置'})}
-                      </Button>
+                      <Button variant="outline">{t('test-connection', {defaultMessage: '测试连接'})}</Button>
+                      <Button>{t('save-config', {defaultMessage: '保存配置'})}</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -170,16 +135,12 @@ export default async function Settings(): Promise<JSX.Element> {
                     <BellIcon className="h-5 w-5" />
                     {t('notification-settings', {defaultMessage: '通知设置'})}
                   </CardTitle>
-                  <CardDescription>
-                    配置您希望接收的通知类型
-                  </CardDescription>
+                  <CardDescription>配置您希望接收的通知类型</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="space-y-1">
-                      <h3 className="font-medium">
-                        {t('email-notifications', {defaultMessage: '邮件通知'})}
-                      </h3>
+                      <h3 className="font-medium">{t('email-notifications', {defaultMessage: '邮件通知'})}</h3>
                       <p className="text-sm text-muted-foreground">
                         {t('email-notifications-desc', {defaultMessage: '接收项目更新和素材变动的邮件通知'})}
                       </p>
@@ -199,14 +160,10 @@ export default async function Settings(): Promise<JSX.Element> {
                     <ShieldIcon className="h-5 w-5" />
                     {t('security-settings', {defaultMessage: '安全设置'})}
                   </CardTitle>
-                  <CardDescription>
-                    管理您的账户安全选项
-                  </CardDescription>
+                  <CardDescription>管理您的账户安全选项</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="destructive">
-                    {t('change-password', {defaultMessage: '修改密码'})}
-                  </Button>
+                  <Button variant="destructive">{t('change-password', {defaultMessage: '修改密码'})}</Button>
                 </CardContent>
               </Card>
             </TabsContent>

@@ -1,5 +1,5 @@
-import { Entity, Property, Index } from '@mikro-orm/core';
-import { BaseEntity } from '../../common/entities/base-entity.entity';
+import {Entity, Property, Index} from '@mikro-orm/core';
+import {BaseEntity} from '../../common/entities/base-entity.entity';
 import {
   SlotDefinition,
   TemplateConfig,
@@ -8,8 +8,8 @@ import {
 } from '../types/content-template.types';
 
 @Entity()
-@Index({ properties: ['userId', 'createdAt'] })
-@Index({ properties: ['isPublic'] })
+@Index({properties: ['userId', 'createdAt']})
+@Index({properties: ['isPublic']})
 export class ContentTemplate extends BaseEntity {
   @Property()
   userId: string;
@@ -17,28 +17,28 @@ export class ContentTemplate extends BaseEntity {
   @Property()
   name: string;
 
-  @Property({ nullable: true })
+  @Property({nullable: true})
   description?: string;
 
-  @Property({ type: 'json' })
+  @Property({type: 'json'})
   templateConfig: TemplateConfig = {};
 
-  @Property({ type: 'json' })
+  @Property({type: 'json'})
   slotDefinitions: SlotDefinition[] = [];
 
-  @Property({ type: 'json' })
+  @Property({type: 'json'})
   videoSettings: VideoSettings = {
     resolution: '1080x1920',
     fps: 30,
     duration: 'auto',
-    sampleRate: 44100,
+    sampleRate: 44_100,
     audioChannels: 2,
   };
 
-  @Property({ default: false })
-  isPublic: boolean = false;
+  @Property({default: false})
+  isPublic = false;
 
-  constructor({ userId, name, description }: ContentTemplateConstructor) {
+  constructor({userId, name, description}: ContentTemplateConstructor) {
     super();
     this.userId = userId;
     this.name = name;

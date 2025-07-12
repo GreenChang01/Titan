@@ -10,9 +10,9 @@ import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {useToast} from '@/hooks/use-toast/use-toast.hook.tsx';
 import {type ApiError} from '@/utils/api/api-error.ts';
 import {useRouter} from '@/i18n/navigation.ts';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 
 export function LoginTwoFactor(): JSX.Element {
   const {showToast} = useToast();
@@ -58,11 +58,8 @@ export function LoginTwoFactor(): JSX.Element {
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <p className="text-muted-foreground">{t('description')}</p>
       </div>
-      
-      <form
-        className="w-full max-w-sm space-y-4"
-        onSubmit={handleSubmit2fa(onSubmit2fa)}
-      >
+
+      <form className="w-full max-w-sm space-y-4" onSubmit={handleSubmit2fa(onSubmit2fa)}>
         <div className="space-y-2">
           <Label htmlFor="code">{t('code-input-label')}</Label>
           <Input
@@ -76,15 +73,10 @@ export function LoginTwoFactor(): JSX.Element {
           {errors2fa.code ? <p className="text-sm text-destructive">{errors2fa.code.message}</p> : null}
         </div>
 
-        <Button
-          type="submit"
-          disabled={isSubmitting2fa}
-          className="w-full"
-          data-testid="login-submit-2fa"
-        >
+        <Button type="submit" disabled={isSubmitting2fa} className="w-full" data-testid="login-submit-2fa">
           {isSubmitting2fa ? t('submit-button-loading-label') : t('submit-button-label')}
         </Button>
-        
+
         {errors2fa.root ? <p className="text-sm text-destructive text-center">{errors2fa.root.message}</p> : null}
       </form>
     </div>

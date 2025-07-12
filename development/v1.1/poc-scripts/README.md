@@ -59,6 +59,7 @@ export SOUNDVERSE_API_KEY="your_soundverse_api_key_here"
 ```
 
 **Getting API Keys:**
+
 - ElevenLabs: https://elevenlabs.io/speech-synthesis
 - Soundverse AI: Contact their sales team or check documentation
 
@@ -71,6 +72,7 @@ node elevenlabs-poc.js
 ```
 
 **What it tests:**
+
 - ✅ API connection and authentication
 - ✅ Voice listing and ASMR-suitable voice identification
 - ✅ High-quality voice synthesis with ASMR-optimized settings
@@ -78,6 +80,7 @@ node elevenlabs-poc.js
 - ✅ Cost estimation for production use
 
 **Expected Output:**
+
 - MP3 files in `output/` directory
 - Voice quality analysis
 - ASMR optimization recommendations
@@ -89,6 +92,7 @@ node soundverse-poc.js
 ```
 
 **What it tests:**
+
 - ✅ API availability and model selection
 - ✅ ASMR soundscape generation (rain, ocean, fireplace, etc.)
 - ✅ Batch generation capabilities
@@ -96,6 +100,7 @@ node soundverse-poc.js
 - ✅ Audio characteristics suitable for ASMR
 
 **Expected Output:**
+
 - Simulated soundscape files (text descriptions)
 - Generation analysis and recommendations
 - Cost projections
@@ -107,6 +112,7 @@ node ffmpeg-audio-poc.js
 ```
 
 **What it tests:**
+
 - ✅ FFmpeg installation and availability
 - ✅ Basic voice + soundscape mixing
 - ✅ Binaural audio processing and spatial effects
@@ -114,6 +120,7 @@ node ffmpeg-audio-poc.js
 - ✅ Audio quality analysis and optimization
 
 **Expected Output:**
+
 - Mixed audio files (MP3 format)
 - Audio quality analysis
 - ASMR optimization recommendations
@@ -188,6 +195,7 @@ volume: {
 ### Phase 1: API Integration
 
 1. **ElevenLabs Service**
+
    ```typescript
    interface IAudioProvider {
      generateVoice(text: string, voiceId: string): Promise<Buffer>;
@@ -208,12 +216,8 @@ volume: {
 
 ```typescript
 interface IAudioMixer {
-  mixVoiceAndSoundscape(
-    voice: Buffer, 
-    soundscape: Buffer, 
-    options: MixingOptions
-  ): Promise<Buffer>;
-  
+  mixVoiceAndSoundscape(voice: Buffer, soundscape: Buffer, options: MixingOptions): Promise<Buffer>;
+
   applyBinauralEffects(audio: Buffer): Promise<Buffer>;
   optimizeForASMR(audio: Buffer): Promise<Buffer>;
 }
@@ -225,27 +229,17 @@ interface IAudioMixer {
 class ASMRContentGenerator {
   async generateContent(request: ASMRGenerationRequest): Promise<string> {
     // 1. Generate voice with ElevenLabs
-    const voice = await this.audioProvider.generateVoice(
-      request.text, 
-      request.voiceId
-    );
-    
+    const voice = await this.audioProvider.generateVoice(request.text, request.voiceId);
+
     // 2. Generate soundscape with Soundverse
-    const soundscape = await this.soundscapeProvider.generateSoundscape(
-      request.soundscapePrompt,
-      request.duration
-    );
-    
+    const soundscape = await this.soundscapeProvider.generateSoundscape(request.soundscapePrompt, request.duration);
+
     // 3. Mix and optimize with FFmpeg
-    const mixed = await this.audioMixer.mixVoiceAndSoundscape(
-      voice, 
-      soundscape, 
-      request.mixingOptions
-    );
-    
+    const mixed = await this.audioMixer.mixVoiceAndSoundscape(voice, soundscape, request.mixingOptions);
+
     // 4. Apply ASMR optimization
     const optimized = await this.audioMixer.optimizeForASMR(mixed);
-    
+
     return this.saveToFile(optimized);
   }
 }
@@ -254,21 +248,25 @@ class ASMRContentGenerator {
 ## 💰 Cost Estimation
 
 ### ElevenLabs Pricing (Estimated)
+
 - **Voice Synthesis**: ~$0.20 per 1000 characters
 - **Voice Cloning**: ~$5-10 per voice setup
 - **Monthly Quota**: Varies by plan ($5-$330/month)
 
 ### Soundverse AI Pricing (Estimated)
+
 - **Soundscape Generation**: ~$0.10 per minute of audio
 - **Batch Discounts**: Available for high volume
 - **Quality Tiers**: Higher quality = higher cost
 
 ### FFmpeg Processing
+
 - **Computational Cost**: Minimal (local processing)
 - **Storage Cost**: Based on output file sizes
 - **Processing Time**: ~1-5 seconds per minute of audio
 
 ### Production Cost Example (50 ASMR videos/day)
+
 - Voice synthesis: ~$30-50/month
 - Soundscape generation: ~$50-100/month
 - Processing & storage: ~$10-20/month
@@ -279,10 +277,11 @@ class ASMRContentGenerator {
 ### Common Issues
 
 1. **FFmpeg not found**
+
    ```bash
    # Check if FFmpeg is installed
    ffmpeg -version
-   
+
    # Install if missing
    sudo apt install ffmpeg  # Ubuntu
    brew install ffmpeg      # macOS

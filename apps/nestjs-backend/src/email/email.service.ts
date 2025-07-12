@@ -12,6 +12,13 @@ export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
 
   /**
+   * 通用邮件发送方法
+   */
+  async sendEmail(options: {to: string; subject: string; html?: string; text?: string}): Promise<void> {
+    await this.mailerService.sendMail(options);
+  }
+
+  /**
    * 发送用户注册确认邮件
    * @param language 邮件语言
    * @param username 用户名

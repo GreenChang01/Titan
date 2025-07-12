@@ -1,19 +1,19 @@
-import { 
-  IsString, 
-  IsOptional, 
-  IsBoolean, 
-  IsArray, 
-  ValidateNested, 
-  IsObject, 
-  IsIn, 
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+  IsObject,
+  IsIn,
   IsNumber,
   Min,
-  Max 
+  Max,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { SlotDefinition, TemplateConfig, VideoSettings } from '../types/content-template.types';
+import {Type} from 'class-transformer';
+import {SlotDefinition, TemplateConfig, VideoSettings} from '../types/content-template.types';
 
-class SlotDefinitionDto implements SlotDefinition {
+class SlotDefinitionDto {
   @IsString()
   @IsOptional()
   name?: string;
@@ -50,7 +50,7 @@ class VideoSettingsDto implements Partial<VideoSettings> {
   @IsNumber()
   @IsOptional()
   @Min(8000)
-  @Max(192000)
+  @Max(192_000)
   sampleRate?: number;
 
   @IsNumber()
@@ -77,7 +77,7 @@ export class UpdateTemplateDto {
   templateConfig?: TemplateConfig;
 
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => SlotDefinitionDto)
   @IsOptional()
   slotDefinitions?: SlotDefinitionDto[];
