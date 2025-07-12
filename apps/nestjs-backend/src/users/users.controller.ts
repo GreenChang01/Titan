@@ -17,11 +17,19 @@ import {oneHour, oneMinute} from '../utils/time.util';
 import {ConfirmUserParamDto} from './dto/confirm-user.param.dto';
 import {UsersService} from './users.service';
 
+/**
+ * 用户控制器
+ * 处理用户相关的 API 端点，包括创建、查询、更新、删除、确认和密码重置
+ */
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * 获取当前用户信息
+   * 返回当前认证用户的详细信息
+   */
   @Get('me')
   @ApiOperation({
     summary: 'Get current user details',
@@ -38,9 +46,13 @@ export class UsersController {
     return new UserDto(userEntity);
   }
 
+  /**
+   * 创建新用户
+   * 接受邮箱、密码和用户名，创建新用户并发送确认邮件
+   */
   @Post()
   @Public()
-  @Throttle({default: {ttl: oneHour, limit: 60}}) // allow 60 requests per hour per IP address
+  @Throttle({default: {ttl: oneHour, limit: 60}}) // 每小时每 IP 地址允许 60 次请求
   @ApiOperation({
     summary: 'Create a new user',
     description: 'This endpoint creates a new user by providing an email, password, and username.',
@@ -61,9 +73,13 @@ export class UsersController {
     return new UserDto(userEntity);
   }
 
+  /**
+   * 确认用户注册
+   * 使用邮件中的确认码来激活用户账户
+   */
   @Post('confirm/:confirmationCode')
   @Public()
-  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // allow 10 requests per 15 minutes per IP address
+  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
     summary: 'Confirm user registration',
     description: 'This endpoint confirms a user registration using a confirmation code sent to their email.',
@@ -84,6 +100,10 @@ export class UsersController {
     return new UserDto(userEntity);
   }
 
+  /**
+   * 删除当前用户
+   * 删除当前认证用户的账户
+   */
   @Delete()
   @ApiOperation({
     summary: 'Delete the current user',
@@ -98,9 +118,13 @@ export class UsersController {
     await this.usersService.deleteUser(userId);
   }
 
+  /**
+   * 请求密码重置
+   * 使用邮箱地址请求密码重置，系统会发送重置链接到邮箱
+   */
   @Post('reset-password/request')
   @Public()
-  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // allow 10 requests per 15 minutes per IP address
+  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
     summary: 'Request password reset',
     description: 'This endpoint requests a password reset for the user using their email address.',
@@ -123,9 +147,13 @@ export class UsersController {
     await this.usersService.requestPasswordReset(email, language);
   }
 
+  /**
+   * 确认密码重置
+   * 使用重置令牌和新密码来完成密码重置
+   */
   @Post('reset-password/confirm')
   @Public()
-  @Throttle({default: {ttl: oneMinute * 15, limit: 3}}) // allow 10 requests per 15 minutes per IP address
+  @Throttle({default: {ttl: oneMinute * 15, limit: 3}}) // 15 分钟内每 IP 地址允许 3 次请求
   @ApiOperation({
     summary: 'Confirm password reset',
     description: 'This endpoint confirms the password reset by providing a valid token and new password.',
@@ -143,8 +171,12 @@ export class UsersController {
     await this.usersService.confirmPasswordReset(token, password);
   }
 
+  /**
+   * 更新当前用户信息
+   * 允许当前认证用户更新他们的邮箱、密码或用户名
+   */
   @Patch()
-  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // allow 10 requests per 15 minutes per IP address
+  @Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
   @ApiOperation({
     summary: 'Update current user details',
     description: 'This endpoint allows the currently authenticated user to update their email, password, or username.',
@@ -163,6 +195,10 @@ export class UsersController {
     return new UserDto(userEntity);
   }
 
+  /**
+   * 获取用户配置状态
+   * 返回当前用户的配置状态，包括是否已配置阿里云盘
+   */
   @Get('me/config-status')
   @ApiOperation({
     summary: 'Get user configuration status',

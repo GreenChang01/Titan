@@ -17,6 +17,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
+import {ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiQuery} from '@nestjs/swagger';
 import {Response} from 'express';
 import {User} from '../auth/decorators/user.decorator';
 import {User as UserEntity} from '../users/entities/user.entity';
@@ -33,6 +34,7 @@ import {
   CopyItemDto,
 } from './dto/index.js';
 
+@ApiTags('aliyun-drive')
 @Controller('aliyun-drive')
 export class AliyunDriveController {
   constructor(private readonly aliyunDriveService: AliyunDriveService) {}
@@ -40,6 +42,22 @@ export class AliyunDriveController {
   // 配置管理端点
   @Post('config')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create WebDAV configuration',
+    description: 'Create a new WebDAV configuration for the authenticated user'
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Configuration created successfully'
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input data'
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'User not authenticated'
+  })
   async createConfig(
     @User() user: UserEntity,
     @Body() createDto: CreateAliyunDriveConfigDto,
@@ -72,6 +90,18 @@ export class AliyunDriveController {
   }
 
   @Get('config')
+  @ApiOperation({
+    summary: 'Get WebDAV configuration',
+    description: 'Get the WebDAV configuration for the authenticated user'
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Configuration retrieved successfully'
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'User not authenticated'
+  })
   async getConfig(@User() user: UserEntity): Promise<{
     id: string;
     webdavUrl: string;
@@ -157,6 +187,66 @@ export class AliyunDriveController {
 
   // WebDAV 文件操作端点
   @Get('files')
+  @ApiOperation({
+    summary: 'List files in WebDAV directory',
+    description: 'List files and directories with pagination and search support for large directories'
+  })
+  @ApiQuery({
+    name: 'path',
+    description: 'Directory path to list files from',
+    required: false,
+    example: '/'
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Maximum number of files to return (1-1000)',
+    required: false,
+    example: 100
+  })
+  @ApiQuery({
+    name: 'offset',
+    description: 'Number of files to skip for pagination',
+    required: false,
+    example: 0
+  })
+  @ApiQuery({
+    name: 'search',
+    description: 'Search term to filter files by name',
+    required: false,
+    example: 'photo'
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'File list with pagination info',
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string', example: 'document.pdf' },
+              path: { type: 'string', example: '/documents/document.pdf' },
+              isDirectory: { type: 'boolean', example: false },
+              size: { type: 'number', example: 1024768 },
+              contentType: { type: 'string', example: 'application/pdf' },
+              lastModified: { type: 'string', format: 'date-time' }
+            }
+          }
+        },
+        total: { type: 'number', example: 250 },
+        path: { type: 'string', example: '/' },
+        limit: { type: 'number', example: 100 },
+        offset: { type: 'number', example: 0 },
+        hasMore: { type: 'boolean', example: true }
+      }
+    }
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'WebDAV config not found'
+  })
   async listFiles(@User() user: UserEntity, @Query() listDto: ListFilesDto): Promise<any> {
     const config = await this.aliyunDriveService.findByUser(user);
 
@@ -169,6 +259,43 @@ export class AliyunDriveController {
 
   @Post('files/upload')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({
+    summary: 'Upload file to WebDAV',
+    description: 'Upload a file to the configured WebDAV server'
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File upload with metadata',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        path: {
+          type: 'string',
+          description: 'Upload path',
+        },
+        fileName: {
+          type: 'string',
+          description: 'Optional custom filename',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'File uploaded successfully'
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid file or missing data'
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'WebDAV configuration not found'
+  })
   async uploadFile(
     @User() user: UserEntity,
     @Body() uploadDto: UploadFileDto,

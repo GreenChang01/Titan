@@ -11,14 +11,18 @@ import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {AuthService} from './auth.service';
 import {Public} from './decorators/public.decorator';
 
+// Cookie 键名常量
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const ACCESS_TOKEN_COOKIE_KEY = 'access_token';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const REFRESH_TOKEN_COOKIE_KEY = 'refresh_token';
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const TWO_FACTOR_AUTH_COOKIE_KEY = 'two_factor_auth';
 
+/**
+ * 身份验证控制器
+ * 处理用户登录、双因子验证、令牌刷新和退出登录的 API 端点
+ */
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -27,6 +31,10 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  /**
+   * 用户凭据登录并发送双因子验证码
+   * 接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱
+   */
   @Post('login/credentials')
   @Public()
   @Throttle({default: {ttl: oneMinute, limit: 5}})
@@ -61,6 +69,7 @@ export class AuthController {
       language,
     );
 
+    // 设置双因子验证 Cookie（15 分钟有效期）
     response.cookie(TWO_FACTOR_AUTH_COOKIE_KEY, twoFactorAuthHashedId, {
       httpOnly: true,
       secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
@@ -69,6 +78,10 @@ export class AuthController {
     });
   }
 
+  /**
+   * 双因子验证码登录并生成令牌
+   * 验证双因子验证码，成功后生成访问令牌和刷新令牌
+   */
   @Post('login/2fa')
   @Public()
   @Throttle({default: {ttl: oneMinute, limit: 5}})
@@ -97,6 +110,7 @@ export class AuthController {
     const accessToken = await this.authService.generateAccessToken(user);
     const refreshToken = await this.authService.generateRefreshToken(user);
 
+    // 设置访问令牌 Cookie（15 分钟有效期）
     response.cookie(ACCESS_TOKEN_COOKIE_KEY, accessToken, {
       httpOnly: true,
       secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
@@ -104,6 +118,7 @@ export class AuthController {
       maxAge: oneMinute * 15, // 15 minutes
     });
 
+    // 设置刷新令牌 Cookie（7 天有效期）
     response.cookie(REFRESH_TOKEN_COOKIE_KEY, refreshToken, {
       httpOnly: true,
       secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
@@ -112,6 +127,10 @@ export class AuthController {
     });
   }
 
+  /**
+   * 刷新访问令牌和刷新令牌
+   * 使用刷新令牌来获取新的令牌对
+   */
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @Public()
@@ -132,8 +151,10 @@ export class AuthController {
     const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE_KEY] as string;
     const {accessToken, refreshToken: newRefreshToken} = await this.authService.refreshTokens(refreshToken);
 
+    // 清除旧的刷新令牌 Cookie
     response.clearCookie(REFRESH_TOKEN_COOKIE_KEY);
 
+    // 设置新的访问令牌 Cookie
     response.cookie(ACCESS_TOKEN_COOKIE_KEY, accessToken, {
       httpOnly: true,
       secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
@@ -141,6 +162,7 @@ export class AuthController {
       maxAge: oneMinute * 15, // 15 minutes
     });
 
+    // 设置新的刷新令牌 Cookie
     response.cookie(REFRESH_TOKEN_COOKIE_KEY, newRefreshToken, {
       httpOnly: true,
       secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
@@ -149,6 +171,10 @@ export class AuthController {
     });
   }
 
+  /**
+   * 退出登录并清除认证 Cookie
+   * 清除访问令牌和刷新令牌的 Cookie
+   */
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

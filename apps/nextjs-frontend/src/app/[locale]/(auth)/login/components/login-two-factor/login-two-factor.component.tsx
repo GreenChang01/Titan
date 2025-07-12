@@ -38,7 +38,7 @@ export function LoginTwoFactor(): JSX.Element {
           severity: 'success',
           summary: t('login-success-toast-summary'),
         });
-        router.push('/');
+        router.push('/dashboard');
       },
       onError(error: ApiError) {
         if (error.response.status === 401 || error.response.status === 403) {

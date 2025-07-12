@@ -1,4 +1,5 @@
-import {IsString, IsOptional, Length, IsHexColor} from 'class-validator';
+import {IsString, IsOptional, Length, IsHexColor, IsEnum} from 'class-validator';
+import {ProjectStatus} from '../../common/enums';
 
 export class UpdateProjectDto {
   @IsOptional()
@@ -15,4 +16,8 @@ export class UpdateProjectDto {
   @IsString()
   @IsHexColor()
   color?: string;
+
+  @IsOptional()
+  @IsEnum(ProjectStatus)
+  status?: ProjectStatus;
 }

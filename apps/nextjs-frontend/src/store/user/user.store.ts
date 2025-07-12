@@ -29,6 +29,7 @@ export const useUserStore = create<UserStoreState>((set) => ({
       });
 
       if (!response.ok) {
+        // 401/403 表示未认证，404/500 等其他错误也视为需要重新登录
         set({user: undefined, loading: false, error: true});
         return {success: false, error: new ApiError('Failed to load user', response)};
       }
@@ -37,6 +38,7 @@ export const useUserStore = create<UserStoreState>((set) => ({
       set({user: userResponse, loading: false, error: false});
       return {success: true};
     } catch (error) {
+      // 网络错误或其他异常也视为需要重新登录
       set({user: undefined, loading: false, error: true});
       return {success: false, error: error as ApiError};
     }
@@ -46,6 +48,6 @@ export const useUserStore = create<UserStoreState>((set) => ({
    * Logs the user out by clearing the user state and resetting loading and error flags.
    */
   clearUser(): void {
-    set({user: undefined, loading: true, error: false});
+    set({user: undefined, loading: false, error: false});
   },
 }));

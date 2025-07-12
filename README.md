@@ -68,9 +68,10 @@
 ### 🎨 **现代化 UI/UX**
 
 - **响应式设计**：完美适配所有设备
-- **PrimeReact 组件**：专业的 UI 组件库
+- **Shadcn/ui 组件**：基于 Radix UI 的现代组件库
 - **深色/浅色主题**：可自定义的主题系统
-- **国际化支持**：多语言界面
+- **国际化支持**：中英文双语界面
+- **无障碍访问**：符合 WCAG 标准的可访问性设计
 
 ### 🚀 **开发者体验**
 
@@ -120,7 +121,7 @@ cd titan
 npm install
 
 # 构建共享包
-cd packages/shared
+cd packages/titan-shared
 npm run build
 cd ../..
 ```
@@ -183,10 +184,11 @@ npm run start:dev
 ### 🖥️ 前端架构
 
 - **框架**：Next.js 15 + App Router
-- **状态管理**：Zustand + React Query
-- **样式**：Tailwind CSS + PrimeReact
+- **状态管理**：Zustand + React Query (TanStack Query)
+- **样式**：Tailwind CSS + Shadcn/ui 组件
 - **表单**：React Hook Form + Zod 验证
 - **国际化**：next-intl
+- **路由**：国际化路由 (中英文支持)
 
 ### 🛠️ 后端架构
 
@@ -201,6 +203,7 @@ npm run start:dev
 - **类型安全**：前后端共享的 TypeScript 类型和 DTOs
 - **数据验证**：通用验证模式
 - **API 合约**：类型安全的 API 接口
+- **包名**：titan-shared (独立版本管理)
 
 ---
 
@@ -350,17 +353,25 @@ titan/
 │   │   │   ├── auth/            # 认证模块
 │   │   │   ├── users/           # 用户管理
 │   │   │   ├── aliyun-drive/    # 阿里云盘集成
-│   │   │   └── project/         # 项目管理
+│   │   │   ├── project/         # 项目管理
+│   │   │   └── project-material/ # 项目素材管理
 │   │   └── migrations/          # 数据库迁移
 │   └── nextjs-frontend/         # Next.js 前端应用
-│       ├── app/                 # App Router 页面
-│       ├── components/          # 可复用组件
-│       └── lib/                 # 工具函数
+│       ├── src/
+│       │   ├── app/[locale]/    # 国际化路由页面
+│       │   ├── components/      # 可复用组件
+│       │   │   ├── ui/          # Shadcn/ui 基础组件
+│       │   │   ├── aliyun-drive/ # 阿里云盘组件
+│       │   │   ├── project/     # 项目管理组件
+│       │   │   └── layout/      # 布局组件
+│       │   ├── hooks/           # React Hooks
+│       │   ├── store/           # Zustand 状态管理
+│       │   └── lib/             # 工具函数
 ├── packages/
-│   └── shared/                  # 共享 TypeScript 类型
+│   └── titan-shared/            # 共享 TypeScript 类型
 │       ├── src/
 │       │   ├── types/           # 通用类型
-│       │   └── dtos/            # 数据传输对象
+│       │   └── dto/             # 数据传输对象
 └── docs/                        # 文档
 ```
 
@@ -460,9 +471,11 @@ NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 
 - [Next.js](https://nextjs.org/) - React 框架
 - [NestJS](https://nestjs.com/) - Node.js 框架
-- [PrimeReact](https://primereact.org/) - UI 组件库
+- [Shadcn/ui](https://ui.shadcn.com/) - 现代化 UI 组件库
+- [Radix UI](https://www.radix-ui.com/) - 无障碍 UI 原语
 - [MikroORM](https://mikro-orm.io/) - TypeScript ORM
 - [Turborepo](https://turbo.build/) - 单体仓库管理
+- [TanStack Query](https://tanstack.com/query) - 数据获取和状态管理
 
 ---
 

@@ -145,14 +145,39 @@ export class AliyunDriveService {
         },
       });
 
-      const files = this.parseWebDavResponse(response.data as string, targetPath);
+      let allFiles = this.parseWebDavResponse(response.data as string, targetPath);
+      
+      // Apply search filter if provided
+      if (listDto.search) {
+        const searchLower = listDto.search.toLowerCase();
+        allFiles = allFiles.filter(file => 
+          file.name.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Sort files for consistent pagination (directories first, then by name)
+      allFiles.sort((a, b) => {
+        if (a.isDirectory && !b.isDirectory) return -1;
+        if (!a.isDirectory && b.isDirectory) return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      const total = allFiles.length;
+      const offset = listDto.offset ?? 0;
+      const limit = listDto.limit ?? 100;
+      
+      // Apply pagination
+      const paginatedFiles = allFiles.slice(offset, offset + limit);
 
       await this.updateLastSyncTime(config);
 
       return {
-        files,
+        files: paginatedFiles,
         path: listDto.path ?? '/',
-        total: files.length,
+        total,
+        limit,
+        offset,
+        hasMore: offset + limit < total,
       };
     } catch (error) {
       this.logger.error(
