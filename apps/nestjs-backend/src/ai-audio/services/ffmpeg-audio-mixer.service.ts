@@ -33,7 +33,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		await this.ensureTempDirectory();
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async mixVoiceAndSoundscape(
 		voice: Buffer,
 		soundscape: Buffer,
@@ -108,7 +107,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async applyBinauralEffects(audio: Buffer, settings: BinauralSettings): Promise<Buffer> {
 		if (!settings.enabled) {
 			return audio;
@@ -153,7 +151,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async optimizeForAsmr(audio: Buffer): Promise<Buffer> {
 		const sessionId = uuidv4();
 
@@ -194,7 +191,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async analyzeAudioQuality(audio: Buffer): Promise<AudioQualityReport> {
 		const sessionId = uuidv4();
 
@@ -219,7 +215,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async normalizeAudio(audio: Buffer, targetLUFS = -23): Promise<Buffer> {
 		const sessionId = uuidv4();
 
@@ -252,7 +247,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	async convertFormat(
 		audio: Buffer,
 		targetFormat: 'mp3' | 'wav' | 'aac',
@@ -281,13 +275,17 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 构建混音滤镜复合
-   */
+	 * 构建混音滤镜复合
+	 */
 	private buildMixingFilterComplex(options: MixingOptions): string {
 		const filters = [];
 
 		// 音量调整
-		filters.push(`[0:a]volume=${options.voiceVolume}[voice]`, `[1:a]volume=${options.soundscapeVolume}[bg]`, '[voice][bg]amix=inputs=2:duration=shortest:dropout_transition=3[mixed]');
+		filters.push(
+			`[0:a]volume=${options.voiceVolume}[voice]`,
+			`[1:a]volume=${options.soundscapeVolume}[bg]`,
+			'[voice][bg]amix=inputs=2:duration=shortest:dropout_transition=3[mixed]',
+		);
 
 		// 淡入淡出
 		let finalFilter = '[mixed]';
@@ -305,9 +303,9 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		if (options.eqSettings) {
 			const eq = options.eqSettings;
 			const eqFilter
-        = `equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:`
-        	+ `equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:`
-        	+ `equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
+				= `equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:`
+					+ `equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:`
+					+ `equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
 			filters.push(`${finalFilter}${eqFilter}[eqed]`);
 			finalFilter = '[eqed]';
 		}
@@ -324,8 +322,8 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 构建双耳处理滤镜
-   */
+	 * 构建双耳处理滤镜
+	 */
 	private buildBinauralFilterComplex(settings: BinauralSettings): string {
 		const filters = [];
 
@@ -349,8 +347,8 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 构建格式转换命令
-   */
+	 * 构建格式转换命令
+	 */
 	private buildFormatConversionCommand(
 		inputFile: string,
 		outputFile: string,
@@ -394,8 +392,8 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 执行FFmpeg命令
-   */
+	 * 执行FFmpeg命令
+	 */
 	private async executeFFmpeg(arguments_: string[], description: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			this.logger.debug(`Executing FFmpeg: ${this.ffmpegPath} ${arguments_.join(' ')}`);
@@ -429,8 +427,8 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 获取详细音频信息
-   */
+	 * 获取详细音频信息
+	 */
 	private async getDetailedAudioInfo(filePath: string): Promise<FfprobeData> {
 		return new Promise((resolve, reject) => {
 			const arguments_ = ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', filePath];
@@ -465,8 +463,8 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 	}
 
 	/**
-   * 生成质量报告
-   */
+	 * 生成质量报告
+	 */
 	private generateQualityReport(metadata: FfprobeData): AudioQualityReport {
 		const audioStream = metadata.streams.find((s: any) => s.codec_type === 'audio');
 		const {format} = metadata;
@@ -477,7 +475,7 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 
 		const sampleRate = audioStream.sample_rate;
 		const bitRate = format.bit_rate;
-		const duration = format.duration;
+		const {duration} = format;
 
 		// 基于标准评估质量
 		const standards = AudioQualityStandards.ASMR_RECOMMENDED;
@@ -598,7 +596,6 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		};
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types -- Buffer is the correct type for Node.js I/O operations with fs and ffmpeg streams
 	private async getAudioDuration(audioBuffer: Buffer): Promise<number> {
 		// 简化的时长计算，实际应使用ffprobe
 		return Math.floor(audioBuffer.length / (44_100 * 2 * 2)); // 44.1kHz, 16-bit, stereo

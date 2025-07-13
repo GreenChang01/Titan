@@ -23,9 +23,9 @@ export class TemplateController {
 	constructor(private readonly templateService: TemplateService) {}
 
 	/**
-   * 创建新的内容模板
-   * 用户可以创建自定义的ASMR内容生产模板，定义文案结构、音频参数等
-   */
+	 * 创建新的内容模板
+	 * 用户可以创建自定义的ASMR内容生产模板，定义文案结构、音频参数等
+	 */
 	@Post()
 	@ApiOperation({
 		summary: '创建内容模板',
@@ -49,9 +49,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 获取模板列表
-   * 获取用户可访问的所有模板，包括用户私有模板和公共模板
-   */
+	 * 获取模板列表
+	 * 获取用户可访问的所有模板，包括用户私有模板和公共模板
+	 */
 	@Get()
 	@ApiOperation({
 		summary: '获取模板列表',
@@ -71,9 +71,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 获取公共模板
-   * 获取系统提供的公共内容模板，所有用户都可以使用
-   */
+	 * 获取公共模板
+	 * 获取系统提供的公共内容模板，所有用户都可以使用
+	 */
 	@Get('public')
 	@ApiOperation({
 		summary: '获取公共模板',
@@ -93,9 +93,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 获取用户私有模板
-   * 获取当前用户创建的私有内容模板
-   */
+	 * 获取用户私有模板
+	 * 获取当前用户创建的私有内容模板
+	 */
 	@Get('my-templates')
 	@ApiOperation({
 		summary: '获取用户私有模板',
@@ -115,9 +115,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 根据ID获取模板详情
-   * 获取指定模板的完整信息，包括参数配置、变量槽位等
-   */
+	 * 根据ID获取模板详情
+	 * 获取指定模板的完整信息，包括参数配置、变量槽位等
+	 */
 	@Get(':id')
 	@ApiOperation({
 		summary: '获取模板详情',
@@ -141,9 +141,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 获取模板变量槽位定义
-   * 获取模板中定义的所有变量槽位及其类型和默认值
-   */
+	 * 获取模板变量槽位定义
+	 * 获取模板中定义的所有变量槽位及其类型和默认值
+	 */
 	@Get(':id/slots')
 	@ApiOperation({
 		summary: '获取模板变量槽位',
@@ -163,9 +163,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 更新模板
-   * 修改模板的名称、描述、配置参数等信息
-   */
+	 * 更新模板
+	 * 修改模板的名称、描述、配置参数等信息
+	 */
 	@Patch(':id')
 	@ApiOperation({
 		summary: '更新模板',
@@ -193,9 +193,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 删除模板
-   * 删除用户创建的私有模板，此操作不可恢复
-   */
+	 * 删除模板
+	 * 删除用户创建的私有模板，此操作不可恢复
+	 */
 	@Delete(':id')
 	@ApiOperation({
 		summary: '删除模板',
@@ -218,9 +218,9 @@ export class TemplateController {
 	}
 
 	/**
-   * 创建系统预设模板（管理员专用）
-   * 初始化系统预设的ASMR内容模板，包括各种经典场景
-   */
+	 * 创建系统预设模板（管理员专用）
+	 * 初始化系统预设的ASMR内容模板，包括各种经典场景
+	 */
 	@Post('create-presets')
 	@ApiOperation({
 		summary: '创建系统预设模板',

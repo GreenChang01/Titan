@@ -73,51 +73,51 @@ export type AudioProcessingResult = {
  */
 export type IAudioMixer = {
 	/**
-   * 混合语音和音景
-   * @param voice 语音音频数据
-   * @param soundscape 音景音频数据
-   * @param options 混合选项
-   * @returns 混合结果
-   */
+	 * 混合语音和音景
+	 * @param voice 语音音频数据
+	 * @param soundscape 音景音频数据
+	 * @param options 混合选项
+	 * @returns 混合结果
+	 */
 	mixVoiceAndSoundscape(voice: Buffer, soundscape: Buffer, options: MixingOptions): Promise<AudioProcessingResult>;
 
 	/**
-   * 应用双耳音频处理
-   * @param audio 音频数据
-   * @param settings 双耳设置
-   * @returns 处理结果
-   */
+	 * 应用双耳音频处理
+	 * @param audio 音频数据
+	 * @param settings 双耳设置
+	 * @returns 处理结果
+	 */
 	applyBinauralEffects(audio: Buffer, settings: BinauralSettings): Promise<Buffer>;
 
 	/**
-   * 针对ASMR优化音频
-   * @param audio 音频数据
-   * @returns 优化后的音频
-   */
+	 * 针对ASMR优化音频
+	 * @param audio 音频数据
+	 * @returns 优化后的音频
+	 */
 	optimizeForAsmr(audio: Buffer): Promise<Buffer>;
 
 	/**
-   * 分析音频质量
-   * @param audio 音频数据
-   * @returns 质量报告
-   */
+	 * 分析音频质量
+	 * @param audio 音频数据
+	 * @returns 质量报告
+	 */
 	analyzeAudioQuality(audio: Buffer): Promise<AudioQualityReport>;
 
 	/**
-   * 标准化音频音量
-   * @param audio 音频数据
-   * @param targetLUFS 目标LUFS值
-   * @returns 标准化后的音频
-   */
+	 * 标准化音频音量
+	 * @param audio 音频数据
+	 * @param targetLUFS 目标LUFS值
+	 * @returns 标准化后的音频
+	 */
 	normalizeAudio(audio: Buffer, targetLUFS?: number): Promise<Buffer>;
 
 	/**
-   * 音频格式转换
-   * @param audio 音频数据
-   * @param targetFormat 目标格式
-   * @param quality 质量设置
-   * @returns 转换后的音频
-   */
+	 * 音频格式转换
+	 * @param audio 音频数据
+	 * @param targetFormat 目标格式
+	 * @param quality 质量设置
+	 * @returns 转换后的音频
+	 */
 	convertFormat(
 		audio: Buffer,
 		targetFormat: 'mp3' | 'wav' | 'aac',

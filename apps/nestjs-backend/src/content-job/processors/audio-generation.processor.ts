@@ -112,7 +112,7 @@ export class AudioGenerationConsumer {
 			await job.progress(10);
 
 			// 获取ElevenLabs提供者
-			const {elevenLabsProvider} = (this.asmrContentService as any);
+			const {elevenLabsProvider} = this.asmrContentService as any;
 
 			// 创建语音选项
 			const voiceOptions = {

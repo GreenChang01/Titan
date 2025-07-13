@@ -15,8 +15,8 @@ export class TemplateService {
 	) {}
 
 	/**
-   * 创建新模板
-   */
+	 * 创建新模板
+	 */
 	async createTemplate(createTemplateDto: CreateTemplateDto, userId: string): Promise<ContentTemplate> {
 		const template = new ContentTemplate({
 			userId,
@@ -50,8 +50,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 获取用户的模板列表（包含公共模板）
-   */
+	 * 获取用户的模板列表（包含公共模板）
+	 */
 	async getTemplates(userId: string): Promise<ContentTemplate[]> {
 		return this.templateRepository.find(
 			{
@@ -62,8 +62,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 获取模板详情
-   */
+	 * 获取模板详情
+	 */
 	async getTemplateById(templateId: string, userId: string): Promise<ContentTemplate> {
 		const template = await this.templateRepository.findOne({
 			id: templateId,
@@ -78,8 +78,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 更新模板
-   */
+	 * 更新模板
+	 */
 	async updateTemplate(templateId: string, updateDto: UpdateTemplateDto, userId: string): Promise<ContentTemplate> {
 		const template = await this.templateRepository.findOne({
 			id: templateId,
@@ -129,8 +129,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 删除模板
-   */
+	 * 删除模板
+	 */
 	async deleteTemplate(templateId: string, userId: string): Promise<void> {
 		const template = await this.templateRepository.findOne({
 			id: templateId,
@@ -146,8 +146,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 验证模板配置
-   */
+	 * 验证模板配置
+	 */
 	async validateTemplateConfig(config: Record<string, any>): Promise<boolean> {
 		// 基本验证逻辑
 		if (!config || typeof config !== 'object') {
@@ -159,8 +159,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 获取模板的插槽定义
-   */
+	 * 获取模板的插槽定义
+	 */
 	async getTemplateSlots(templateId: string): Promise<
 		Array<{
 			name: string;
@@ -178,8 +178,8 @@ export class TemplateService {
 	}
 
 	/**
-   * 创建系统预置模板
-   */
+	 * 创建系统预置模板
+	 */
 	async createPresetTemplates(): Promise<void> {
 		const presetTemplates = [
 			{
@@ -284,15 +284,15 @@ export class TemplateService {
 	}
 
 	/**
-   * 获取公共模板列表
-   */
+	 * 获取公共模板列表
+	 */
 	async getPublicTemplates(): Promise<ContentTemplate[]> {
 		return this.templateRepository.find({isPublic: true}, {orderBy: {createdAt: 'DESC'}});
 	}
 
 	/**
-   * 获取用户私有模板列表
-   */
+	 * 获取用户私有模板列表
+	 */
 	async getUserTemplates(userId: string): Promise<ContentTemplate[]> {
 		return this.templateRepository.find({userId, isPublic: false}, {orderBy: {createdAt: 'DESC'}});
 	}

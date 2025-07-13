@@ -86,5 +86,4 @@ async function bootstrap(): Promise<void> {
 }
 
 // 启动应用程序
-// eslint-disable-next-line @typescript-eslint/no-floating-promises, unicorn/prefer-top-level-await
 bootstrap();

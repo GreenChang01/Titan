@@ -1,4 +1,3 @@
-
 import {EntityManager, type QueryBuilder} from '@mikro-orm/postgresql';
 import {ConflictException, GoneException, NotFoundException} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';

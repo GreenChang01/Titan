@@ -42,31 +42,31 @@ export type SoundscapeGenerationResult = {
  */
 export type ISoundscapeProvider = {
 	/**
-   * 生成音景
-   * @param prompt 音景描述
-   * @param options 生成选项
-   * @returns 音景生成结果
-   */
+	 * 生成音景
+	 * @param prompt 音景描述
+	 * @param options 生成选项
+	 * @returns 音景生成结果
+	 */
 	generateSoundscape(prompt: string, options: SoundscapeOptions): Promise<SoundscapeGenerationResult>;
 
 	/**
-   * 获取可用音景分类
-   * @returns 音景分类列表
-   */
+	 * 获取可用音景分类
+	 * @returns 音景分类列表
+	 */
 	getAvailableCategories(): Promise<SoundscapeCategory[]>;
 
 	/**
-   * 估算生成成本
-   * @param duration 时长(秒)
-   * @param quality 质量等级
-   * @returns 估算成本(美元)
-   */
+	 * 估算生成成本
+	 * @param duration 时长(秒)
+	 * @param quality 质量等级
+	 * @returns 估算成本(美元)
+	 */
 	estimateCost(duration: number, quality: string): Promise<number>;
 
 	/**
-   * 验证API连接
-   * @returns 是否连接成功
-   */
+	 * 验证API连接
+	 * @returns 是否连接成功
+	 */
 	validateConnection(): Promise<boolean>;
 };
 

@@ -39,8 +39,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 生成AI ASMR音频内容
-   */
+	 * 生成AI ASMR音频内容
+	 */
 	async generateASMRAudio(
 		text: string,
 		duration = 30,
@@ -93,8 +93,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 处理内容生产任务
-   */
+	 * 处理内容生产任务
+	 */
 	async processContentJob(job: ContentJob): Promise<ProcessingResult> {
 		const startTime = Date.now();
 		const temporaryJobDir = path.join(this.tempDir, job.id);
@@ -145,8 +145,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 根据模板生成视频
-   */
+	 * 根据模板生成视频
+	 */
 	private async generateVideoFromTemplate(
 		template: ContentTemplate,
 		assets: Map<string, Asset>,
@@ -173,8 +173,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 生成ASMR视频（静态图片 + 背景音乐）
-   */
+	 * 生成ASMR视频（静态图片 + 背景音乐）
+	 */
 	private async generateASMRVideo(
 		template: ContentTemplate,
 		assets: Map<string, Asset>,
@@ -195,7 +195,7 @@ export class MediaProcessingService {
 		let textData: string | undefined;
 		const textContent = this.getAssetBySlot(assets, inputAssets, 'text_content');
 		if (textContent && config?.textStyle) {
-			textData = textContent.metadata?.textContent || await this.readTextFromFile(textContent.filePath);
+			textData = textContent.metadata?.textContent || (await this.readTextFromFile(textContent.filePath));
 		}
 
 		return new Promise((resolve, reject) => {
@@ -234,8 +234,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 生成动态背景视频
-   */
+	 * 生成动态背景视频
+	 */
 	private async generateDynamicBackgroundVideo(
 		template: ContentTemplate,
 		assets: Map<string, Asset>,
@@ -246,7 +246,8 @@ export class MediaProcessingService {
 			const backgroundVideo = this.getAssetBySlot(assets, inputAssets, 'background_video');
 
 			if (!backgroundVideo) {
-				reject(new Error('Missing background video for dynamic template')); return;
+				reject(new Error('Missing background video for dynamic template'));
+				return;
 			}
 
 			const command = ffmpeg().input(backgroundVideo.filePath);
@@ -299,8 +300,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 生成默认视频
-   */
+	 * 生成默认视频
+	 */
 	private async generateDefaultVideo(
 		template: ContentTemplate,
 		assets: Map<string, Asset>,
@@ -312,8 +313,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 加载任务所需的素材
-   */
+	 * 加载任务所需的素材
+	 */
 	private async loadJobAssets(job: ContentJob): Promise<Map<string, Asset>> {
 		const assetIds = job.inputAssets.map(asset => asset.assetId);
 		const assets = await this.assetRepository.find({id: {$in: assetIds}});
@@ -327,8 +328,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 根据插槽名称获取素材
-   */
+	 * 根据插槽名称获取素材
+	 */
 	private getAssetBySlot(
 		assets: Map<string, Asset>,
 		inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
@@ -343,8 +344,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 构建文本过滤器
-   */
+	 * 构建文本过滤器
+	 */
 	private buildTextFilter(text: string, textStyle: any): string {
 		const fontSize = textStyle.fontSize || 24;
 		const color = textStyle.color || '#FFFFFF';
@@ -354,8 +355,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 读取文本文件内容
-   */
+	 * 读取文本文件内容
+	 */
 	private async readTextFromFile(filePath: string): Promise<string | undefined> {
 		try {
 			const content = await fs.readFile(filePath, 'utf8');
@@ -367,8 +368,8 @@ export class MediaProcessingService {
 	}
 
 	/**
-   * 组合音频轨道
-   */
+	 * 组合音频轨道
+	 */
 	async combineAudioTracks(audioFiles: string[], outputPath: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			const command = ffmpeg();

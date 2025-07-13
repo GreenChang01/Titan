@@ -35,30 +35,30 @@ export class CryptoService {
 	constructor(private readonly configService: ConfigService) {}
 
 	/**
-   * 对字符串进行哈希加密
-   * @param valueToHash 需要哈希的值
-   * @returns 哈希后的字符串
-   */
+	 * 对字符串进行哈希加密
+	 * @param valueToHash 需要哈希的值
+	 * @returns 哈希后的字符串
+	 */
 	async hash(valueToHash: string): Promise<string> {
 		const salt = await bcrypt.genSalt(this.saltRounds);
 		return bcrypt.hash(valueToHash, salt);
 	}
 
 	/**
-   * 比较原始值与哈希值是否匹配
-   * @param value 原始值
-   * @param hashedValue 哈希值
-   * @returns 是否匹配
-   */
+	 * 比较原始值与哈希值是否匹配
+	 * @param value 原始值
+	 * @param hashedValue 哈希值
+	 * @returns 是否匹配
+	 */
 	async compare(value: string, hashedValue: string): Promise<boolean> {
 		return bcrypt.compare(value, hashedValue);
 	}
 
 	/**
-   * 生成随机数字验证码
-   * @param length 验证码长度，默认6位
-   * @returns 数字验证码字符串
-   */
+	 * 生成随机数字验证码
+	 * @param length 验证码长度，默认6位
+	 * @returns 数字验证码字符串
+	 */
 	generateRandomCode(length = 6): string {
 		const characters = '0123456789';
 		let result = '';
@@ -71,10 +71,10 @@ export class CryptoService {
 	}
 
 	/**
-   * 使用 AES-256-GCM 加密敏感数据
-   * @param text 要加密的明文
-   * @returns 包含加密文本、初始化向量和认证标签的对象
-   */
+	 * 使用 AES-256-GCM 加密敏感数据
+	 * @param text 要加密的明文
+	 * @returns 包含加密文本、初始化向量和认证标签的对象
+	 */
 	encrypt(text: string): EncryptedData {
 		try {
 			const encryptionKey = this.configService.get<string>(ConfigKey.ENCRYPTION_KEY);
@@ -102,10 +102,10 @@ export class CryptoService {
 	}
 
 	/**
-   * 使用 AES-256-GCM 解密敏感数据
-   * @param encryptedData 包含加密文本、初始化向量和认证标签的对象
-   * @returns 解密后的明文
-   */
+	 * 使用 AES-256-GCM 解密敏感数据
+	 * @param encryptedData 包含加密文本、初始化向量和认证标签的对象
+	 * @returns 解密后的明文
+	 */
 	decrypt(encryptedData: EncryptedData): string {
 		try {
 			const encryptionKey = this.configService.get<string>(ConfigKey.ENCRYPTION_KEY);
@@ -132,10 +132,10 @@ export class CryptoService {
 	}
 
 	/**
-   * 生成密码学安全的随机字符串
-   * @param length 随机字符串长度，默认32字节
-   * @returns 十六进制随机字符串
-   */
+	 * 生成密码学安全的随机字符串
+	 * @param length 随机字符串长度，默认32字节
+	 * @returns 十六进制随机字符串
+	 */
 	generateSecureRandom(length = 32): string {
 		return crypto.randomBytes(length).toString('hex');
 	}

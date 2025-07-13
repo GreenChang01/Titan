@@ -20,8 +20,8 @@ export class PublicationService {
 	) {}
 
 	/**
-   * 创建发布记录
-   */
+	 * 创建发布记录
+	 */
 	async createPublication(createDto: CreatePublicationDto, userId: string): Promise<Publication> {
 		// 验证ContentJob是否存在且已完成
 		const contentJob = await this.contentJobRepository.findOne({
@@ -51,11 +51,12 @@ export class PublicationService {
 	}
 
 	/**
-   * 获取用户的发布列表
-   */
+	 * 获取用户的发布列表
+	 */
 	async getPublications(userId: string): Promise<Publication[]> {
 		// 获取用户的所有ContentJob IDs
-		const contentJobIds = await this.em.createQueryBuilder(ContentJob, 'cj')
+		const contentJobIds = await this.em
+			.createQueryBuilder(ContentJob, 'cj')
 			.select('cj.id')
 			.where({userId})
 			.getResult();
@@ -74,8 +75,8 @@ export class PublicationService {
 	}
 
 	/**
-   * 获取发布详情
-   */
+	 * 获取发布详情
+	 */
 	async getPublicationById(publicationId: string, userId: string): Promise<Publication> {
 		const publication = await this.publicationRepository.findOne({id: publicationId});
 
@@ -97,8 +98,8 @@ export class PublicationService {
 	}
 
 	/**
-   * 更新发布状态（手动上传完成后调用）
-   */
+	 * 更新发布状态（手动上传完成后调用）
+	 */
 	async updatePublicationStatus(
 		publicationId: string,
 		status: PublicationStatus,
@@ -123,8 +124,8 @@ export class PublicationService {
 	}
 
 	/**
-   * 获取生成的视频文件路径
-   */
+	 * 获取生成的视频文件路径
+	 */
 	async getVideoFilePath(publicationId: string, userId: string): Promise<string> {
 		const publication = await this.getPublicationById(publicationId, userId);
 

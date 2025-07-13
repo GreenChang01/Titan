@@ -15,9 +15,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 	}
 
 	/**
-   * Override the default `canActivate` method to check for the @Public decorator.
-   * If the route has @Public, the JWT validation is skipped.
-   */
+	 * Override the default `canActivate` method to check for the @Public decorator.
+	 * If the route has @Public, the JWT validation is skipped.
+	 */
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 		const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
 			context.getHandler(),

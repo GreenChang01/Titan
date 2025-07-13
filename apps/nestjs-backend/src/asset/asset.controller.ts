@@ -40,9 +40,9 @@ export class AssetController {
 	constructor(private readonly assetService: AssetService) {}
 
 	/**
-   * 上传资源文件
-   * 支持上传图片、音频、视频等多种格式的资源文件，自动提取元数据和生成缩略图
-   */
+	 * 上传资源文件
+	 * 支持上传图片、音频、视频等多种格式的资源文件，自动提取元数据和生成缩略图
+	 */
 	@Post('upload')
 	@ApiOperation({
 		summary: '上传资源文件',
@@ -76,9 +76,9 @@ export class AssetController {
 	}
 
 	/**
-   * 搜索和获取资源列表
-   * 支持分页查询、类型过滤、标签搜索、文件名模糊查询等多种搜索条件
-   */
+	 * 搜索和获取资源列表
+	 * 支持分页查询、类型过滤、标签搜索、文件名模糊查询等多种搜索条件
+	 */
 	@Get()
 	@ApiOperation({
 		summary: '搜索资源列表',
@@ -108,9 +108,9 @@ export class AssetController {
 	}
 
 	/**
-   * 根据ID获取资源详情
-   * 获取指定资源的完整信息，包括元数据、缩略图、标签等
-   */
+	 * 根据ID获取资源详情
+	 * 获取指定资源的完整信息，包括元数据、缩略图、标签等
+	 */
 	@Get(':id')
 	@ApiOperation({
 		summary: '获取资源详情',
@@ -134,9 +134,9 @@ export class AssetController {
 	}
 
 	/**
-   * 更新资源信息
-   * 可更新资源的标签、描述、类型分类等信息，不影响原始文件
-   */
+	 * 更新资源信息
+	 * 可更新资源的标签、描述、类型分类等信息，不影响原始文件
+	 */
 	@Patch(':id')
 	@ApiOperation({
 		summary: '更新资源信息',
@@ -168,9 +168,9 @@ export class AssetController {
 	}
 
 	/**
-   * 删除资源
-   * 删除指定的资源文件及其关联数据，包括文件本身、缩略图和数据库记录
-   */
+	 * 删除资源
+	 * 删除指定的资源文件及其关联数据，包括文件本身、缩略图和数据库记录
+	 */
 	@Delete(':id')
 	@ApiOperation({
 		summary: '删除资源',
@@ -193,9 +193,9 @@ export class AssetController {
 	}
 
 	/**
-   * 批量操作资源
-   * 支持批量删除、批量更新标签、批量移动到项目等操作，提高资源管理效率
-   */
+	 * 批量操作资源
+	 * 支持批量删除、批量更新标签、批量移动到项目等操作，提高资源管理效率
+	 */
 	@Post('batch-operations')
 	@ApiOperation({
 		summary: '批量操作资源',
@@ -219,9 +219,9 @@ export class AssetController {
 	}
 
 	/**
-   * 从阿里云盘导入资源
-   * 从用户的阿里云盘中批量导入文件作为项目资源，支持保持目录结构
-   */
+	 * 从阿里云盘导入资源
+	 * 从用户的阿里云盘中批量导入文件作为项目资源，支持保持目录结构
+	 */
 	@Post('import-from-aliyun')
 	@ApiOperation({
 		summary: '从阿里云盘导入资源',

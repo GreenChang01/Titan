@@ -138,8 +138,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 生成单个音频块
-   */
+	 * 生成单个音频块
+	 */
 	private async generateSingleChunk(prompt: string, duration: number): Promise<Buffer> {
 		const requestData: ElevenLabsSoundEffectsRequest = {
 			text: prompt,
@@ -158,8 +158,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 生成长音频（分段拼接）
-   */
+	 * 生成长音频（分段拼接）
+	 */
 	private async generateLongSoundscape(
 		prompt: string,
 		options: SoundscapeOptions,
@@ -211,8 +211,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 拼接音频块（简化实现，实际需要FFmpeg）
-   */
+	 * 拼接音频块（简化实现，实际需要FFmpeg）
+	 */
 	private async concatenateAudioChunks(chunks: Buffer[]): Promise<Buffer> {
 		// 简单的Buffer拼接，实际需要FFmpeg进行无缝音频拼接
 		this.logger.debug('Concatenating audio chunks (simplified implementation)');
@@ -294,8 +294,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 应用ASMR和中老年人友好的优化
-   */
+	 * 应用ASMR和中老年人友好的优化
+	 */
 	private applyASMROptimization(options: SoundscapeOptions): SoundscapeOptions {
 		const optimized = {...options};
 
@@ -316,8 +316,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 针对中老年人优化提示词
-   */
+	 * 针对中老年人优化提示词
+	 */
 	private optimizePromptForElderly(prompt: string, category: string): string {
 		let optimizedPrompt = prompt;
 
@@ -344,8 +344,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * ASMR后处理优化
-   */
+	 * ASMR后处理优化
+	 */
 	private async postProcessForASMR(audioBuffer: Buffer, options: SoundscapeOptions): Promise<Buffer> {
 		// 这里应该调用FFmpeg进行后处理
 		// 1. 标准化音量
@@ -359,8 +359,8 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 	}
 
 	/**
-   * 备用本地音景生成
-   */
+	 * 备用本地音景生成
+	 */
 	private async generateFallbackSoundscape(
 		prompt: string,
 		options: SoundscapeOptions,

@@ -9,7 +9,7 @@ export class FileValidationPipe implements PipeTransform {
 
 	constructor(private readonly configService: ConfigService) {
 		const mimeTypesConfig
-      = this.configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*';
+			= this.configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*';
 		this.allowedMimeTypes = mimeTypesConfig.split(',').map(type => type.trim());
 		this.maxFileSize = this.configService.get<number>(ConfigKey.MAX_FILE_SIZE) || 524_288_000; // 500MB default
 	}

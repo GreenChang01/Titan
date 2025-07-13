@@ -47,9 +47,9 @@ export class AliyunDriveController {
 	constructor(private readonly aliyunDriveService: AliyunDriveService) {}
 
 	/**
-   * 创建WebDAV配置
-   * 为当前用户创建新的阿里云盘WebDAV配置
-   */
+	 * 创建WebDAV配置
+	 * 为当前用户创建新的阿里云盘WebDAV配置
+	 */
 	@Post('config')
 	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({

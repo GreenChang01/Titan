@@ -64,8 +64,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 生成完整的ASMR音频内容
-   */
+	 * 生成完整的ASMR音频内容
+	 */
 	async generateASMRContent(request: ASMRGenerationRequest): Promise<ASMRGenerationResult> {
 		const startTime = Date.now();
 		let totalCost = 0;
@@ -168,8 +168,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 批量生成ASMR内容
-   */
+	 * 批量生成ASMR内容
+	 */
 	async generateBatchASMRContent(requests: ASMRGenerationRequest[]): Promise<ASMRGenerationResult[]> {
 		this.logger.log(`Starting batch generation of ${requests.length} ASMR contents`);
 
@@ -208,8 +208,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 获取适合中老年人的ASMR预设配置
-   */
+	 * 获取适合中老年人的ASMR预设配置
+	 */
 	getElderlyFriendlyPresets(): {
 		voicePresets: typeof ASMRVoicePresets;
 		soundscapeTemplates: typeof ASMRSoundscapeTemplates;
@@ -225,8 +225,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 验证AI服务连接状态
-   */
+	 * 验证AI服务连接状态
+	 */
 	async validateAIServices(): Promise<{
 		elevenlabs: boolean;
 		elevenLabsSoundscape: boolean;
@@ -259,8 +259,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 估算生成成本
-   */
+	 * 估算生成成本
+	 */
 	async estimateGenerationCost(request: ASMRGenerationRequest): Promise<{
 		voiceCost: number;
 		soundscapeCost: number;
@@ -283,8 +283,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 针对中老年人优化请求参数
-   */
+	 * 针对中老年人优化请求参数
+	 */
 	private optimizeRequestForElderly(request: ASMRGenerationRequest): ASMRGenerationRequest {
 		const optimized = {...request};
 
@@ -324,8 +324,8 @@ export class ASMRContentService {
 	}
 
 	/**
-   * 创建推荐的ASMR生成请求模板
-   */
+	 * 创建推荐的ASMR生成请求模板
+	 */
 	createElderlyFriendlyTemplate(
 		text: string,
 		voicePreset: keyof typeof ASMRVoicePresets = 'ELDERLY_FRIENDLY',

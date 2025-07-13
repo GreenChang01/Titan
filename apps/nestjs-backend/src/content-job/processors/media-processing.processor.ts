@@ -82,8 +82,8 @@ export class MediaProcessingProcessor {
 	}
 
 	/**
-   * Bull队列全局错误处理
-   */
+	 * Bull队列全局错误处理
+	 */
 	@Process('*')
 	async handleFailedJob(job: Job): Promise<void> {
 		this.logger.error(`Job ${job.id} failed after all retries`);

@@ -34,9 +34,9 @@ export class AuthController {
 	) {}
 
 	/**
-   * 用户凭据登录并发送双因子验证码
-   * 接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱
-   */
+	 * 用户凭据登录并发送双因子验证码
+	 * 接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱
+	 */
 	@Post('login/credentials')
 	@Public()
 	@Throttle({default: {ttl: oneMinute, limit: 5}})
@@ -80,9 +80,9 @@ export class AuthController {
 	}
 
 	/**
-   * 双因子验证码登录并生成令牌
-   * 验证双因子验证码，成功后生成访问令牌和刷新令牌
-   */
+	 * 双因子验证码登录并生成令牌
+	 * 验证双因子验证码，成功后生成访问令牌和刷新令牌
+	 */
 	@Post('login/2fa')
 	@Public()
 	@Throttle({default: {ttl: oneMinute, limit: 5}})
@@ -129,9 +129,9 @@ export class AuthController {
 	}
 
 	/**
-   * 刷新访问令牌和刷新令牌
-   * 使用刷新令牌来获取新的令牌对
-   */
+	 * 刷新访问令牌和刷新令牌
+	 * 使用刷新令牌来获取新的令牌对
+	 */
 	@Post('refresh')
 	@HttpCode(HttpStatus.OK)
 	@Public()
@@ -173,9 +173,9 @@ export class AuthController {
 	}
 
 	/**
-   * 退出登录并清除认证 Cookie
-   * 清除访问令牌和刷新令牌的 Cookie
-   */
+	 * 退出登录并清除认证 Cookie
+	 * 清除访问令牌和刷新令牌的 Cookie
+	 */
 	@Post('logout')
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({

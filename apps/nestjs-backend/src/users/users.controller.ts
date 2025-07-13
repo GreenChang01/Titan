@@ -29,9 +29,9 @@ export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
 	/**
-   * 获取当前用户信息
-   * 返回当前认证用户的详细信息
-   */
+	 * 获取当前用户信息
+	 * 返回当前认证用户的详细信息
+	 */
 	@Get('me')
 	@ApiOperation({
 		summary: '获取当前用户信息',
@@ -49,9 +49,9 @@ export class UsersController {
 	}
 
 	/**
-   * 创建新用户
-   * 接受邮箱、密码和用户名，创建新用户并发送确认邮件
-   */
+	 * 创建新用户
+	 * 接受邮箱、密码和用户名，创建新用户并发送确认邮件
+	 */
 	@Post()
 	@Public()
 	@Throttle({default: {ttl: oneHour, limit: 60}}) // 每小时每 IP 地址允许 60 次请求
@@ -76,9 +76,9 @@ export class UsersController {
 	}
 
 	/**
-   * 确认用户注册
-   * 使用邮件中的确认码来激活用户账户
-   */
+	 * 确认用户注册
+	 * 使用邮件中的确认码来激活用户账户
+	 */
 	@Post('confirm/:confirmationCode')
 	@Public()
 	@Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
@@ -103,9 +103,9 @@ export class UsersController {
 	}
 
 	/**
-   * 删除当前用户
-   * 删除当前认证用户的账户
-   */
+	 * 删除当前用户
+	 * 删除当前认证用户的账户
+	 */
 	@Delete()
 	@ApiOperation({
 		summary: '删除当前用户',
@@ -121,9 +121,9 @@ export class UsersController {
 	}
 
 	/**
-   * 请求密码重置
-   * 使用邮箱地址请求密码重置，系统会发送重置链接到邮箱
-   */
+	 * 请求密码重置
+	 * 使用邮箱地址请求密码重置，系统会发送重置链接到邮箱
+	 */
 	@Post('reset-password/request')
 	@Public()
 	@Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
@@ -150,9 +150,9 @@ export class UsersController {
 	}
 
 	/**
-   * 确认密码重置
-   * 使用重置令牌和新密码来完成密码重置
-   */
+	 * 确认密码重置
+	 * 使用重置令牌和新密码来完成密码重置
+	 */
 	@Post('reset-password/confirm')
 	@Public()
 	@Throttle({default: {ttl: oneMinute * 15, limit: 3}}) // 15 分钟内每 IP 地址允许 3 次请求
@@ -174,9 +174,9 @@ export class UsersController {
 	}
 
 	/**
-   * 更新当前用户信息
-   * 允许当前认证用户更新他们的邮箱、密码或用户名
-   */
+	 * 更新当前用户信息
+	 * 允许当前认证用户更新他们的邮箱、密码或用户名
+	 */
 	@Patch()
 	@Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
 	@ApiOperation({
@@ -198,9 +198,9 @@ export class UsersController {
 	}
 
 	/**
-   * 获取用户配置状态
-   * 返回当前用户的配置状态，包括是否已配置阿里云盘
-   */
+	 * 获取用户配置状态
+	 * 返回当前用户的配置状态，包括是否已配置阿里云盘
+	 */
 	@Get('me/config-status')
 	@ApiOperation({
 		summary: '获取用户配置状态',

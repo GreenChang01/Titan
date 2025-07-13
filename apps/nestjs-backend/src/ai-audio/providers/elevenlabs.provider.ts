@@ -4,11 +4,7 @@ import {
 import {ConfigService} from '@nestjs/config';
 import axios, {AxiosInstance} from 'axios';
 import {
-	IAudioProvider,
-	VoiceOptions,
-	Voice,
-	VoiceGenerationResult,
-	VoiceCloneResult,
+	IAudioProvider, VoiceOptions, Voice, VoiceGenerationResult, VoiceCloneResult,
 } from '../interfaces';
 
 type ElevenLabsVoice = {
@@ -240,8 +236,8 @@ export class ElevenLabsProvider implements IAudioProvider {
 	}
 
 	/**
-   * 应用ASMR优化设置
-   */
+	 * 应用ASMR优化设置
+	 */
 	private applyASMROptimization(options: VoiceOptions): VoiceOptions {
 		// 如果未指定参数，使用ASMR优化的默认值
 		const optimized = {...options};
@@ -266,8 +262,8 @@ export class ElevenLabsProvider implements IAudioProvider {
 	}
 
 	/**
-   * 转换ElevenLabs语音格式
-   */
+	 * 转换ElevenLabs语音格式
+	 */
 	private transformVoice(elevenLabsVoice: ElevenLabsVoice): Voice {
 		return {
 			id: elevenLabsVoice.voice_id,
@@ -281,8 +277,8 @@ export class ElevenLabsProvider implements IAudioProvider {
 	}
 
 	/**
-   * 标记适合ASMR的语音
-   */
+	 * 标记适合ASMR的语音
+	 */
 	private markASMRSuitableVoices(voices: Voice[]): Voice[] {
 		return voices.map(voice => {
 			// 基于名称和描述判断是否适合ASMR
@@ -301,8 +297,8 @@ export class ElevenLabsProvider implements IAudioProvider {
 	}
 
 	/**
-   * 提取音频元数据（简化版本）
-   */
+	 * 提取音频元数据（简化版本）
+	 */
 	private async extractAudioMetadata(audioBuffer: Buffer, processingTime: number) {
 		// 简化的元数据提取，实际应使用ffprobe
 		return {

@@ -41,8 +41,8 @@ export class ContentJobService {
 	) {}
 
 	/**
-   * 创建单个内容生产任务
-   */
+	 * 创建单个内容生产任务
+	 */
 	async createSingleJob(createJobDto: CreateContentJobDto, userId: string): Promise<ContentJob> {
 		const job = new ContentJob();
 		job.userId = userId;
@@ -75,8 +75,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 创建批量内容生产任务
-   */
+	 * 创建批量内容生产任务
+	 */
 	async createBatchJobs(createBatchDto: CreateBatchJobDto, userId: string): Promise<ContentJob[]> {
 		const jobs: ContentJob[] = [];
 
@@ -119,8 +119,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 获取任务列表
-   */
+	 * 获取任务列表
+	 */
 	async getJobs(
 		userId: string,
 		options: JobQueryOptions,
@@ -157,8 +157,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 获取任务详情
-   */
+	 * 获取任务详情
+	 */
 	async getJobById(jobId: string, userId: string): Promise<ContentJob> {
 		const job = await this.jobRepository.findOne({
 			id: jobId,
@@ -173,8 +173,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 获取任务进度
-   */
+	 * 获取任务进度
+	 */
 	async getJobProgress(jobId: string, userId: string): Promise<JobProgressData> {
 		const job = await this.getJobById(jobId, userId);
 
@@ -190,8 +190,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 重试失败的任务
-   */
+	 * 重试失败的任务
+	 */
 	async retryJob(jobId: string, userId: string): Promise<ContentJob> {
 		const job = await this.getJobById(jobId, userId);
 
@@ -231,8 +231,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 更新任务状态
-   */
+	 * 更新任务状态
+	 */
 	async updateJobStatus(jobId: string, status: JobStatus, progress?: number, errorMessage?: string): Promise<void> {
 		const job = await this.jobRepository.findOne({id: jobId});
 		if (!job) {
@@ -263,8 +263,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 设置任务输出路径
-   */
+	 * 设置任务输出路径
+	 */
 	async setJobOutput(jobId: string, outputPath: string): Promise<void> {
 		const job = await this.jobRepository.findOne({id: jobId});
 		if (!job) {
@@ -276,8 +276,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 创建ASMR音频生成任务
-   */
+	 * 创建ASMR音频生成任务
+	 */
 	async createASMRAudioJob(
 		text: string,
 		userId: string,
@@ -301,7 +301,10 @@ export class ContentJobService {
 				assetId: 'text',
 				slotName: 'text_content',
 				parameters: {
-					text, duration, voicePreset, soundscapeType,
+					text,
+					duration,
+					voicePreset,
+					soundscapeType,
 				},
 			},
 		];
@@ -341,8 +344,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 创建语音生成任务
-   */
+	 * 创建语音生成任务
+	 */
 	async createVoiceGenerationJob(
 		text: string,
 		userId: string,
@@ -400,8 +403,8 @@ export class ContentJobService {
 	}
 
 	/**
-   * 创建音景生成任务
-   */
+	 * 创建音景生成任务
+	 */
 	async createSoundscapeGenerationJob(
 		prompt: string,
 		userId: string,

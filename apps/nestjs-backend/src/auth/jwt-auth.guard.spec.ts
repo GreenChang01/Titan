@@ -8,7 +8,6 @@ import {JwtAuthGuard} from './jwt-auth.guard';
 
 // Properly mock the AuthGuard
 jest.mock('@nestjs/passport', () => ({
-
 	AuthGuard: jest.fn(() =>
 		class MockAuthGuard {
 			canActivate(): boolean | Promise<boolean> | Observable<boolean> {

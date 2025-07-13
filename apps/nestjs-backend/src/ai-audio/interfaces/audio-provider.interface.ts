@@ -47,55 +47,55 @@ export type VoiceCloneResult = {
  */
 export type IAudioProvider = {
 	/**
-   * 生成语音
-   * @param text 要转换的文本
-   * @param options 语音选项
-   * @returns 语音生成结果
-   */
+	 * 生成语音
+	 * @param text 要转换的文本
+	 * @param options 语音选项
+	 * @returns 语音生成结果
+	 */
 	generateVoice(text: string, options: VoiceOptions): Promise<VoiceGenerationResult>;
 
 	/**
-   * 获取可用语音列表
-   * @param category 语音分类过滤
-   * @returns 语音列表
-   */
+	 * 获取可用语音列表
+	 * @param category 语音分类过滤
+	 * @returns 语音列表
+	 */
 	getVoices(category?: string): Promise<Voice[]>;
 
 	/**
-   * 根据ID获取语音信息
-   * @param voiceId 语音ID
-   * @returns 语音信息
-   */
+	 * 根据ID获取语音信息
+	 * @param voiceId 语音ID
+	 * @returns 语音信息
+	 */
 	getVoiceById(voiceId: string): Promise<Voice>;
 
 	/**
-   * 克隆语音
-   * @param audioSample 音频样本数据
-   * @param name 语音名称
-   * @param description 语音描述
-   * @returns 克隆结果
-   */
+	 * 克隆语音
+	 * @param audioSample 音频样本数据
+	 * @param name 语音名称
+	 * @param description 语音描述
+	 * @returns 克隆结果
+	 */
 	cloneVoice(audioSample: Buffer, name: string, description?: string): Promise<VoiceCloneResult>;
 
 	/**
-   * 获取语音克隆状态
-   * @param voiceId 语音ID
-   * @returns 克隆状态
-   */
+	 * 获取语音克隆状态
+	 * @param voiceId 语音ID
+	 * @returns 克隆状态
+	 */
 	getCloneStatus(voiceId: string): Promise<VoiceCloneResult>;
 
 	/**
-   * 估算生成成本
-   * @param text 文本内容
-   * @param options 语音选项
-   * @returns 估算成本(美元)
-   */
+	 * 估算生成成本
+	 * @param text 文本内容
+	 * @param options 语音选项
+	 * @returns 估算成本(美元)
+	 */
 	estimateCost(text: string, options: VoiceOptions): Promise<number>;
 
 	/**
-   * 验证API连接和配置
-   * @returns 是否连接成功
-   */
+	 * 验证API连接和配置
+	 * @returns 是否连接成功
+	 */
 	validateConnection(): Promise<boolean>;
 };
 

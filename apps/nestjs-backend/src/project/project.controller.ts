@@ -1,4 +1,3 @@
-
 import {
 	Controller, Get, Post, Delete, Body, Param, HttpStatus, HttpCode, Patch,
 } from '@nestjs/common';
@@ -20,9 +19,9 @@ export class ProjectController {
 	constructor(private readonly projectService: ProjectService) {}
 
 	/**
-   * 创建新项目
-   * 接受项目名称、描述和颜色，创建新的项目
-   */
+	 * 创建新项目
+	 * 接受项目名称、描述和颜色，创建新的项目
+	 */
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({
@@ -65,9 +64,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 获取当前用户的所有项目
-   * 返回用户拥有的所有激活项目列表
-   */
+	 * 获取当前用户的所有项目
+	 * 返回用户拥有的所有激活项目列表
+	 */
 	@Get()
 	@ApiOperation({
 		summary: '获取用户所有项目',
@@ -104,9 +103,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 根据ID获取单个项目
-   * 验证用户权限后返回项目详情，并更新最后访问时间
-   */
+	 * 根据ID获取单个项目
+	 * 验证用户权限后返回项目详情，并更新最后访问时间
+	 */
 	@Get(':id')
 	@ApiOperation({
 		summary: '根据ID获取项目详情',
@@ -151,9 +150,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 更新项目信息
-   * 验证用户权限后更新项目的名称、描述或颜色
-   */
+	 * 更新项目信息
+	 * 验证用户权限后更新项目的名称、描述或颜色
+	 */
 	@Patch(':id')
 	@ApiOperation({
 		summary: '更新项目信息',
@@ -203,9 +202,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 删除项目
-   * 验证用户权限后软删除项目（设置为非激活状态）
-   */
+	 * 删除项目
+	 * 验证用户权限后软删除项目（设置为非激活状态）
+	 */
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({
@@ -226,9 +225,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 向项目添加素材
-   * 验证用户权限后向项目中添加新的素材文件
-   */
+	 * 向项目添加素材
+	 * 验证用户权限后向项目中添加新的素材文件
+	 */
 	@Post(':id/materials')
 	@HttpCode(HttpStatus.CREATED)
 	@ApiOperation({
@@ -284,9 +283,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 从项目中移除素材
-   * 验证用户权限后从项目中移除指定的素材
-   */
+	 * 从项目中移除素材
+	 * 验证用户权限后从项目中移除指定的素材
+	 */
 	@Delete(':id/materials/:materialId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({
@@ -311,9 +310,9 @@ export class ProjectController {
 	}
 
 	/**
-   * 获取项目的所有素材
-   * 验证用户权限后返回项目包含的所有素材列表
-   */
+	 * 获取项目的所有素材
+	 * 验证用户权限后返回项目包含的所有素材列表
+	 */
 	@Get(':id/materials')
 	@ApiOperation({
 		summary: '获取项目素材列表',

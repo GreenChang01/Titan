@@ -30,13 +30,13 @@ export class ProjectService {
 	) {}
 
 	/**
-   * 创建新项目
-   * @param user 项目所有者
-   * @param name 项目名称
-   * @param description 项目描述（可选）
-   * @param color 项目颜色（可选，默认为蓝色）
-   * @returns 创建的项目实体
-   */
+	 * 创建新项目
+	 * @param user 项目所有者
+	 * @param name 项目名称
+	 * @param description 项目描述（可选）
+	 * @param color 项目颜色（可选，默认为蓝色）
+	 * @returns 创建的项目实体
+	 */
 	async create(user: User, name: string, description?: string, color?: string): Promise<Project> {
 		const project = new Project({
 			user,
@@ -50,10 +50,10 @@ export class ProjectService {
 	}
 
 	/**
-   * 查找用户的所有激活项目
-   * @param user 用户实体
-   * @returns 项目列表，按最后访问时间和创建时间排序
-   */
+	 * 查找用户的所有激活项目
+	 * @param user 用户实体
+	 * @returns 项目列表，按最后访问时间和创建时间排序
+	 */
 	async findAllByUser(user: User): Promise<Project[]> {
 		return this.projectRepository.find(
 			{user, isActive: true},
@@ -65,24 +65,24 @@ export class ProjectService {
 	}
 
 	/**
-   * 根据ID查找项目
-   * @param id 项目ID
-   * @param user 用户实体
-   * @returns 项目实体或undefined
-   */
+	 * 根据ID查找项目
+	 * @param id 项目ID
+	 * @param user 用户实体
+	 * @returns 项目实体或undefined
+	 */
 	async findById(id: string, user: User): Promise<Project | undefined> {
 		const result = await this.projectRepository.findOne({id, user}, {populate: ['materials']});
 		return result ?? undefined;
 	}
 
 	/**
-   * 更新项目信息
-   * @param project 项目实体
-   * @param name 新项目名称（可选）
-   * @param description 新项目描述（可选）
-   * @param color 新项目颜色（可选）
-   * @returns 更新后的项目实体
-   */
+	 * 更新项目信息
+	 * @param project 项目实体
+	 * @param name 新项目名称（可选）
+	 * @param description 新项目描述（可选）
+	 * @param color 新项目颜色（可选）
+	 * @returns 更新后的项目实体
+	 */
 	async update(project: Project, name?: string, description?: string, color?: string): Promise<Project> {
 		if (name) {
 			project.name = name;
@@ -101,38 +101,38 @@ export class ProjectService {
 	}
 
 	/**
-   * 更新项目最后访问时间
-   * @param project 项目实体
-   */
+	 * 更新项目最后访问时间
+	 * @param project 项目实体
+	 */
 	async updateLastAccessed(project: Project): Promise<void> {
 		project.lastAccessedAt = new Date();
 		await this.em.persistAndFlush(project);
 	}
 
 	/**
-   * 软删除项目（设置为非激活状态）
-   * @param project 项目实体
-   */
+	 * 软删除项目（设置为非激活状态）
+	 * @param project 项目实体
+	 */
 	async delete(project: Project): Promise<void> {
 		project.isActive = false;
 		await this.em.persistAndFlush(project);
 	}
 
 	/**
-   * 硬删除项目（从数据库中永久删除）
-   * @param project 项目实体
-   */
+	 * 硬删除项目（从数据库中永久删除）
+	 * @param project 项目实体
+	 */
 	async hardDelete(project: Project): Promise<void> {
 		await this.em.removeAndFlush(project);
 	}
 
 	/**
-   * 向项目添加素材
-   * @param project 项目实体
-   * @param addMaterialDto 素材信息DTO
-   * @returns 创建的项目素材实体
-   * @throws ConflictException 当素材已存在于项目中时
-   */
+	 * 向项目添加素材
+	 * @param project 项目实体
+	 * @param addMaterialDto 素材信息DTO
+	 * @returns 创建的项目素材实体
+	 * @throws ConflictException 当素材已存在于项目中时
+	 */
 	async addMaterial(project: Project, addMaterialDto: AddMaterialDto): Promise<ProjectMaterial> {
 		// 检查素材是否已经存在于该项目中
 		const existingMaterial = await this.projectMaterialRepository.findOne({
@@ -164,11 +164,11 @@ export class ProjectService {
 	}
 
 	/**
-   * 从项目中移除素材
-   * @param project 项目实体
-   * @param materialId 素材ID
-   * @throws NotFoundException 当素材不存在于项目中时
-   */
+	 * 从项目中移除素材
+	 * @param project 项目实体
+	 * @param materialId 素材ID
+	 * @throws NotFoundException 当素材不存在于项目中时
+	 */
 	async removeMaterial(project: Project, materialId: string): Promise<void> {
 		const material = await this.projectMaterialRepository.findOne({
 			id: materialId,
@@ -185,20 +185,20 @@ export class ProjectService {
 	}
 
 	/**
-   * 查找项目的所有素材
-   * @param project 项目实体
-   * @returns 项目素材列表，按创建时间倒序排列
-   */
+	 * 查找项目的所有素材
+	 * @param project 项目实体
+	 * @returns 项目素材列表，按创建时间倒序排列
+	 */
 	async findProjectMaterials(project: Project): Promise<ProjectMaterial[]> {
 		return this.projectMaterialRepository.find({project, isActive: true}, {orderBy: {createdAt: 'DESC'}});
 	}
 
 	/**
-   * 根据ID查找项目中的特定素材
-   * @param project 项目实体
-   * @param materialId 素材ID
-   * @returns 项目素材实体或undefined
-   */
+	 * 根据ID查找项目中的特定素材
+	 * @param project 项目实体
+	 * @param materialId 素材ID
+	 * @returns 项目素材实体或undefined
+	 */
 	async findMaterialById(project: Project, materialId: string): Promise<ProjectMaterial | undefined> {
 		const result = await this.projectMaterialRepository.findOne({
 			id: materialId,
@@ -209,12 +209,12 @@ export class ProjectService {
 	}
 
 	/**
-   * 验证用户对项目的所有权
-   * @param projectId 项目ID
-   * @param user 用户实体
-   * @returns 项目实体
-   * @throws NotFoundException 当项目不存在或用户无访问权限时
-   */
+	 * 验证用户对项目的所有权
+	 * @param projectId 项目ID
+	 * @param user 用户实体
+	 * @returns 项目实体
+	 * @throws NotFoundException 当项目不存在或用户无访问权限时
+	 */
 	async validateProjectOwnership(projectId: string, user: User): Promise<Project> {
 		const project = await this.findById(projectId, user);
 		if (!project) {
@@ -227,8 +227,8 @@ export class ProjectService {
 	// === V1.1 新增方法 ===
 
 	/**
-   * 使用DTO创建项目
-   */
+	 * 使用DTO创建项目
+	 */
 	async createProject(createProjectDto: CreateProjectDto, userId: string): Promise<Project> {
 		// 获取用户实体
 		const user = await this.em.findOne(User, {id: userId});
@@ -248,15 +248,15 @@ export class ProjectService {
 	}
 
 	/**
-   * 获取用户的所有项目
-   */
+	 * 获取用户的所有项目
+	 */
 	async getProjectsByUser(userId: string): Promise<Project[]> {
 		return this.projectRepository.find({user: userId, status: ProjectStatus.ACTIVE}, {orderBy: {updatedAt: 'DESC'}});
 	}
 
 	/**
-   * 获取项目及其关联的素材
-   */
+	 * 获取项目及其关联的素材
+	 */
 	async getProjectWithAssets(projectId: string, userId: string): Promise<Project & {assets: Asset[]}> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {
@@ -270,8 +270,8 @@ export class ProjectService {
 	}
 
 	/**
-   * 更新项目
-   */
+	 * 更新项目
+	 */
 	async updateProject(projectId: string, updateDto: UpdateProjectDto, userId: string): Promise<Project> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {
@@ -299,8 +299,8 @@ export class ProjectService {
 	}
 
 	/**
-   * 删除项目
-   */
+	 * 删除项目
+	 */
 	async deleteProject(projectId: string, userId: string): Promise<void> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {
@@ -312,8 +312,8 @@ export class ProjectService {
 	}
 
 	/**
-   * 添加素材到项目
-   */
+	 * 添加素材到项目
+	 */
 	async addAssetsToProject(projectId: string, assetIds: string[], userId: string): Promise<void> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {
@@ -352,8 +352,8 @@ export class ProjectService {
 	}
 
 	/**
-   * 从项目移除素材
-   */
+	 * 从项目移除素材
+	 */
 	async removeAssetFromProject(projectId: string, assetId: string, userId: string): Promise<void> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {
@@ -376,8 +376,8 @@ export class ProjectService {
 	}
 
 	/**
-   * 获取项目的素材列表
-   */
+	 * 获取项目的素材列表
+	 */
 	async getProjectAssets(projectId: string, userId: string): Promise<Asset[]> {
 		const project = await this.projectRepository.findOne({id: projectId, user: userId});
 		if (!project) {

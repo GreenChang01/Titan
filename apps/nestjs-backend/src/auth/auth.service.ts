@@ -30,9 +30,9 @@ export class AuthService {
 	) {}
 
 	/**
-   * 定时清理过期的双因子验证记录
-   * 每小时整点执行，清理 15 分钟前创建的记录
-   */
+	 * 定时清理过期的双因子验证记录
+	 * 每小时整点执行，清理 15 分钟前创建的记录
+	 */
 	@Cron('0 * * * *') // Every hour, on the hour
 	async removeExpiredTwoFactorAuth(): Promise<void> {
 		const threshold = new Date(Date.now() - oneMinute * 15);
@@ -51,9 +51,9 @@ export class AuthService {
 	}
 
 	/**
-   * 定时清理过期的已撤销刷新令牌记录
-   * 每小时整点执行，清理 7 天前创建的记录
-   */
+	 * 定时清理过期的已撤销刷新令牌记录
+	 * 每小时整点执行，清理 7 天前创建的记录
+	 */
 	@Cron('0 * * * *') // Every hour, on the hour
 	async removeExpiredRevokedRefreshTokens(): Promise<void> {
 		const threshold = new Date(Date.now() - 7 * oneDay);
@@ -72,12 +72,12 @@ export class AuthService {
 	}
 
 	/**
-   * 验证用户凭据并发送双因子验证码
-   * @param email 用户邮箱
-   * @param password 用户密码
-   * @param language 邮件语言
-   * @returns 双因子验证码的哈希值
-   */
+	 * 验证用户凭据并发送双因子验证码
+	 * @param email 用户邮箱
+	 * @param password 用户密码
+	 * @param language 邮件语言
+	 * @returns 双因子验证码的哈希值
+	 */
 	async validateUserCredentials(email: string, password: string, language: AcceptedLanguages): Promise<string> {
 		let user: User | undefined;
 
@@ -120,11 +120,11 @@ export class AuthService {
 	}
 
 	/**
-   * 验证双因子验证码
-   * @param twoFactorAuthHashedId 双因子验证 ID 的哈希值
-   * @param code 用户输入的验证码
-   * @returns 验证成功的用户实体
-   */
+	 * 验证双因子验证码
+	 * @param twoFactorAuthHashedId 双因子验证 ID 的哈希值
+	 * @param code 用户输入的验证码
+	 * @returns 验证成功的用户实体
+	 */
 	async validateTwoFactorAuth(twoFactorAuthHashedId: string, code: string): Promise<User> {
 		if (!twoFactorAuthHashedId) {
 			throw new UnauthorizedException('Invalid two-factor authentication id');
@@ -169,10 +169,10 @@ export class AuthService {
 	}
 
 	/**
-   * 生成访问令牌
-   * @param user 用户实体
-   * @returns JWT 访问令牌（15 分钟有效期）
-   */
+	 * 生成访问令牌
+	 * @param user 用户实体
+	 * @returns JWT 访问令牌（15 分钟有效期）
+	 */
 	async generateAccessToken(user: User): Promise<string> {
 		return this.jwtService.sign(
 			{sub: user.id},
@@ -184,10 +184,10 @@ export class AuthService {
 	}
 
 	/**
-   * 生成刷新令牌
-   * @param user 用户实体
-   * @returns JWT 刷新令牌（7 天有效期）
-   */
+	 * 生成刷新令牌
+	 * @param user 用户实体
+	 * @returns JWT 刷新令牌（7 天有效期）
+	 */
 	async generateRefreshToken(user: User): Promise<string> {
 		return this.jwtService.sign(
 			{sub: user.id},
@@ -199,10 +199,10 @@ export class AuthService {
 	}
 
 	/**
-   * 使用刷新令牌更新令牌对
-   * @param refreshToken 刷新令牌
-   * @returns 新的访问令牌和刷新令牌
-   */
+	 * 使用刷新令牌更新令牌对
+	 * @param refreshToken 刷新令牌
+	 * @returns 新的访问令牌和刷新令牌
+	 */
 	async refreshTokens(refreshToken: string): Promise<{accessToken: string; refreshToken: string}> {
 		// 检查令牌是否已被撤销
 		const revokedToken = await this.em.findOne(RevokedRefreshToken, {token: refreshToken});

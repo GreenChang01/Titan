@@ -23,9 +23,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	}
 
 	/**
-   * This method is called if the JWT is valid.
-   * The returned value becomes `req.user`.
-   */
+	 * This method is called if the JWT is valid.
+	 * The returned value becomes `req.user`.
+	 */
 	async validate(payload: {sub: string}): Promise<ActiveUser> {
 		return {
 			userId: payload.sub,

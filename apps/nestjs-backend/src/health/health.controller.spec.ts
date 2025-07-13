@@ -1,5 +1,8 @@
 import {
-	HealthCheckService, MikroOrmHealthIndicator, type HealthIndicatorResult, type HealthCheckResult,
+	HealthCheckService,
+	MikroOrmHealthIndicator,
+	type HealthIndicatorResult,
+	type HealthCheckResult,
 } from '@nestjs/terminus';
 import {Test, type TestingModule} from '@nestjs/testing';
 import {mockDeep, type DeepMockProxy} from 'jest-mock-extended';

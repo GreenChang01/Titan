@@ -27,9 +27,9 @@ export class UsersService {
 	) {}
 
 	/**
-   * 定时清理过期的待确认用户
-   * 每小时整点执行，清理 24 小时前创建的待确认用户
-   */
+	 * 定时清理过期的待确认用户
+	 * 每小时整点执行，清理 24 小时前创建的待确认用户
+	 */
 	@Cron('0 * * * *') // Every hour, on the hour
 	async removeExpiredPendingUsers(): Promise<void> {
 		const threshold = new Date(Date.now() - oneDay);
@@ -49,11 +49,11 @@ export class UsersService {
 	}
 
 	/**
-   * 根据用户 ID 获取用户
-   * @param userId 用户 ID
-   * @returns 用户实体
-   * @throws NotFoundException 当用户不存在时
-   */
+	 * 根据用户 ID 获取用户
+	 * @param userId 用户 ID
+	 * @returns 用户实体
+	 * @throws NotFoundException 当用户不存在时
+	 */
 	async getUserById(userId: string): Promise<User> {
 		const user = await this.em.findOne(User, {id: userId});
 		if (!user) {
@@ -64,11 +64,11 @@ export class UsersService {
 	}
 
 	/**
-   * 根据邮箱地址获取用户
-   * @param email 邮箱地址
-   * @returns 用户实体
-   * @throws NotFoundException 当用户不存在时
-   */
+	 * 根据邮箱地址获取用户
+	 * @param email 邮箱地址
+	 * @returns 用户实体
+	 * @throws NotFoundException 当用户不存在时
+	 */
 	async getUserByEmail(email: string): Promise<User> {
 		const user = await this.em.findOne(User, {email});
 		if (!user) {
@@ -79,11 +79,11 @@ export class UsersService {
 	}
 
 	/**
-   * 根据用户名获取用户
-   * @param username 用户名
-   * @returns 用户实体
-   * @throws NotFoundException 当用户不存在时
-   */
+	 * 根据用户名获取用户
+	 * @param username 用户名
+	 * @returns 用户实体
+	 * @throws NotFoundException 当用户不存在时
+	 */
 	async getUserByUsername(username: string): Promise<User> {
 		const user = await this.em.findOne(User, {username});
 		if (!user) {
@@ -94,13 +94,13 @@ export class UsersService {
 	}
 
 	/**
-   * 创建新用户
-   * @param email 邮箱地址
-   * @param password 密码
-   * @param username 用户名
-   * @param language 邮件语言
-   * @returns 创建的用户实体
-   */
+	 * 创建新用户
+	 * @param email 邮箱地址
+	 * @param password 密码
+	 * @param username 用户名
+	 * @param language 邮件语言
+	 * @returns 创建的用户实体
+	 */
 	async createUser(email: string, password: string, username: string, language: AcceptedLanguages): Promise<User> {
 		// 生成 Base64url 编码的确认码，防止 URL 中的特殊字符问题
 		const confirmationCode = Buffer.from(await this.cryptoService.hash(uuidv4())).toString('base64url');
@@ -123,12 +123,12 @@ export class UsersService {
 	}
 
 	/**
-   * 确认用户注册
-   * @param confirmationCode 确认码
-   * @returns 确认后的用户实体
-   * @throws NotFoundException 当确认码不存在时
-   * @throws GoneException 当确认码过期时
-   */
+	 * 确认用户注册
+	 * @param confirmationCode 确认码
+	 * @returns 确认后的用户实体
+	 * @throws NotFoundException 当确认码不存在时
+	 * @throws GoneException 当确认码过期时
+	 */
 	async confirmUser(confirmationCode: string): Promise<User> {
 		const user = await this.em.findOne(User, {confirmationCode});
 
@@ -155,9 +155,9 @@ export class UsersService {
 	}
 
 	/**
-   * 删除用户
-   * @param userId 用户 ID
-   */
+	 * 删除用户
+	 * @param userId 用户 ID
+	 */
 	async deleteUser(userId: string): Promise<void> {
 		const user = await this.getUserById(userId);
 
@@ -165,10 +165,10 @@ export class UsersService {
 	}
 
 	/**
-   * 请求密码重置
-   * @param email 邮箱地址
-   * @param language 邮件语言
-   */
+	 * 请求密码重置
+	 * @param email 邮箱地址
+	 * @param language 邮件语言
+	 */
 	async requestPasswordReset(email: string, language: AcceptedLanguages): Promise<void> {
 		let user: User | undefined;
 
@@ -191,12 +191,12 @@ export class UsersService {
 	}
 
 	/**
-   * 确认密码重置
-   * @param resetToken 重置令牌
-   * @param newPassword 新密码
-   * @throws NotFoundException 当重置令牌不存在时
-   * @throws GoneException 当重置令牌过期时
-   */
+	 * 确认密码重置
+	 * @param resetToken 重置令牌
+	 * @param newPassword 新密码
+	 * @throws NotFoundException 当重置令牌不存在时
+	 * @throws GoneException 当重置令牌过期时
+	 */
 	async confirmPasswordReset(resetToken: string, newPassword: string): Promise<void> {
 		const user = await this.em.findOne(User, {passwordResetToken: resetToken});
 
@@ -223,13 +223,13 @@ export class UsersService {
 	}
 
 	/**
-   * 更新用户信息
-   * @param userId 用户 ID
-   * @param email 新邮箱地址（可选）
-   * @param username 新用户名（可选）
-   * @param password 新密码（可选）
-   * @returns 更新后的用户实体
-   */
+	 * 更新用户信息
+	 * @param userId 用户 ID
+	 * @param email 新邮箱地址（可选）
+	 * @param username 新用户名（可选）
+	 * @param password 新密码（可选）
+	 * @returns 更新后的用户实体
+	 */
 	async updateUser(userId: string, email?: string, username?: string, password?: string): Promise<User> {
 		const user = await this.getUserById(userId);
 
@@ -250,10 +250,10 @@ export class UsersService {
 	}
 
 	/**
-   * 检查用户的阿里云盘配置状态
-   * @param userId 用户 ID
-   * @returns 是否已配置并激活阿里云盘
-   */
+	 * 检查用户的阿里云盘配置状态
+	 * @param userId 用户 ID
+	 * @returns 是否已配置并激活阿里云盘
+	 */
 	async checkAliyunDriveConfigStatus(userId: string): Promise<boolean> {
 		const config = await this.em.findOne(AliyunDriveConfig, {
 			user: userId,

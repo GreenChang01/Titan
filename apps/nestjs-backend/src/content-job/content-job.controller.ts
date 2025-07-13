@@ -24,9 +24,9 @@ export class ContentJobController {
 	constructor(private readonly contentJobService: ContentJobService) {}
 
 	/**
-   * 创建单个内容生产任务
-   * 基于指定模板和参数创建单个ASMR内容生产任务，包括音频合成、视频生成等
-   */
+	 * 创建单个内容生产任务
+	 * 基于指定模板和参数创建单个ASMR内容生产任务，包括音频合成、视频生成等
+	 */
 	@Post('create-single')
 	@ApiOperation({
 		summary: '创建单个内容生产任务',
@@ -50,9 +50,9 @@ export class ContentJobController {
 	}
 
 	/**
-   * 创建批量内容生产任务
-   * 根据模板和参数变量批量创建多个ASMR内容，适用于大规模内容生产需求
-   */
+	 * 创建批量内容生产任务
+	 * 根据模板和参数变量批量创建多个ASMR内容，适用于大规模内容生产需求
+	 */
 	@Post('create-batch')
 	@ApiOperation({
 		summary: '创建批量内容生产任务',
@@ -76,9 +76,9 @@ export class ContentJobController {
 	}
 
 	/**
-   * 获取用户的内容生产任务列表
-   * 分页查询用户的所有内容生产任务，支持按状态、项目等条件过滤
-   */
+	 * 获取用户的内容生产任务列表
+	 * 分页查询用户的所有内容生产任务，支持按状态、项目等条件过滤
+	 */
 	@Get()
 	@ApiOperation({
 		summary: '获取任务列表',
@@ -89,16 +89,30 @@ export class ContentJobController {
 		description: '任务列表获取成功，返回分页数据和任务摘要信息',
 	})
 	@ApiQuery({
-		name: 'status', enum: JobStatus, required: false, description: '任务状态过滤',
+		name: 'status',
+		enum: JobStatus,
+		required: false,
+		description: '任务状态过滤',
 	})
 	@ApiQuery({
-		name: 'projectId', type: String, required: false, description: '项目ID过滤',
+		name: 'projectId',
+		type: String,
+		required: false,
+		description: '项目ID过滤',
 	})
 	@ApiQuery({
-		name: 'page', type: Number, required: false, example: 1, description: '页码，从1开始',
+		name: 'page',
+		type: Number,
+		required: false,
+		example: 1,
+		description: '页码，从1开始',
 	})
 	@ApiQuery({
-		name: 'limit', type: Number, required: false, example: 20, description: '每页数量，最大100',
+		name: 'limit',
+		type: Number,
+		required: false,
+		example: 20,
+		description: '每页数量，最大100',
 	})
 	async getJobs(
 		@User() user: ActiveUser,
@@ -121,9 +135,9 @@ export class ContentJobController {
 	}
 
 	/**
-   * 获取内容生产任务详情
-   * 查看指定任务的详细信息，包括配置参数、执行状态、输出结果等
-   */
+	 * 获取内容生产任务详情
+	 * 查看指定任务的详细信息，包括配置参数、执行状态、输出结果等
+	 */
 	@Get(':id')
 	@ApiOperation({
 		summary: '获取任务详情',
@@ -147,9 +161,9 @@ export class ContentJobController {
 	}
 
 	/**
-   * 获取任务执行进度
-   * 实时查看任务的处理进度，包括各个处理阶段的完成状态和剩余时间估算
-   */
+	 * 获取任务执行进度
+	 * 实时查看任务的处理进度，包括各个处理阶段的完成状态和剩余时间估算
+	 */
 	@Get(':id/progress')
 	@ApiOperation({
 		summary: '获取任务执行进度',
@@ -169,9 +183,9 @@ export class ContentJobController {
 	}
 
 	/**
-   * 重试失败的任务
-   * 对执行失败的内容生产任务进行重新执行，支持从失败的步骤开始恢复
-   */
+	 * 重试失败的任务
+	 * 对执行失败的内容生产任务进行重新执行，支持从失败的步骤开始恢复
+	 */
 	@Post(':id/retry')
 	@ApiOperation({
 		summary: '重试失败任务',
