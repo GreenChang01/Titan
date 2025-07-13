@@ -14,8 +14,60 @@ import {AliyunDriveConfig} from '../aliyun-drive/entities/aliyun-drive-config.en
 import {User} from './entities/user.entity';
 
 /**
- * 用户服务
- * 提供用户创建、查询、更新、删除、登录确认、密码重置等功能
+ * 用户管理服务
+ *
+ * 提供完整的用户生命周期管理功能，包括注册、验证、密码管理和用户信息维护
+ * 实现邮箱确认机制、密码重置流程和自动清理功能
+ *
+ * 主要功能：
+ * - 用户注册和邮箱确认机制
+ * - 密码重置和安全验证
+ * - 用户信息查询和更新
+ * - 定时清理过期待确认用户
+ * - 阿里云盘配置状态检查
+ *
+ * 安全特性：
+ * - 密码哈希存储（不存储明文）
+ * - 邮箱确认防止虚假注册
+ * - 密码重置令牌时效性控制
+ * - 防止用户枚举攻击
+ * - 自动清理机制防止垃圾数据堆积
+ *
+ * 业务流程：
+ * 1. 用户注册 -> 发送确认邮件 -> 待确认状态
+ * 2. 邮箱确认 -> 用户激活 -> 正常使用
+ * 3. 密码重置 -> 发送重置邮件 -> 验证令牌 -> 更新密码
+ * 4. 24小时后自动清理未确认的注册账户
+ *
+ * @example
+ * ```typescript
+ * // 创建用户
+ * const user = await usersService.createUser(
+ *   "user@example.com",
+ *   "password123",
+ *   "username",
+ *   AcceptedLanguages.zh_CN
+ * );
+ *
+ * // 确认用户
+ * await usersService.confirmUser(confirmationCode);
+ *
+ * // 密码重置
+ * await usersService.requestPasswordReset("user@example.com", AcceptedLanguages.zh_CN);
+ * await usersService.confirmPasswordReset(resetToken, "newPassword");
+ * ```
+ *
+ * @dependencies
+ * - EntityManager: MikroORM实体管理器
+ * - CryptoService: 密码哈希和令牌生成
+ * - EmailService: 邮件发送服务
+ * - ConfigService: 系统配置管理
+ *
+ * @security
+ * - 所有密码使用安全哈希算法存储
+ * - 确认码和重置令牌使用加密随机生成
+ * - 时效性控制防止令牌滥用
+ * - 用户枚举保护机制
  */
 @Injectable()
 export class UsersService {

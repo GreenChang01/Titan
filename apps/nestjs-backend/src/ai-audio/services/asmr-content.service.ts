@@ -14,6 +14,10 @@ import {ElevenLabsProvider} from '../providers/elevenlabs.provider';
 import {ElevenLabsSoundscapeProvider} from '../providers/soundverse.provider';
 import {FfmpegAudioMixer} from './ffmpeg-audio-mixer.service';
 
+/**
+ * ASMR内容生成请求配置
+ * 包含语音、音景、混音和质量要求的完整配置
+ */
 export type ASMRGenerationRequest = {
 	text: string;
 	voiceSettings: VoiceOptions;
@@ -29,6 +33,10 @@ export type ASMRGenerationRequest = {
 	};
 };
 
+/**
+ * ASMR内容生成结果
+ * 包含生成的音频数据、元数据、质量报告和组件状态
+ */
 export type ASMRGenerationResult = {
 	audioBuffer: Buffer;
 	metadata: {
@@ -50,6 +58,47 @@ export type ASMRGenerationResult = {
 	};
 };
 
+/**
+ * ASMR内容生成服务
+ *
+ * 提供完整的ASMR音频内容生成功能，专门针对中老年用户优化
+ * 集成ElevenLabs语音合成、音景生成和FFmpeg音频处理能力
+ *
+ * 主要功能：
+ * - AI驱动的语音合成（支持多种语言和声音风格）
+ * - 智能音景生成（自然声音、室内环境等）
+ * - 专业音频混合和双耳效果处理
+ * - 中老年人友好的参数优化
+ * - 批量处理和质量控制
+ * - 成本估算和服务健康检查
+ *
+ * 技术特性：
+ * - 支持高质量音频输出（48kHz/24bit）
+ * - 自动质量验证和重试机制
+ * - 并发控制的批量处理
+ * - 完整的错误处理和日志记录
+ *
+ * @example
+ * ```typescript
+ * const request = service.createElderlyFriendlyTemplate(
+ *   "欢迎来到放松时光",
+ *   'ELDERLY_FRIENDLY',
+ *   'RAIN_FOREST'
+ * );
+ * const result = await service.generateASMRContent(request);
+ * ```
+ *
+ * @dependencies
+ * - ElevenLabsProvider: 语音合成服务
+ * - ElevenLabsSoundscapeProvider: 音景生成服务
+ * - FfmpegAudioMixer: 音频处理和混合
+ * - ConfigService: 配置管理
+ *
+ * @sideEffects
+ * - 产生AI服务API调用费用
+ * - 生成临时音频文件
+ * - 可能消耗大量CPU和内存资源
+ */
 @Injectable()
 export class ASMRContentService {
 	private readonly logger = new Logger(ASMRContentService.name);
@@ -65,6 +114,24 @@ export class ASMRContentService {
 
 	/**
 	 * 生成完整的ASMR音频内容
+	 *
+	 * 执行完整的ASMR生成工作流程：
+	 * 1. 参数优化（针对中老年人友好设置）
+	 * 2. AI语音生成（ElevenLabs）
+	 * 3. AI音景生成（ElevenLabs Soundscape）
+	 * 4. 音频混合和双耳效果处理
+	 * 5. ASMR专项优化
+	 * 6. 质量验证和自动重试
+	 * 7. 格式转换和输出
+	 *
+	 * @param request ASMR生成请求配置，包含文本、语音、音景和混音设置
+	 * @returns Promise<ASMRGenerationResult> 包含音频Buffer、元数据和质量报告的完整结果
+	 *
+	 * @throws {Error} 当AI服务调用失败、音频处理出错或质量验证失败时抛出异常
+	 *
+	 * @complexity O(1) - 单次请求处理，但涉及多个异步AI服务调用
+	 * @dependencies ElevenLabsProvider, ElevenLabsSoundscapeProvider, FfmpegAudioMixer
+	 * @sideEffects 产生AI服务费用，生成临时音频文件
 	 */
 	async generateASMRContent(request: ASMRGenerationRequest): Promise<ASMRGenerationResult> {
 		const startTime = Date.now();
@@ -171,6 +238,16 @@ export class ASMRContentService {
 
 	/**
 	 * 批量生成ASMR内容
+	 *
+	 * 支持并发控制的批量ASMR生成，自动分批处理以避免资源过载
+	 * 使用Promise.allSettled确保部分失败不影响整体处理
+	 *
+	 * @param requests ASMR生成请求配置数组
+	 * @returns Promise<ASMRGenerationResult[]> 成功生成的结果数组（失败的项目会被过滤）
+	 *
+	 * @complexity O(n/c) - n为请求数量，c为最大并发数，实际取决于AI服务响应时间
+	 * @dependencies generateASMRContent方法，继承其所有依赖
+	 * @sideEffects 产生大量AI服务费用，可能生成大量临时文件
 	 */
 	async generateBatchASMRContent(requests: ASMRGenerationRequest[]): Promise<ASMRGenerationResult[]> {
 		this.logger.log(`Starting batch generation of ${requests.length} ASMR contents`);
@@ -213,6 +290,14 @@ export class ASMRContentService {
 
 	/**
 	 * 获取适合中老年人的ASMR预设配置
+	 *
+	 * 返回针对中老年用户优化的预设配置集合，包括语音、音景、混音参数
+	 * 这些预设经过专门调优，确保音频内容适合中老年用户的听觉特点
+	 *
+	 * @returns 包含语音预设、音景模板、混音预设和推荐配置的对象
+	 *
+	 * @complexity O(1) - 简单的静态配置返回
+	 * @dependencies 预设常量：ASMRVoicePresets, ASMRSoundscapeTemplates, ASMRMixingPresets, ElderlyFriendlySoundscapes
 	 */
 	getElderlyFriendlyPresets(): {
 		voicePresets: typeof ASMRVoicePresets;
@@ -230,6 +315,15 @@ export class ASMRContentService {
 
 	/**
 	 * 验证AI服务连接状态
+	 *
+	 * 检查所有外部AI服务的可用性，包括ElevenLabs语音和音景服务
+	 * 用于系统健康检查和故障诊断
+	 *
+	 * @returns Promise 包含各个服务状态和整体可用性的对象
+	 *
+	 * @complexity O(1) - 并发验证多个服务，总时间取决于最慢的服务响应
+	 * @dependencies ElevenLabsProvider.validateConnection, ElevenLabsSoundscapeProvider.validateConnection
+	 * @sideEffects 可能产生少量API调用费用用于连接测试
 	 */
 	async validateAIServices(): Promise<{
 		elevenlabs: boolean;
@@ -264,6 +358,15 @@ export class ASMRContentService {
 
 	/**
 	 * 估算生成成本
+	 *
+	 * 基于请求配置预估AI服务使用费用，包括语音生成和音景生成成本
+	 * 用于用户预算控制和成本透明化
+	 *
+	 * @param request ASMR生成请求配置，用于计算成本的依据
+	 * @returns Promise 包含语音成本、音景成本、总成本和货币单位的对象
+	 *
+	 * @complexity O(1) - 基于配置参数的成本计算
+	 * @dependencies ElevenLabsProvider.estimateCost, ElevenLabsSoundscapeProvider.estimateCost
 	 */
 	async estimateGenerationCost(request: ASMRGenerationRequest): Promise<{
 		voiceCost: number;
@@ -288,6 +391,16 @@ export class ASMRContentService {
 
 	/**
 	 * 针对中老年人优化请求参数
+	 *
+	 * 根据中老年用户的听觉特点和偏好，自动调整语音、音景和混音参数
+	 * 包括提高语音稳定性、选择适合的音景类别、延长淡入淡出时间等
+	 *
+	 * @param request 原始ASMR生成请求配置
+	 * @returns 优化后的ASMR生成请求配置
+	 *
+	 * @complexity O(1) - 参数调整和验证
+	 * @dependencies ElderlyFriendlySoundscapes常量配置
+	 * @sideEffects 可能在日志中记录不适合的音景选择警告
 	 */
 	private optimizeRequestForElderly(request: ASMRGenerationRequest): ASMRGenerationRequest {
 		const optimized = {...request};
@@ -329,6 +442,17 @@ export class ASMRContentService {
 
 	/**
 	 * 创建推荐的ASMR生成请求模板
+	 *
+	 * 基于预设配置快速创建适合中老年用户的ASMR生成请求
+	 * 使用经过验证的参数组合，确保生成高质量的ASMR内容
+	 *
+	 * @param text 要转换为语音的文本内容
+	 * @param voicePreset 语音预设类型，默认为ELDERLY_FRIENDLY
+	 * @param soundscapeType 音景类型，默认为RAIN_FOREST
+	 * @returns 完整配置的ASMR生成请求对象
+	 *
+	 * @complexity O(1) - 基于预设模板的对象构建
+	 * @dependencies ASMRVoicePresets, ASMRSoundscapeTemplates, ASMRMixingPresets常量
 	 */
 	createElderlyFriendlyTemplate(
 		text: string,

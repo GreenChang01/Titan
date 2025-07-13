@@ -24,6 +24,55 @@ import {
 	FileOperationResponseDto,
 } from './dto/index';
 
+/**
+ * 阿里云盘WebDAV服务
+ *
+ * 提供完整的阿里云盘WebDAV集成功能，支持文件管理和配置管理
+ * 通过WebDAV协议与阿里云盘进行交互，实现文件的上传、下载、管理等操作
+ *
+ * 主要功能：
+ * - WebDAV配置管理（增删改查、密码加密存储）
+ * - 文件操作（上传、下载、列表、创建目录）
+ * - 文件管理（移动、复制、删除、搜索、分页）
+ * - 错误处理和重试机制
+ * - 访问时间跟踪和性能监控
+ *
+ * 技术特性：
+ * - 密码字段AES加密存储确保安全
+ * - 支持分页和搜索的文件列表
+ * - WebDAV PROPFIND协议解析
+ * - 异步流式文件传输
+ * - 详细的错误日志和异常处理
+ *
+ * @example
+ * ```typescript
+ * // 创建配置
+ * const config = await aliyunDriveService.createConfig(user, {
+ *   webdavUrl: "https://webdav.aliyundrive.com/dav",
+ *   username: "user@example.com",
+ *   password: "password123",
+ *   displayName: "我的阿里云盘"
+ * });
+ *
+ * // 列出文件
+ * const files = await aliyunDriveService.listFiles(config, { path: "/素材库" });
+ *
+ * // 上传文件
+ * const result = await aliyunDriveService.uploadFile(config, uploadDto, fileBuffer);
+ * ```
+ *
+ * @dependencies
+ * - AliyunDriveConfigRepository: 配置数据访问
+ * - CryptoService: 密码加密/解密服务
+ * - ConfigService: 系统配置管理
+ * - EntityManager: MikroORM实体管理器
+ *
+ * @security
+ * - 所有密码使用AES加密存储
+ * - 用户隔离，防止跨用户访问
+ * - WebDAV认证信息保护
+ * - 文件路径验证防止目录遍历
+ */
 @Injectable()
 export class AliyunDriveService {
 	private readonly logger = new Logger(AliyunDriveService.name);
@@ -39,7 +88,21 @@ export class AliyunDriveService {
 		this.defaultTimeout = this.configService.get<number>(ConfigKey.WEBDAV_TIMEOUT) ?? 30_000;
 	}
 
-	// 配置管理方法
+	/**
+	 * 创建阿里云盘WebDAV配置
+	 *
+	 * 为用户创建新的阿里云盘WebDAV连接配置
+	 * 密码会使用AES加密后存储，确保安全性
+	 *
+	 * @param user 用户实体，配置所有者
+	 * @param createDto 创建配置的数据传输对象
+	 * @returns Promise<AliyunDriveConfig> 创建的配置实体
+	 *
+	 * @complexity O(1) - 单次加密和数据库插入操作
+	 * @dependencies CryptoService加密，EntityManager持久化
+	 * @sideEffects 在数据库中创建新的配置记录
+	 * @security 密码字段使用AES加密存储
+	 */
 	async createConfig(user: User, createDto: CreateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
 		const encryptedPassword = this.cryptoService.encrypt(createDto.password);
 
@@ -132,6 +195,22 @@ export class AliyunDriveService {
 		});
 	}
 
+	/**
+	 * 列出指定路径下的文件和目录
+	 *
+	 * 通过WebDAV PROPFIND请求获取阿里云盘中的文件列表
+	 * 支持搜索过滤、分页显示和排序功能
+	 *
+	 * @param config 阿里云盘配置实体
+	 * @param listDto 列表请求参数，包含路径、搜索、分页信息
+	 * @returns Promise<ListFilesResponseDto> 文件列表响应，包含文件信息和分页数据
+	 *
+	 * @throws {HttpException} WebDAV请求失败时
+	 *
+	 * @complexity O(n) - n为目录下文件数量，包含网络请求和XML解析
+	 * @dependencies createWebDavClient创建客户端，parseWebDavResponse解析XML
+	 * @sideEffects 更新配置的最后同步时间
+	 */
 	async listFiles(config: AliyunDriveConfig, listDto: ListFilesDto): Promise<ListFilesResponseDto> {
 		try {
 			const client = await this.createWebDavClient(config);
@@ -411,7 +490,20 @@ export class AliyunDriveService {
 		}
 	}
 
-	// WebDAV 响应解析辅助方法
+	/**
+	 * WebDAV响应XML解析器
+	 *
+	 * 解析WebDAV PROPFIND响应的XML数据，提取文件和目录信息
+	 * 使用正则表达式解析XML，生产环境建议使用专业XML解析库
+	 *
+	 * @param xmlData WebDAV服务器返回的XML响应数据
+	 * @param basePath 当前查询的基础路径，用于计算相对路径
+	 * @returns WebDavFileDto[] 解析后的文件和目录信息数组
+	 *
+	 * @complexity O(n) - n为XML中的文件条目数量
+	 * @dependencies 无外部依赖，纯XML字符串处理
+	 * @note 生产环境建议使用xml2js等专业XML解析库替代正则表达式
+	 */
 	private parseWebDavResponse(xmlData: string, basePath: string): WebDavFileDto[] {
 		const files: WebDavFileDto[] = [];
 
