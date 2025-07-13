@@ -14,7 +14,6 @@ export const apiRequestHandler = async (
 	});
 
 	if (inputResponse.status === 401) {
-		// eslint-disable-next-line n/prefer-global/process
 		const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/refresh`, {
 			method: 'POST',
 			credentials: 'include',

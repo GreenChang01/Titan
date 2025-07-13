@@ -116,6 +116,10 @@
 			"unicorn/prefer-top-level-await": "off",
 			"@typescript-eslint/restrict-template-expressions": "off",
       "@stylistic/no-mixed-spaces-and-tabs": "off",
+			"@stylistic/function-paren-newline": "off",
+			"@stylistic/object-curly-newline": "off",
+			"@stylistic/arrow-parens": "off",
+			"@stylistic/quotes": "off",
 			"@stylistic/max-len": [
 				"error",
 				{

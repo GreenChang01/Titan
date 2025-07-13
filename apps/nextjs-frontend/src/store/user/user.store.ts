@@ -11,7 +11,7 @@ import {ApiError} from '@/utils/api/api-error.ts';
  * Provides `user`, `loading`, and `error` state, along with methods to
  * `loadUser` from the backend and `logout` the current user.
  */
-export const useUserStore = create<UserStoreState>((set) => ({
+export const useUserStore = create<UserStoreState>(set => ({
 	user: undefined,
 	loading: true,
 	error: false,
@@ -22,7 +22,6 @@ export const useUserStore = create<UserStoreState>((set) => ({
 	 */
 	async loadUser(): LoadUserReturnType {
 		try {
-			// eslint-disable-next-line n/prefer-global/process
 			const response = await apiRequestHandler(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
 				method: 'GET',
 				credentials: 'include',

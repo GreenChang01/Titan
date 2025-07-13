@@ -32,7 +32,7 @@ export default function ResetPassword(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<ResetPasswordFormFields> = async (data) => {
+	const onSubmit: SubmitHandler<ResetPasswordFormFields> = async data => {
 		const token = searchParameters.get('token');
 
 		if (!token) {
@@ -82,10 +82,10 @@ export default function ResetPassword(): JSX.Element {
 
 	if (didResetPasswordSuccessfully) {
 		return (
-			<div className="flex flex-col items-center">
+			<div className='flex flex-col items-center'>
 				<h2>{t('success-header')}</h2>
-				<p className="mt-4 md:mt-6 lg:mt-8">{t('success-message')}</p>
-				<Link className="underline" href="/login">
+				<p className='mt-4 md:mt-6 lg:mt-8'>{t('success-message')}</p>
+				<Link className='underline' href='/login'>
 					{t('success-login-link')}
 				</Link>
 			</div>
@@ -93,30 +93,30 @@ export default function ResetPassword(): JSX.Element {
 	}
 
 	return (
-		<div className="flex flex-col items-center">
+		<div className='flex flex-col items-center'>
 			<h2>{t('title')}</h2>
 			<form
-				className="mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8"
+				className='mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8'
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<div className="flex flex-col flex-wrap items-center gap-1">
+				<div className='flex flex-col flex-wrap items-center gap-1'>
 					<FloatLabelInputText
 						label={t('password-input-label')}
 						{...register('password')}
-						type="password"
-						data-testid="reset-password-password-input"
+						type='password'
+						data-testid='reset-password-password-input'
 					/>
-					{errors.password ? <p className="text-red-700">{errors.password.message}</p> : null}
+					{errors.password ? <p className='text-red-700'>{errors.password.message}</p> : null}
 				</div>
 				<div>
 					<Button
 						label={isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
-						type="submit"
+						type='submit'
 						disabled={isSubmitting}
-						data-testid="reset-password-submit-button"
+						data-testid='reset-password-submit-button'
 					/>
 				</div>
-				{errors.root ? <p className="text-red-700">{errors.root.message}</p> : null}
+				{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
 			</form>
 		</div>
 	);

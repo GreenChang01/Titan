@@ -39,7 +39,7 @@ test.describe('Reset password', () => {
 		await page.waitForLoadState('networkidle');
 
 		// Additional check: wait for URL to contain 'reset-password' to ensure we're on the right page
-		await page.waitForURL((url) => url.pathname.includes('reset-password'), {
+		await page.waitForURL(url => url.pathname.includes('reset-password'), {
 			timeout: 5000, // Short timeout since navigation should already be complete
 		});
 

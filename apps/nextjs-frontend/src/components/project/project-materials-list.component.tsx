@@ -105,10 +105,10 @@ export function ProjectMaterialsList({
 		{label: t('type-audio', {defaultMessage: '音频'}), value: 'audio'},
 	];
 
-	const filteredMaterials = displayMaterials.filter((material) => {
-		const matchesSearch =
-			material.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			material.cloudPath.toLowerCase().includes(searchTerm.toLowerCase());
+	const filteredMaterials = displayMaterials.filter(material => {
+		const matchesSearch
+			= material.name.toLowerCase().includes(searchTerm.toLowerCase())
+				|| material.cloudPath.toLowerCase().includes(searchTerm.toLowerCase());
 		const matchesType = typeFilter === 'all' || material.type === typeFilter;
 		return matchesSearch && matchesType;
 	});
@@ -221,31 +221,31 @@ export function ProjectMaterialsList({
 	};
 
 	const fileIconTemplate = (material: ProjectMaterial): JSX.Element => (
-		<i className={`${getFileIcon(material.type)} text-xl`} />
+		<i className={`${getFileIcon(material.type)} text-xl`}/>
 	);
 
 	const fileNameTemplate = (material: ProjectMaterial): JSX.Element => (
-		<div className="flex items-center gap-2">
-			<span className="font-medium">{material.name}</span>
-			{material.status === 'syncing' && <i className="pi pi-spin pi-spinner text-blue-500 text-sm" />}
+		<div className='flex items-center gap-2'>
+			<span className='font-medium'>{material.name}</span>
+			{material.status === 'syncing' && <i className='pi pi-spin pi-spinner text-blue-500 text-sm'/>}
 		</div>
 	);
 
 	const fileSizeTemplate = (material: ProjectMaterial): string => formatFileSize(material.size);
 
 	const statusTemplate = (material: ProjectMaterial): JSX.Element => (
-		<Tag value={getStatusLabel(material.status)} severity={getStatusSeverity(material.status)} className="text-xs" />
+		<Tag value={getStatusLabel(material.status)} severity={getStatusSeverity(material.status)} className='text-xs'/>
 	);
 
 	const cloudPathTemplate = (material: ProjectMaterial): JSX.Element => (
-		<div className="flex items-center gap-2">
-			<span className="text-sm text-gray-600 truncate max-w-xs" title={material.cloudPath}>
+		<div className='flex items-center gap-2'>
+			<span className='text-sm text-gray-600 truncate max-w-xs' title={material.cloudPath}>
 				{material.cloudPath}
 			</span>
 			<Button
-				icon="pi pi-copy"
-				size="small"
-				severity="secondary"
+				icon='pi pi-copy'
+				size='small'
+				severity='secondary'
 				tooltip={t('copy-path', {defaultMessage: '复制路径'})}
 				onClick={() => {
 					void navigator.clipboard.writeText(material.cloudPath);
@@ -255,27 +255,27 @@ export function ProjectMaterialsList({
 	);
 
 	const actionTemplate = (material: ProjectMaterial): JSX.Element => (
-		<div className="flex gap-1">
+		<div className='flex gap-1'>
 			<Button
-				icon="pi pi-eye"
-				size="small"
-				severity="info"
+				icon='pi pi-eye'
+				size='small'
+				severity='info'
 				tooltip={t('preview', {defaultMessage: '预览'})}
 				disabled={material.status !== 'synced'}
 				onClick={() => onPreviewMaterial?.(material)}
 			/>
 			<Button
-				icon="pi pi-download"
-				size="small"
-				severity="success"
+				icon='pi pi-download'
+				size='small'
+				severity='success'
 				tooltip={t('download', {defaultMessage: '下载'})}
 				disabled={material.status !== 'synced'}
 				onClick={() => onDownloadMaterial?.(material)}
 			/>
 			<Button
-				icon="pi pi-trash"
-				size="small"
-				severity="danger"
+				icon='pi pi-trash'
+				size='small'
+				severity='danger'
 				tooltip={t('remove', {defaultMessage: '移除'})}
 				onClick={() => {
 					handleRemoveMaterial(material);
@@ -285,10 +285,10 @@ export function ProjectMaterialsList({
 	);
 
 	const tableHeader = (): JSX.Element => (
-		<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-			<div className="flex items-center gap-4">
-				<h3 className="text-lg font-semibold text-gray-900">{t('title', {defaultMessage: '项目素材'})}</h3>
-				<span className="text-sm text-gray-500">
+		<div className='flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between'>
+			<div className='flex items-center gap-4'>
+				<h3 className='text-lg font-semibold text-gray-900'>{t('title', {defaultMessage: '项目素材'})}</h3>
+				<span className='text-sm text-gray-500'>
 					{t('total-materials', {
 						count: filteredMaterials.length,
 						defaultMessage: `共 ${filteredMaterials.length} 个素材`,
@@ -296,11 +296,11 @@ export function ProjectMaterialsList({
 				</span>
 			</div>
 
-			<div className="flex gap-2">
-				<Button label={t('add-materials', {defaultMessage: '添加素材'})} icon="pi pi-plus" onClick={onAddMaterials} />
+			<div className='flex gap-2'>
+				<Button label={t('add-materials', {defaultMessage: '添加素材'})} icon='pi pi-plus' onClick={onAddMaterials}/>
 				<Button
-					icon="pi pi-refresh"
-					severity="secondary"
+					icon='pi pi-refresh'
+					severity='secondary'
 					tooltip={t('refresh', {defaultMessage: '刷新'})}
 					onClick={onRefresh}
 				/>
@@ -309,8 +309,8 @@ export function ProjectMaterialsList({
 	);
 
 	const tableFooter = (): JSX.Element => (
-		<div className="flex justify-between items-center">
-			<div className="text-sm text-gray-500">
+		<div className='flex justify-between items-center'>
+			<div className='text-sm text-gray-500'>
 				{selectedMaterials.length > 0 && (
 					<span>
 						{t('selected-count', {
@@ -320,13 +320,13 @@ export function ProjectMaterialsList({
 					</span>
 				)}
 			</div>
-			<div className="flex gap-2">
+			<div className='flex gap-2'>
 				{selectedMaterials.length > 0 && (
 					<Button
 						label={t('batch-remove', {defaultMessage: '批量移除'})}
-						icon="pi pi-trash"
-						severity="danger"
-						size="small"
+						icon='pi pi-trash'
+						severity='danger'
+						size='small'
 						onClick={handleBatchRemove}
 					/>
 				)}
@@ -335,22 +335,22 @@ export function ProjectMaterialsList({
 	);
 
 	return (
-		<div className="space-y-4">
-			<ConfirmDialog />
-			<Tooltip target=".p-button" />
+		<div className='space-y-4'>
+			<ConfirmDialog/>
+			<Tooltip target='.p-button'/>
 
 			{tableHeader()}
 
 			{/* 搜索和过滤 */}
-			<div className="flex flex-col sm:flex-row gap-4">
-				<div className="flex-1">
-					<span className="p-input-icon-left w-full">
-						<i className="pi pi-search" />
+			<div className='flex flex-col sm:flex-row gap-4'>
+				<div className='flex-1'>
+					<span className='p-input-icon-left w-full'>
+						<i className='pi pi-search'/>
 						<InputText
 							value={searchTerm}
 							placeholder={t('search-materials', {defaultMessage: '搜索素材...'})}
-							className="w-full"
-							onChange={(e) => {
+							className='w-full'
+							onChange={e => {
 								setSearchTerm(e.target.value);
 							}}
 						/>
@@ -359,11 +359,11 @@ export function ProjectMaterialsList({
 				<Dropdown
 					value={typeFilter}
 					options={typeOptions}
-					optionLabel="label"
-					optionValue="value"
+					optionLabel='label'
+					optionValue='value'
 					placeholder={t('filter-by-type', {defaultMessage: '按类型筛选'})}
-					className="w-48"
-					onChange={(e) => {
+					className='w-48'
+					onChange={e => {
 						setTypeFilter(e.value as string);
 					}}
 				/>
@@ -375,42 +375,42 @@ export function ProjectMaterialsList({
 				value={filteredMaterials}
 				loading={isLoading}
 				emptyMessage={t('no-materials', {defaultMessage: '暂无素材'})}
-				selectionMode="checkbox"
+				selectionMode='checkbox'
 				selection={selectedMaterials}
-				dataKey="id"
+				dataKey='id'
 				rows={10}
-				className="border rounded-lg"
+				className='border rounded-lg'
 				footer={tableFooter()}
-				onSelectionChange={(e) => {
+				onSelectionChange={e => {
 					setSelectedMaterials(e.value);
 				}}
 			>
-				<Column selectionMode="multiple" headerStyle={{width: '3rem'}} />
-				<Column header="" body={fileIconTemplate} style={{width: '3rem'}} />
-				<Column sortable field="name" header={t('file-name', {defaultMessage: '文件名'})} body={fileNameTemplate} />
-				<Column sortable field="type" header={t('type', {defaultMessage: '类型'})} style={{width: '6rem'}} />
+				<Column selectionMode='multiple' headerStyle={{width: '3rem'}}/>
+				<Column header='' body={fileIconTemplate} style={{width: '3rem'}}/>
+				<Column sortable field='name' header={t('file-name', {defaultMessage: '文件名'})} body={fileNameTemplate}/>
+				<Column sortable field='type' header={t('type', {defaultMessage: '类型'})} style={{width: '6rem'}}/>
 				<Column
 					sortable
-					field="size"
+					field='size'
 					header={t('size', {defaultMessage: '大小'})}
 					body={fileSizeTemplate}
 					style={{width: '6rem'}}
 				/>
 				<Column
 					sortable
-					field="status"
+					field='status'
 					header={t('status', {defaultMessage: '状态'})}
 					body={statusTemplate}
 					style={{width: '6rem'}}
 				/>
 				<Column
-					field="cloudPath"
+					field='cloudPath'
 					header={t('cloud-path', {defaultMessage: '云盘路径'})}
 					body={cloudPathTemplate}
 					style={{width: '15rem'}}
 				/>
-				<Column sortable field="addedAt" header={t('added-at', {defaultMessage: '添加时间'})} style={{width: '8rem'}} />
-				<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '8rem'}} />
+				<Column sortable field='addedAt' header={t('added-at', {defaultMessage: '添加时间'})} style={{width: '8rem'}}/>
+				<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '8rem'}}/>
 			</DataTable>
 		</div>
 	);

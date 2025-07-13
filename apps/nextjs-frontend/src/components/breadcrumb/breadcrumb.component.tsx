@@ -22,23 +22,25 @@ export function Breadcrumb({items}: BreadcrumbProps): JSX.Element {
 	const breadcrumbItems: BreadcrumbItem[] = items ?? generateBreadcrumbItems(pathname, t);
 
 	return (
-		<nav aria-label="Breadcrumb" className="mb-6">
-			<ol className="flex items-center space-x-2 text-sm text-gray-500">
+		<nav aria-label='Breadcrumb' className='mb-6'>
+			<ol className='flex items-center space-x-2 text-sm text-gray-500'>
 				{breadcrumbItems.map((item, index) => (
-					<li key={`breadcrumb-${item.href ?? item.label}`} className="flex items-center">
-						{index > 0 && <i className="pi pi-chevron-right text-xs text-gray-400 mx-2" aria-hidden="true" />}
-						{item.href && !item.isActive ? (
-							<Link href={item.href} className="hover:text-blue-600 transition-colors duration-200">
-								{item.label}
-							</Link>
-						) : (
-							<span
-								className={item.isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}
-								aria-current={item.isActive ? 'page' : undefined}
-							>
-								{item.label}
-							</span>
-						)}
+					<li key={`breadcrumb-${item.href ?? item.label}`} className='flex items-center'>
+						{index > 0 && <i className='pi pi-chevron-right text-xs text-gray-400 mx-2' aria-hidden='true'/>}
+						{item.href && !item.isActive
+							? (
+								<Link href={item.href} className='hover:text-blue-600 transition-colors duration-200'>
+									{item.label}
+								</Link>
+							)
+							: (
+								<span
+									className={item.isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}
+									aria-current={item.isActive ? 'page' : undefined}
+								>
+									{item.label}
+								</span>
+							)}
 					</li>
 				))}
 			</ol>
@@ -101,8 +103,8 @@ function generateBreadcrumbItems(
 
 			default: {
 				// 如果是项目ID（通常是数字或UUID），显示为"项目详情"
-				label =
-					segments[i - 1] === 'project' && /^[\d\w-]+$/.test(segment)
+				label
+					= segments[i - 1] === 'project' && /^[\d\w-]+$/.test(segment)
 						? t('project-details', {defaultMessage: '项目详情'})
 						: segment.charAt(0).toUpperCase() + segment.slice(1);
 			}

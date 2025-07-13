@@ -366,7 +366,7 @@ export function useDeleteItems(): UseMutationResult<
 		mutationFn: async (paths: string[]) => aliyunDriveApi.deleteItems(paths),
 		onSuccess(data) {
 			invalidateQueries.aliyunDriveFiles(queryClient);
-			const successCount = data.filter((result) => result.success).length;
+			const successCount = data.filter(result => result.success).length;
 			toast.success(`成功删除 ${successCount} 个项目`);
 		},
 		onError(error: Error) {

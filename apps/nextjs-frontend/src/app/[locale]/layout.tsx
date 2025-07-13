@@ -36,7 +36,7 @@ export default async function Layout({
 
 	return (
 		<html suppressHydrationWarning lang={locale}>
-			<body suppressHydrationWarning className="min-h-screen bg-background text-foreground">
+			<body suppressHydrationWarning className='min-h-screen bg-background text-foreground'>
 				<NextIntlClientProvider>
 					<ZodErrorProvider>
 						<ToastProvider>
@@ -44,7 +44,7 @@ export default async function Layout({
 								<ReactQueryProvider>
 									{isAuthPage ? (
 										// Auth pages - simple centered layout
-										<div className="min-h-screen flex items-center justify-center bg-background">{children}</div>
+										<div className='min-h-screen flex items-center justify-center bg-background'>{children}</div>
 									) : (
 										// Dashboard pages - use shadcn-admin layout
 										<AuthenticatedLayout>{children}</AuthenticatedLayout>

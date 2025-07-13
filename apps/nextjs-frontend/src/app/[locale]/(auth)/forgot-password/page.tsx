@@ -28,7 +28,7 @@ export default function ForgotPassword(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<ForgotPasswordFormFields> = async (data) => {
+	const onSubmit: SubmitHandler<ForgotPasswordFormFields> = async data => {
 		await forgotPassword({
 			params: {forgotPasswordData: data, language: locale},
 			onSuccess() {
@@ -49,38 +49,38 @@ export default function ForgotPassword(): JSX.Element {
 
 	if (didSendPasswordReset) {
 		return (
-			<div className="flex flex-col items-center">
+			<div className='flex flex-col items-center'>
 				<h2>{t('success-header')}</h2>
-				<p className="text-center">{t('success-message')}</p>
+				<p className='text-center'>{t('success-message')}</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col items-center">
+		<div className='flex flex-col items-center'>
 			<h2>{t('title')}</h2>
 			<form
-				className="mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8"
+				className='mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8'
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<div className="flex flex-col flex-wrap items-center gap-1">
+				<div className='flex flex-col flex-wrap items-center gap-1'>
 					<FloatLabelInputText
 						label={t('email-input-label')}
 						{...register('email')}
-						type="email"
-						data-testid="forgot-password-email-input"
+						type='email'
+						data-testid='forgot-password-email-input'
 					/>
-					{errors.email ? <p className="text-red-700">{errors.email.message}</p> : null}
+					{errors.email ? <p className='text-red-700'>{errors.email.message}</p> : null}
 				</div>
 				<div>
 					<Button
 						label={isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
-						type="submit"
+						type='submit'
 						disabled={isSubmitting}
-						data-testid="forgot-password-submit-button"
+						data-testid='forgot-password-submit-button'
 					/>
 				</div>
-				{errors.root ? <p className="text-red-700">{errors.root.message}</p> : null}
+				{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
 			</form>
 		</div>
 	);

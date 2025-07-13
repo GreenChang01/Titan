@@ -11,7 +11,7 @@ export function ConditionalHeader(): JSX.Element | undefined {
 	const authPaths = ['login', 'register', 'forgot-password', 'reset-password', 'confirm'];
 
 	// 检查当前路径是否为认证相关页面
-	const isAuthPage = authPaths.some((authPath) => pathname.includes(`/${authPath}`));
+	const isAuthPage = authPaths.some(authPath => pathname.includes(`/${authPath}`));
 
 	// 如果是认证页面，不显示Header
 	if (isAuthPage) {
@@ -19,5 +19,5 @@ export function ConditionalHeader(): JSX.Element | undefined {
 	}
 
 	// 否则显示Header
-	return <Header />;
+	return <Header/>;
 }

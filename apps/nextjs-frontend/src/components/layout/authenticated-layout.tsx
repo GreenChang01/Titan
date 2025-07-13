@@ -13,10 +13,10 @@ type Props = {
 
 function AuthLoadingSpinner() {
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-background">
-			<div className="flex flex-col items-center space-y-4">
-				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-				<p className="text-sm text-muted-foreground">验证登录状态...</p>
+		<div className='min-h-screen flex items-center justify-center bg-background'>
+			<div className='flex flex-col items-center space-y-4'>
+				<div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'/>
+				<p className='text-sm text-muted-foreground'>验证登录状态...</p>
 			</div>
 		</div>
 	);
@@ -35,20 +35,20 @@ export function AuthenticatedLayout({children}: Props) {
 
 	// 正在加载用户状态
 	if (loading) {
-		return <AuthLoadingSpinner />;
+		return <AuthLoadingSpinner/>;
 	}
 
 	// 没有用户或有错误，显示加载状态（重定向进行中）
 	if (!user || error) {
-		return <AuthLoadingSpinner />;
+		return <AuthLoadingSpinner/>;
 	}
 
 	// 用户已认证，显示正常布局
 	return (
 		<SidebarProvider defaultOpen>
-			<AppSidebar />
+			<AppSidebar/>
 			<div
-				id="content"
+				id='content'
 				className={cn(
 					'ml-auto w-full max-w-full',
 					'peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]',

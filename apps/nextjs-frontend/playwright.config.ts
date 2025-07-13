@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// eslint-disable-next-line n/prefer-global/process
 if (!process.env.CI) {
 	dotenv.config({path: resolve(__dirname, '.env')});
 }
@@ -29,9 +28,9 @@ export default defineConfig({
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
-	forbidOnly: Boolean(process.env.CI), // eslint-disable-line n/prefer-global/process
+	forbidOnly: Boolean(process.env.CI),
 	/* Retry on CI only */
-	retries: process.env.CI ? 2 : 0, // eslint-disable-line n/prefer-global/process
+	retries: process.env.CI ? 2 : 0,
 	/* Opt out of parallel tests on to prevent flaky tests. */
 	workers: 1,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -39,7 +38,7 @@ export default defineConfig({
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: 'http://localhost:3000/en', // eslint-disable-line @typescript-eslint/naming-convention
+		baseURL: 'http://localhost:3000/en',
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
@@ -82,6 +81,6 @@ export default defineConfig({
 	webServer: {
 		command: 'npm run start:dev',
 		url: 'http://localhost:3000',
-		reuseExistingServer: !process.env.CI, // eslint-disable-line n/prefer-global/process
+		reuseExistingServer: !process.env.CI,
 	},
 });

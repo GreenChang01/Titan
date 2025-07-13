@@ -2,7 +2,6 @@ import {type useTranslations} from 'next-intl';
 import {z} from 'zod';
 
 export const createZodErrorMap = (t: ReturnType<typeof useTranslations>): z.ZodErrorMap => {
-	// eslint-disable-next-line complexity
 	const errorMap: z.ZodErrorMap = (issue, ctx) => {
 		switch (issue.code) {
 			case z.ZodIssueCode.invalid_type: {

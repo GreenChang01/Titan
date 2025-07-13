@@ -29,7 +29,7 @@ export default function Register(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
+	const onSubmit: SubmitHandler<RegisterFormFields> = async data => {
 		await registerFunction({
 			params: {createUserData: data, language: locale},
 			onSuccess() {
@@ -41,7 +41,7 @@ export default function Register(): JSX.Element {
 					case 400: {
 						const errorResponse = (await error.response.json()) as {message?: string[]};
 						const message: string = errorResponse?.message
-							? errorResponse.message.map((message_) => message_.charAt(0).toUpperCase() + message_.slice(1)).join(', ')
+							? errorResponse.message.map(message_ => message_.charAt(0).toUpperCase() + message_.slice(1)).join(', ')
 							: t('error-default');
 						setError('root', {message});
 
@@ -70,62 +70,62 @@ export default function Register(): JSX.Element {
 
 	if (didRegisterSuccessfully) {
 		return (
-			<div className="flex flex-col items-center">
+			<div className='flex flex-col items-center'>
 				<h2>{t('success-header')}</h2>
-				<p className="mt-4 md:mt-6 lg:mt-8">{t('success-message')}</p>
+				<p className='mt-4 md:mt-6 lg:mt-8'>{t('success-message')}</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col items-center">
+		<div className='flex flex-col items-center'>
 			<h2>{t('title')}</h2>
 			<form
-				className="mt-6 flex w-full max-w-sm flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8"
+				className='mt-6 flex w-full max-w-sm flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8'
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<div className="flex w-full flex-col flex-wrap items-center gap-1">
+				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
 					<FloatLabelInputText
 						label={t('email-input-label')}
 						{...register('email')}
-						data-testid="register-email-input"
-						type="email"
+						data-testid='register-email-input'
+						type='email'
 					/>
 					<small>{t('email-input-info')}</small>
-					{errors.email ? <p className="text-red-700">{errors.email.message}</p> : null}
+					{errors.email ? <p className='text-red-700'>{errors.email.message}</p> : null}
 				</div>
-				<div className="flex w-full flex-col flex-wrap items-center gap-1">
+				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
 					<FloatLabelInputText
 						label={t('username-input-label')}
 						{...register('username')}
-						data-testid="register-username-input"
-						type="text"
+						data-testid='register-username-input'
+						type='text'
 					/>
 					<small>{t('username-input-info')}</small>
-					{errors.username ? <p className="text-red-700">{errors.username.message}</p> : null}
+					{errors.username ? <p className='text-red-700'>{errors.username.message}</p> : null}
 				</div>
-				<div className="flex w-full flex-col flex-wrap items-center gap-1">
+				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
 					<FloatLabelInputText
 						label={t('password-input-label')}
 						{...register('password')}
-						data-testid="register-password-input"
-						type="password"
+						data-testid='register-password-input'
+						type='password'
 					/>
-					{errors.password ? <p className="text-red-700">{errors.password.message}</p> : null}
+					{errors.password ? <p className='text-red-700'>{errors.password.message}</p> : null}
 				</div>
 				<div>
 					<Button
 						label={isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
-						type="submit"
-						data-testid="register-submit-button"
+						type='submit'
+						data-testid='register-submit-button'
 						disabled={isSubmitting}
 					/>
 				</div>
-				{errors.root ? <p className="text-red-700">{errors.root.message}</p> : null}
+				{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
 			</form>
-			<p className="mt-4 md:mt-6 lg:mt-8">
+			<p className='mt-4 md:mt-6 lg:mt-8'>
 				{t('login-question')}{' '}
-				<Link className="underline" href="/login">
+				<Link className='underline' href='/login'>
 					{t('login-link')}
 				</Link>
 			</p>

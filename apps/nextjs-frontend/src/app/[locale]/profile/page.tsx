@@ -98,7 +98,7 @@ export default function Profile(): JSX.Element {
 		},
 	});
 
-	const onSubmitUpdate: SubmitHandler<ProfileFormFields> = async (data) => {
+	const onSubmitUpdate: SubmitHandler<ProfileFormFields> = async data => {
 		const keysChanged = Object.keys(dirtyFields);
 
 		if (keysChanged.length === 0) {
@@ -179,7 +179,7 @@ export default function Profile(): JSX.Element {
 
 	if (loading) {
 		return (
-			<div className="flex flex-col items-center">
+			<div className='flex flex-col items-center'>
 				<h2>{t('loading')}</h2>
 			</div>
 		);
@@ -190,67 +190,66 @@ export default function Profile(): JSX.Element {
 			<h1>
 				{t('greeting', {username: user?.username ?? t('user')})}, {user?.username}!
 			</h1>
-			<div className="flex max-w-3xl flex-col gap-4 divide-y-2 divide-slate-300 md:gap-6 lg:gap-8">
-				<form className="mt-6 flex flex-col gap-8 md:mt-10 lg:mt-12" onSubmit={handleSubmit(onSubmitUpdate)}>
-					<div className="flex flex-col flex-wrap items-center gap-1">
+			<div className='flex max-w-3xl flex-col gap-4 divide-y-2 divide-slate-300 md:gap-6 lg:gap-8'>
+				<form className='mt-6 flex flex-col gap-8 md:mt-10 lg:mt-12' onSubmit={handleSubmit(onSubmitUpdate)}>
+					<div className='flex flex-col flex-wrap items-center gap-1'>
 						<FloatLabelInputText
 							label={t('email-input-label')}
 							{...register('email')}
-							type="email"
-							className="w-full"
-							data-testid="profile-email-input"
+							type='email'
+							className='w-full'
+							data-testid='profile-email-input'
 						/>
-						{errors.email ? <p className="text-red-700">{errors.email.message}</p> : null}
+						{errors.email ? <p className='text-red-700'>{errors.email.message}</p> : null}
 					</div>
-					<div className="flex flex-col flex-wrap items-center gap-1">
+					<div className='flex flex-col flex-wrap items-center gap-1'>
 						<FloatLabelInputText
 							label={t('username-input-label')}
 							{...register('username')}
-							type="text"
-							className="w-full"
-							data-testid="profile-username-input"
+							type='text'
+							className='w-full'
+							data-testid='profile-username-input'
 						/>
-						{errors.username ? <p className="text-red-700">{errors.username.message}</p> : null}
+						{errors.username ? <p className='text-red-700'>{errors.username.message}</p> : null}
 					</div>
-					<div className="flex flex-col flex-wrap items-center gap-1">
+					<div className='flex flex-col flex-wrap items-center gap-1'>
 						<FloatLabelInputText
 							label={t('password-input-label')}
 							{...register('password')}
-							type="password"
-							className="w-full"
-							data-testid="profile-password-input"
+							type='password'
+							className='w-full'
+							data-testid='profile-password-input'
 						/>
-						{errors.password ? <p className="text-red-700">{errors.password.message}</p> : null}
+						{errors.password ? <p className='text-red-700'>{errors.password.message}</p> : null}
 					</div>
-					{errors.root ? <p className="text-red-700">{errors.root.message}</p> : null}
-					<div className="flex w-full justify-end">
+					{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
+					<div className='flex w-full justify-end'>
 						<Button
-							type="submit"
+							type='submit'
 							disabled={isSubmitting}
 							label={isSubmitting ? t('loading-update-button-label') : t('submit-update-button-label')}
-							className="w-fit"
-							data-testid="profile-save-button"
+							className='w-fit'
+							data-testid='profile-save-button'
 						/>
 					</div>
 				</form>
-				<div className="flex flex-row flex-wrap justify-between gap-2 pt-4 md:pt-6 lg:pt-8">
+				<div className='flex flex-row flex-wrap justify-between gap-2 pt-4 md:pt-6 lg:pt-8'>
 					<Button
 						label={t('logout-button-label')}
-						icon="pi pi-sign-out"
-						data-testid="profile-logout-button"
+						icon='pi pi-sign-out'
+						data-testid='profile-logout-button'
 						onClick={async () =>
 							logout({
 								onSuccess() {
 									router.push('/');
 								},
-							})
-						}
+							})}
 					/>
 					<Button
 						label={t('delete-account-button-label')}
-						icon="pi pi-trash"
-						className="!bg-red-700 text-white hover:bg-red-600"
-						data-testid="profile-delete-button"
+						icon='pi pi-trash'
+						className='!bg-red-700 text-white hover:bg-red-600'
+						data-testid='profile-delete-button'
 						onClick={onDelete}
 					/>
 				</div>
