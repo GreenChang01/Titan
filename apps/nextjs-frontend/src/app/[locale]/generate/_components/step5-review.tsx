@@ -137,33 +137,31 @@ export function Step5Review(): JSX.Element {
 					<CardDescription>AI服务使用费用预估</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{estimatedCost
-						? (
-							<div className='space-y-2'>
-								<div className='flex justify-between'>
-									<span>语音合成:</span>
-									<span>${estimatedCost.voiceCost.toFixed(4)}</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>音景生成:</span>
-									<span>${estimatedCost.soundscapeCost.toFixed(4)}</span>
-								</div>
-								<Separator/>
-								<div className='flex justify-between font-medium'>
-									<span>总计:</span>
-									<span>
-										${estimatedCost.totalCost.toFixed(4)} {estimatedCost.currency}
-									</span>
-								</div>
+					{estimatedCost ? (
+						<div className='space-y-2'>
+							<div className='flex justify-between'>
+								<span>语音合成:</span>
+								<span>${estimatedCost.voiceCost.toFixed(4)}</span>
 							</div>
-						)
-						: (
-							<div className='text-center'>
-								<Button variant='outline' onClick={handleEstimateCost}>
-									计算预估费用
-								</Button>
+							<div className='flex justify-between'>
+								<span>音景生成:</span>
+								<span>${estimatedCost.soundscapeCost.toFixed(4)}</span>
 							</div>
-						)}
+							<Separator/>
+							<div className='flex justify-between font-medium'>
+								<span>总计:</span>
+								<span>
+									${estimatedCost.totalCost.toFixed(4)} {estimatedCost.currency}
+								</span>
+							</div>
+						</div>
+					) : (
+						<div className='text-center'>
+							<Button variant='outline' onClick={handleEstimateCost}>
+								计算预估费用
+							</Button>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 
@@ -185,16 +183,14 @@ export function Step5Review(): JSX.Element {
 			{/* 提交按钮 */}
 			<div className='flex justify-end'>
 				<Button disabled={isSubmitting || !formData.text} size='lg' className='min-w-[140px]' onClick={handleSubmit}>
-					{isSubmitting
-						? (
-							<>
-								<Loader2 className='mr-2 h-4 w-4 animate-spin'/>
-								创建中...
-							</>
-						)
-						: (
-							'开始生成ASMR音频'
-						)}
+					{isSubmitting ? (
+						<>
+							<Loader2 className='mr-2 h-4 w-4 animate-spin'/>
+							创建中...
+						</>
+					) : (
+						'开始生成ASMR音频'
+					)}
 				</Button>
 			</div>
 		</div>

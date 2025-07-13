@@ -1,14 +1,10 @@
 'use client';
 
 import React, {type JSX} from 'react';
-import {
-	CheckCircle, Clock, AlertCircle, Loader2, RefreshCw, Play, Download,
-} from 'lucide-react';
+import {CheckCircle, Clock, AlertCircle, Loader2, RefreshCw, Play, Download} from 'lucide-react';
 import type {Job, JobStatus} from '@titan/shared';
 import {useAsmrJobs, useAsmrJobProgress, useRetryAsmrJob} from '../hooks/useAsmr';
-import {
-	Card, CardContent, CardDescription, CardHeader, CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {Progress} from '@/components/ui/progress';
@@ -46,24 +42,24 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 	const getStatusIcon = (status: JobStatus) => {
 		switch (status) {
 			case 'completed': {
-				return <CheckCircle className='h-4 w-4 text-green-600'/>;
+				return <CheckCircle className="h-4 w-4 text-green-600" />;
 			}
 
 			case 'failed': {
-				return <AlertCircle className='h-4 w-4 text-red-600'/>;
+				return <AlertCircle className="h-4 w-4 text-red-600" />;
 			}
 
 			case 'processing': {
-				return <Loader2 className='h-4 w-4 text-blue-600 animate-spin'/>;
+				return <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />;
 			}
 
 			case 'queued':
 			case 'pending': {
-				return <Clock className='h-4 w-4 text-yellow-600'/>;
+				return <Clock className="h-4 w-4 text-yellow-600" />;
 			}
 
 			default: {
-				return <Clock className='h-4 w-4 text-gray-600'/>;
+				return <Clock className="h-4 w-4 text-gray-600" />;
 			}
 		}
 	};
@@ -124,14 +120,14 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 	if (error) {
 		return (
 			<Card className={cn('w-full', className)}>
-				<CardContent className='p-4'>
-					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-2 text-destructive'>
-							<AlertCircle className='h-4 w-4'/>
-							<span className='text-sm'>加载任务进度失败</span>
+				<CardContent className="p-4">
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2 text-destructive">
+							<AlertCircle className="h-4 w-4" />
+							<span className="text-sm">加载任务进度失败</span>
 						</div>
-						<Button variant='outline' size='sm' onClick={async () => refetch()}>
-							<RefreshCw className='h-4 w-4 mr-2'/>
+						<Button variant="outline" size="sm" onClick={async () => refetch()}>
+							<RefreshCw className="h-4 w-4 mr-2" />
 							重新加载
 						</Button>
 					</div>
@@ -143,10 +139,10 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 	if (!progress) {
 		return (
 			<Card className={cn('w-full', className)}>
-				<CardContent className='p-4'>
-					<div className='flex items-center justify-center'>
-						<Loader2 className='h-4 w-4 animate-spin mr-2'/>
-						<span className='text-sm text-muted-foreground'>加载中...</span>
+				<CardContent className="p-4">
+					<div className="flex items-center justify-center">
+						<Loader2 className="h-4 w-4 animate-spin mr-2" />
+						<span className="text-sm text-muted-foreground">加载中...</span>
 					</div>
 				</CardContent>
 			</Card>
@@ -155,10 +151,10 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 
 	return (
 		<Card className={cn('w-full', className)}>
-			<CardHeader className='pb-4'>
-				<div className='flex items-center justify-between'>
-					<div className='space-y-1'>
-						<CardTitle className='text-base flex items-center gap-2'>
+			<CardHeader className="pb-4">
+				<div className="flex items-center justify-between">
+					<div className="space-y-1">
+						<CardTitle className="text-base flex items-center gap-2">
 							{getStatusIcon(progress.status)}
 							ASMR音频生成任务
 						</CardTitle>
@@ -168,64 +164,58 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 				</div>
 			</CardHeader>
 
-			<CardContent className='space-y-4'>
+			<CardContent className="space-y-4">
 				{/* Progress Bar */}
 				{(progress.status === 'processing' || progress.status === 'queued') && (
-					<div className='space-y-2'>
-						<div className='flex justify-between text-sm'>
+					<div className="space-y-2">
+						<div className="flex justify-between text-sm">
 							<span>进度</span>
 							<span>{progress.progress}%</span>
 						</div>
-						<Progress value={progress.progress} className='w-full'/>
-						{progress.currentStep
-							? (
-								<p className='text-xs text-muted-foreground'>当前步骤: {progress.currentStep}</p>
-							)
-							: null}
-						{progress.estimatedTimeRemaining
-							? (
-								<p className='text-xs text-muted-foreground'>
-									预计剩余时间: {Math.round(progress.estimatedTimeRemaining / 60)} 分钟
-								</p>
-							)
-							: null}
+						<Progress value={progress.progress} className="w-full" />
+						{progress.currentStep ? (
+							<p className="text-xs text-muted-foreground">当前步骤: {progress.currentStep}</p>
+						) : null}
+						{progress.estimatedTimeRemaining ? (
+							<p className="text-xs text-muted-foreground">
+								预计剩余时间: {Math.round(progress.estimatedTimeRemaining / 60)} 分钟
+							</p>
+						) : null}
 					</div>
 				)}
 
 				{/* Error Message */}
-				{progress.status === 'failed' && progress.error
-					? (
-						<div className='p-3 bg-red-50 border border-red-200 rounded-md'>
-							<div className='flex items-start gap-2'>
-								<AlertCircle className='h-4 w-4 text-red-600 mt-0.5'/>
-								<div className='space-y-1'>
-									<p className='text-sm font-medium text-red-800'>错误信息</p>
-									<p className='text-xs text-red-700'>{progress.error}</p>
-								</div>
+				{progress.status === 'failed' && progress.error ? (
+					<div className="p-3 bg-red-50 border border-red-200 rounded-md">
+						<div className="flex items-start gap-2">
+							<AlertCircle className="h-4 w-4 text-red-600 mt-0.5" />
+							<div className="space-y-1">
+								<p className="text-sm font-medium text-red-800">错误信息</p>
+								<p className="text-xs text-red-700">{progress.error}</p>
 							</div>
 						</div>
-					)
-					: null}
+					</div>
+				) : null}
 
 				{/* Completed Status with Audio Player */}
 				{progress.status === 'completed' && (
-					<div className='space-y-3'>
-						<div className='p-3 bg-green-50 border border-green-200 rounded-md'>
-							<div className='flex items-center gap-2'>
-								<CheckCircle className='h-4 w-4 text-green-600'/>
-								<p className='text-sm font-medium text-green-800'>ASMR音频生成完成！</p>
+					<div className="space-y-3">
+						<div className="p-3 bg-green-50 border border-green-200 rounded-md">
+							<div className="flex items-center gap-2">
+								<CheckCircle className="h-4 w-4 text-green-600" />
+								<p className="text-sm font-medium text-green-800">ASMR音频生成完成！</p>
 							</div>
 						</div>
 
 						{/* Audio Player - placeholder for now */}
-						<div className='p-4 bg-muted/50 rounded-md'>
-							<div className='flex items-center justify-between'>
-								<div className='flex items-center gap-2'>
-									<Play className='h-4 w-4 text-muted-foreground'/>
-									<span className='text-sm text-muted-foreground'>音频文件已生成</span>
+						<div className="p-4 bg-muted/50 rounded-md">
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<Play className="h-4 w-4 text-muted-foreground" />
+									<span className="text-sm text-muted-foreground">音频文件已生成</span>
 								</div>
-								<Button variant='outline' size='sm'>
-									<Download className='h-4 w-4 mr-2'/>
+								<Button variant="outline" size="sm">
+									<Download className="h-4 w-4 mr-2" />
 									下载
 								</Button>
 							</div>
@@ -234,21 +224,19 @@ export function JobProgressMonitor({jobId, onJobComplete, className}: JobProgres
 				)}
 
 				{/* Action Buttons */}
-				<div className='flex justify-end gap-2'>
+				<div className="flex justify-end gap-2">
 					{progress.status === 'failed' && (
-						<Button variant='outline' size='sm' disabled={retryMutation.isPending} onClick={handleRetry}>
-							{retryMutation.isPending
-								? (
-									<Loader2 className='h-4 w-4 mr-2 animate-spin'/>
-								)
-								: (
-									<RefreshCw className='h-4 w-4 mr-2'/>
-								)}
+						<Button variant="outline" size="sm" disabled={retryMutation.isPending} onClick={handleRetry}>
+							{retryMutation.isPending ? (
+								<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+							) : (
+								<RefreshCw className="h-4 w-4 mr-2" />
+							)}
 							重试
 						</Button>
 					)}
-					<Button variant='ghost' size='sm' onClick={async () => refetch()}>
-						<RefreshCw className='h-4 w-4 mr-2'/>
+					<Button variant="ghost" size="sm" onClick={async () => refetch()}>
+						<RefreshCw className="h-4 w-4 mr-2" />
 						刷新
 					</Button>
 				</div>
@@ -272,11 +260,11 @@ export function JobList({className}: JobListProps): JSX.Element {
 					<CardTitle>任务列表</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div className='flex items-center justify-center py-8'>
-						<div className='text-center space-y-2'>
-							<AlertCircle className='h-8 w-8 text-muted-foreground mx-auto'/>
-							<p className='text-sm text-muted-foreground'>加载任务列表失败</p>
-							<Button variant='outline' size='sm' onClick={async () => refetch()}>
+					<div className="flex items-center justify-center py-8">
+						<div className="text-center space-y-2">
+							<AlertCircle className="h-8 w-8 text-muted-foreground mx-auto" />
+							<p className="text-sm text-muted-foreground">加载任务列表失败</p>
+							<Button variant="outline" size="sm" onClick={async () => refetch()}>
 								重新加载
 							</Button>
 						</div>
@@ -293,9 +281,9 @@ export function JobList({className}: JobListProps): JSX.Element {
 					<CardTitle>任务列表</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<div className='flex items-center justify-center py-8'>
-						<Loader2 className='h-4 w-4 animate-spin mr-2'/>
-						<span className='text-sm text-muted-foreground'>加载中...</span>
+					<div className="flex items-center justify-center py-8">
+						<Loader2 className="h-4 w-4 animate-spin mr-2" />
+						<span className="text-sm text-muted-foreground">加载中...</span>
 					</div>
 				</CardContent>
 			</Card>
@@ -312,17 +300,17 @@ export function JobList({className}: JobListProps): JSX.Element {
 			</CardHeader>
 			<CardContent>
 				{jobs.length === 0 ? (
-					<div className='text-center py-8'>
-						<Clock className='h-8 w-8 text-muted-foreground mx-auto mb-2'/>
-						<p className='text-sm text-muted-foreground'>暂无任务</p>
+					<div className="text-center py-8">
+						<Clock className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+						<p className="text-sm text-muted-foreground">暂无任务</p>
 					</div>
 				) : (
-					<div className='space-y-4'>
-						{jobs.map(job => (
+					<div className="space-y-4">
+						{jobs.map((job) => (
 							<JobProgressMonitor
 								key={job.id}
 								jobId={job.id}
-								onJobComplete={completedJob => {
+								onJobComplete={(completedJob) => {
 									console.log('任务完成:', completedJob);
 									void refetch(); // 刷新任务列表
 								}}

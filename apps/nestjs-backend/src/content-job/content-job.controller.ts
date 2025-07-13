@@ -1,9 +1,5 @@
-import {
-	Controller, Post, Get, Body, Param, Query, UseGuards, HttpStatus, ParseUUIDPipe,
-} from '@nestjs/common';
-import {
-	ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery,
-} from '@nestjs/swagger';
+import {Controller, Post, Get, Body, Param, Query, UseGuards, HttpStatus, ParseUUIDPipe} from '@nestjs/common';
+import {ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery} from '@nestjs/swagger';
 import {JwtAuthGuard} from '../auth/jwt-auth.guard';
 import {User} from '../auth/decorators/user.decorator';
 import {ActiveUser} from '../auth/types/active-user.type';

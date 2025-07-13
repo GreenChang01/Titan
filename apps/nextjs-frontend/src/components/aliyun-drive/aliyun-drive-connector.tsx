@@ -224,35 +224,29 @@ function ConfigForm({config, onSuccess, trigger}: ConfigFormProps) {
 							disabled={testMutation.isPending || !formData.webdavUrl || !formData.username || !formData.password}
 							onClick={handleTestConnection}
 						>
-							{testMutation.isPending
-								? (
-									<Loader2 className='h-4 w-4 animate-spin mr-2'/>
-								)
-								: (
-									<TestTube className='h-4 w-4 mr-2'/>
-								)}
+							{testMutation.isPending ? (
+								<Loader2 className='h-4 w-4 animate-spin mr-2'/>
+							) : (
+								<TestTube className='h-4 w-4 mr-2'/>
+							)}
 							测试连接
 						</Button>
 
-						{testMutation.data
-							? (
-								<div className='flex items-center gap-1 text-sm'>
-									{testMutation.data.success
-										? (
-											<>
-												<CheckCircle className='h-4 w-4 text-green-600'/>
-												<span className='text-green-600'>连接成功</span>
-											</>
-										)
-										: (
-											<>
-												<XCircle className='h-4 w-4 text-red-600'/>
-												<span className='text-red-600'>连接失败</span>
-											</>
-										)}
-								</div>
-							)
-							: null}
+						{testMutation.data ? (
+							<div className='flex items-center gap-1 text-sm'>
+								{testMutation.data.success ? (
+									<>
+										<CheckCircle className='h-4 w-4 text-green-600'/>
+										<span className='text-green-600'>连接成功</span>
+									</>
+								) : (
+									<>
+										<XCircle className='h-4 w-4 text-red-600'/>
+										<span className='text-red-600'>连接失败</span>
+									</>
+								)}
+							</div>
+						) : null}
 					</div>
 
 					<div className='flex justify-end gap-2 pt-4 border-t'>
@@ -326,19 +320,17 @@ function ConfigCard({config}: ConfigCardProps) {
 							}
 						/>
 						<DropdownMenuItem onClick={handleToggleActive}>
-							{config.isActive
-								? (
-									<>
-										<XCircle className='h-4 w-4 mr-2'/>
-										停用
-									</>
-								)
-								: (
-									<>
-										<CheckCircle className='h-4 w-4 mr-2'/>
-										启用
-									</>
-								)}
+							{config.isActive ? (
+								<>
+									<XCircle className='h-4 w-4 mr-2'/>
+									停用
+								</>
+							) : (
+								<>
+									<CheckCircle className='h-4 w-4 mr-2'/>
+									启用
+								</>
+							)}
 						</DropdownMenuItem>
 						<DropdownMenuSeparator/>
 						<AlertDialog>
@@ -379,15 +371,13 @@ function ConfigCard({config}: ConfigCardProps) {
 						<span className='text-muted-foreground'>用户:</span>
 						<span>{config.username}</span>
 					</div>
-					{config.lastSyncAt
-						? (
-							<div className='flex items-center gap-2'>
-								<Clock className='h-4 w-4 text-muted-foreground'/>
-								<span className='text-muted-foreground'>上次同步:</span>
-								<span>{new Date(config.lastSyncAt).toLocaleString()}</span>
-							</div>
-						)
-						: null}
+					{config.lastSyncAt ? (
+						<div className='flex items-center gap-2'>
+							<Clock className='h-4 w-4 text-muted-foreground'/>
+							<span className='text-muted-foreground'>上次同步:</span>
+							<span>{new Date(config.lastSyncAt).toLocaleString()}</span>
+						</div>
+					) : null}
 				</div>
 			</CardContent>
 		</Card>
@@ -431,22 +421,20 @@ export function AliyunDriveConnector() {
 			</CardHeader>
 
 			<CardContent>
-				{configs && configs.length > 0
-					? (
-						<div className='grid gap-4 md:grid-cols-2'>
-							{configs.map(config => (
-								<ConfigCard key={config.id} config={config}/>
-							))}
-						</div>
-					)
-					: (
-						<div className='text-center py-8'>
-							<Cloud className='h-12 w-12 mx-auto text-muted-foreground mb-4'/>
-							<h3 className='text-lg font-semibold mb-2'>暂无配置</h3>
-							<p className='text-muted-foreground mb-4'>添加您的第一个阿里云盘配置以开始使用文件浏览功能</p>
-							<ConfigForm/>
-						</div>
-					)}
+				{configs && configs.length > 0 ? (
+					<div className='grid gap-4 md:grid-cols-2'>
+						{configs.map(config => (
+							<ConfigCard key={config.id} config={config}/>
+						))}
+					</div>
+				) : (
+					<div className='text-center py-8'>
+						<Cloud className='h-12 w-12 mx-auto text-muted-foreground mb-4'/>
+						<h3 className='text-lg font-semibold mb-2'>暂无配置</h3>
+						<p className='text-muted-foreground mb-4'>添加您的第一个阿里云盘配置以开始使用文件浏览功能</p>
+						<ConfigForm/>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);

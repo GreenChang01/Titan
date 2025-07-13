@@ -1,6 +1,4 @@
-import {
-	Injectable, Logger, HttpException, HttpStatus,
-} from '@nestjs/common';
+import {Injectable, Logger, HttpException, HttpStatus} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import axios, {AxiosInstance} from 'axios';
 import {
@@ -51,22 +49,22 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 
 	private setupInterceptors(): void {
 		this.client.interceptors.request.use(
-			config => {
+			(config) => {
 				this.logger.debug(`ElevenLabs Sound Effects API Request: ${config.method?.toUpperCase()} ${config.url}`);
 				return config;
 			},
-			async error => {
+			async (error) => {
 				this.logger.error('ElevenLabs Sound Effects API Request Error:', error.message);
 				throw error;
 			},
 		);
 
 		this.client.interceptors.response.use(
-			response => {
+			(response) => {
 				this.logger.debug(`ElevenLabs Sound Effects API Response: ${response.status} ${response.config.url}`);
 				return response;
 			},
-			error => {
+			(error) => {
 				const status = error.response?.status;
 				const message = error.response?.data?.detail || error.message;
 				this.logger.error(`ElevenLabs Sound Effects API Error: ${status} - ${message}`);
@@ -183,7 +181,7 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 
 			// 短暂延迟避免API限制
 			if (index < chunks - 1) {
-				await new Promise(resolve => setTimeout(resolve, 500));
+				await new Promise((resolve) => setTimeout(resolve, 500));
 			}
 		}
 
@@ -258,8 +256,10 @@ export class ElevenLabsSoundscapeProvider implements ISoundscapeProvider {
 			];
 
 			// 过滤掉不适合中老年人的分类
-			return categories.filter(cat =>
-				([...ElderlyFriendlySoundscapes.preferredCategories] as string[]).includes(cat.id) || cat.suitableForASMR);
+			return categories.filter(
+				(cat) =>
+					([...ElderlyFriendlySoundscapes.preferredCategories] as string[]).includes(cat.id) || cat.suitableForASMR,
+			);
 		} catch (error) {
 			this.logger.error(`Failed to fetch categories: ${(error as Error).message}`);
 			throw error;

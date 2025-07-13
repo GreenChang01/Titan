@@ -81,9 +81,13 @@ describe('UsersService', () => {
 		});
 
 		it('should throw ConflictException if user already exists', async (): Promise<void> => {
-			em.persistAndFlush.mockRejectedValueOnce(new ConflictException('duplicate key value violates unique constraint "users_email_key"'));
+			em.persistAndFlush.mockRejectedValueOnce(
+				new ConflictException('duplicate key value violates unique constraint "users_email_key"'),
+			);
 
-			await expect(service.createUser('test@example.com', 'password123', 'tester', AcceptedLanguages.EN)).rejects.toThrow(ConflictException);
+			await expect(
+				service.createUser('test@example.com', 'password123', 'tester', AcceptedLanguages.EN),
+			).rejects.toThrow(ConflictException);
 
 			expect(em.persistAndFlush).toHaveBeenCalled();
 		});

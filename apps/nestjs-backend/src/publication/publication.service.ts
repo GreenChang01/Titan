@@ -61,7 +61,7 @@ export class PublicationService {
 			.where({userId})
 			.getResult();
 
-		const jobIds = contentJobIds.map(job => job.id);
+		const jobIds = contentJobIds.map((job) => job.id);
 
 		// 通过ContentJob关联查找用户的发布记录
 		return this.publicationRepository.find(

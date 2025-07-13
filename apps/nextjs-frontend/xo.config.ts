@@ -90,13 +90,16 @@ const xoConfig: FlatXoConfig = [
 			'no-lonely-if': 'off',
 
 			// Style rules - relax line length and mixed operators
-			'@stylistic/max-len': ['error', {
-				code: 1000,
-				ignoreUrls: true,
-				ignoreStrings: true,
-				ignoreTemplateLiterals: true,
-				ignoreRegExpLiterals: true,
-			}],
+			'@stylistic/max-len': [
+				'error',
+				{
+					code: 1000,
+					ignoreUrls: true,
+					ignoreStrings: true,
+					ignoreTemplateLiterals: true,
+					ignoreRegExpLiterals: true,
+				},
+			],
 			'@stylistic/no-mixed-operators': 'off',
 			'@stylistic/multiline-ternary': 'off',
 		},

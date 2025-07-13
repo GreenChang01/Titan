@@ -14,23 +14,33 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarMenuButton,
+	useSidebar,
 } from '@/components/ui/sidebar';
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 	const t = useTranslations('Component-Sidebar');
+	const {state} = useSidebar();
 
 	return (
 		<Sidebar collapsible='icon' variant='sidebar' {...props}>
 			<SidebarHeader>
-				<div className='flex items-center gap-2 p-2'>
-					<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
-						<ProjectorIcon className='size-4'/>
+				{state === 'collapsed' ? (
+					<div className='flex items-center justify-center p-2'>
+						<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
+							<ProjectorIcon className='size-4'/>
+						</div>
 					</div>
-					<div className='flex flex-col gap-0.5 leading-none'>
-						<span className='font-semibold'>Titan</span>
-						<span className='text-xs text-muted-foreground'>ASMR创作平台</span>
+				) : (
+					<div className='flex items-center gap-2 p-2'>
+						<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
+							<ProjectorIcon className='size-4'/>
+						</div>
+						<div className='flex flex-col gap-0.5 leading-none'>
+							<span className='font-semibold'>Titan</span>
+							<span className='text-xs text-muted-foreground'>ASMR创作平台</span>
+						</div>
 					</div>
-				</div>
+				)}
 			</SidebarHeader>
 
 			<SidebarContent>

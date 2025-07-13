@@ -31,9 +31,11 @@ export class MediaProcessingProcessor {
 	async processContent(job: Job<MediaProcessingJobData>): Promise<void> {
 		const {jobId, userId, batchIndex, totalBatch, isRetry} = job.data;
 
-		this.logger.log(`Starting content processing for job ${jobId}`
+		this.logger.log(
+			`Starting content processing for job ${jobId}`
 			+ (batchIndex === undefined ? '' : ` (batch ${batchIndex + 1}/${totalBatch})`)
-			+ (isRetry ? ' (retry)' : ''));
+			+ (isRetry ? ' (retry)' : ''),
+		);
 
 		try {
 			// 获取任务信息

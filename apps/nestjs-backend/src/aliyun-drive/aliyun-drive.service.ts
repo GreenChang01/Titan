@@ -1,8 +1,6 @@
 import * as path from 'node:path';
 import {Readable} from 'node:stream';
-import {
-	Injectable, HttpException, HttpStatus, Logger,
-} from '@nestjs/common';
+import {Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
 import {EntityRepository, EntityManager} from '@mikro-orm/core';
 import {ConfigService} from '@nestjs/config';
@@ -166,7 +164,7 @@ export class AliyunDriveService {
 			// Apply search filter if provided
 			if (listDto.search) {
 				const searchLower = listDto.search.toLowerCase();
-				allFiles = allFiles.filter(file => file.name.toLowerCase().includes(searchLower));
+				allFiles = allFiles.filter((file) => file.name.toLowerCase().includes(searchLower));
 			}
 
 			// Sort files for consistent pagination (directories first, then by name)
@@ -315,7 +313,7 @@ export class AliyunDriveService {
 		try {
 			const client = await this.createWebDavClient(config);
 
-			const deletePromises = deleteDto.paths.map(async itemPath => {
+			const deletePromises = deleteDto.paths.map(async (itemPath) => {
 				try {
 					const targetPath = path.posix.join(config.basePath, itemPath);
 					await client.delete(targetPath);

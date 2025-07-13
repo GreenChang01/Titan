@@ -144,11 +144,9 @@ export function AliyunDriveConnector({
 							placeholder={t('refresh-token-placeholder', {defaultMessage: '请输入阿里云盘 Refresh Token'})}
 							disabled={isSubmitting || connectionStatus === 'connecting'}
 						/>
-						{errors.refreshToken?.message
-							? (
-								<small className='text-red-500 mt-1 block'>{errors.refreshToken.message}</small>
-							)
-							: null}
+						{errors.refreshToken?.message ? (
+							<small className='text-red-500 mt-1 block'>{errors.refreshToken.message}</small>
+						) : null}
 						<small className='text-gray-500 mt-1 block'>
 							{t('refresh-token-help', {defaultMessage: '可从阿里云盘开发者工具中获取 Refresh Token'})}
 						</small>
@@ -172,14 +170,12 @@ export function AliyunDriveConnector({
 					</div>
 				</form>
 
-				{isTestingConnection
-					? (
-						<div className='flex items-center gap-2 text-blue-600'>
-							<ProgressSpinner style={{width: '20px', height: '20px'}} strokeWidth='4'/>
-							<span className='text-sm'>{t('testing-connection', {defaultMessage: '正在测试连接...'})}</span>
-						</div>
-					)
-					: null}
+				{isTestingConnection ? (
+					<div className='flex items-center gap-2 text-blue-600'>
+						<ProgressSpinner style={{width: '20px', height: '20px'}} strokeWidth='4'/>
+						<span className='text-sm'>{t('testing-connection', {defaultMessage: '正在测试连接...'})}</span>
+					</div>
+				) : null}
 			</div>
 		</Card>
 	);

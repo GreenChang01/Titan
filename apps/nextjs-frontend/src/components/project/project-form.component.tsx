@@ -204,11 +204,9 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 							/>
 						)}
 					/>
-					{errors.description
-						? (
-							<small className='text-red-500 mt-1 block'>{getErrorMessage('description')}</small>
-						)
-						: null}
+					{errors.description ? (
+						<small className='text-red-500 mt-1 block'>{getErrorMessage('description')}</small>
+					) : null}
 				</div>
 
 				{/* 项目状态 */}
@@ -274,31 +272,29 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 				</div>
 
 				{/* 如果是编辑模式，显示项目统计信息 */}
-				{mode === 'edit' && project
-					? (
-						<div className='bg-gray-50 border border-gray-200 rounded-md p-4'>
-							<h4 className='font-medium text-gray-900 mb-3'>{t('project-statistics', {defaultMessage: '项目统计'})}</h4>
-							<div className='grid grid-cols-2 gap-4 text-sm'>
-								<div>
-									<span className='text-gray-500'>{t('material-count', {defaultMessage: '素材数量'})}:</span>
-									<span className='ml-2 font-medium'>{project.materialCount}</span>
-								</div>
-								<div>
-									<span className='text-gray-500'>{t('created-at', {defaultMessage: '创建时间'})}:</span>
-									<span className='ml-2 font-medium'>{project.createdAt}</span>
-								</div>
-								<div>
-									<span className='text-gray-500'>{t('updated-at', {defaultMessage: '更新时间'})}:</span>
-									<span className='ml-2 font-medium'>{project.updatedAt}</span>
-								</div>
-								<div>
-									<span className='text-gray-500'>{t('owner', {defaultMessage: '负责人'})}:</span>
-									<span className='ml-2 font-medium'>{project.owner.name}</span>
-								</div>
+				{mode === 'edit' && project ? (
+					<div className='bg-gray-50 border border-gray-200 rounded-md p-4'>
+						<h4 className='font-medium text-gray-900 mb-3'>{t('project-statistics', {defaultMessage: '项目统计'})}</h4>
+						<div className='grid grid-cols-2 gap-4 text-sm'>
+							<div>
+								<span className='text-gray-500'>{t('material-count', {defaultMessage: '素材数量'})}:</span>
+								<span className='ml-2 font-medium'>{project.materialCount}</span>
+							</div>
+							<div>
+								<span className='text-gray-500'>{t('created-at', {defaultMessage: '创建时间'})}:</span>
+								<span className='ml-2 font-medium'>{project.createdAt}</span>
+							</div>
+							<div>
+								<span className='text-gray-500'>{t('updated-at', {defaultMessage: '更新时间'})}:</span>
+								<span className='ml-2 font-medium'>{project.updatedAt}</span>
+							</div>
+							<div>
+								<span className='text-gray-500'>{t('owner', {defaultMessage: '负责人'})}:</span>
+								<span className='ml-2 font-medium'>{project.owner.name}</span>
 							</div>
 						</div>
-					)
-					: null}
+					</div>
+				) : null}
 			</form>
 		</Dialog>
 	);

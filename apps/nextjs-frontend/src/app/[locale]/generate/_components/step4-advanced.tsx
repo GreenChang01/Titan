@@ -410,27 +410,25 @@ export function Step4Advanced(): JSX.Element {
 							</div>
 
 							{/* Max Retries */}
-							{qualitySettings.enableAutoRetry
-								? (
-									<div className='space-y-3'>
-										<div className='flex items-center justify-between'>
-											<Label htmlFor='max-retries'>最大重试次数</Label>
-											<span className='text-sm font-medium'>{qualitySettings.maxRetries}次</span>
-										</div>
-										<Slider
-											id='max-retries'
-											value={[qualitySettings.maxRetries]}
-											min={1}
-											max={5}
-											step={1}
-											className='w-full'
-											onValueChange={value => {
-												handleQualityChange('maxRetries', value[0]);
-											}}
-										/>
+							{qualitySettings.enableAutoRetry ? (
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='max-retries'>最大重试次数</Label>
+										<span className='text-sm font-medium'>{qualitySettings.maxRetries}次</span>
 									</div>
-								)
-								: null}
+									<Slider
+										id='max-retries'
+										value={[qualitySettings.maxRetries]}
+										min={1}
+										max={5}
+										step={1}
+										className='w-full'
+										onValueChange={value => {
+											handleQualityChange('maxRetries', value[0]);
+										}}
+									/>
+								</div>
+							) : null}
 
 							<Separator/>
 
@@ -506,16 +504,14 @@ export function Step4Advanced(): JSX.Element {
 							</Badge>
 						</div>
 					</div>
-					{selectedPreset
-						? (
-							<div className='mt-3 pt-3 border-t border-muted'>
-								<div className='flex items-center gap-2'>
-									<Badge variant='secondary'>预设</Badge>
-									<span className='text-sm'>{presets.find(p => p.id === selectedPreset)?.name}</span>
-								</div>
+					{selectedPreset ? (
+						<div className='mt-3 pt-3 border-t border-muted'>
+							<div className='flex items-center gap-2'>
+								<Badge variant='secondary'>预设</Badge>
+								<span className='text-sm'>{presets.find(p => p.id === selectedPreset)?.name}</span>
 							</div>
-						)
-						: null}
+						</div>
+					) : null}
 				</CardContent>
 			</Card>
 		</div>

@@ -29,7 +29,7 @@ export function LoginTwoFactor(): JSX.Element {
 		formState: {errors: errors2fa, isSubmitting: isSubmitting2fa},
 	} = useForm<LoginTwoFactorFormFields>({resolver: zodResolver(loginTwoFactorSchema)});
 
-	const onSubmit2fa: SubmitHandler<LoginTwoFactorFormFields> = async data => {
+	const onSubmit2fa: SubmitHandler<LoginTwoFactorFormFields> = async (data) => {
 		await loginTwoFactor({
 			params: {loginTwoFactorData: data},
 			onSuccess() {
@@ -53,31 +53,31 @@ export function LoginTwoFactor(): JSX.Element {
 	};
 
 	return (
-		<div className='flex flex-col items-center space-y-6 p-6'>
-			<div className='text-center space-y-2'>
-				<h1 className='text-2xl font-bold'>{t('title')}</h1>
-				<p className='text-muted-foreground'>{t('description')}</p>
+		<div className="flex flex-col items-center space-y-6 p-6">
+			<div className="text-center space-y-2">
+				<h1 className="text-2xl font-bold">{t('title')}</h1>
+				<p className="text-muted-foreground">{t('description')}</p>
 			</div>
 
-			<form className='w-full max-w-sm space-y-4' onSubmit={handleSubmit2fa(onSubmit2fa)}>
-				<div className='space-y-2'>
-					<Label htmlFor='code'>{t('code-input-label')}</Label>
+			<form className="w-full max-w-sm space-y-4" onSubmit={handleSubmit2fa(onSubmit2fa)}>
+				<div className="space-y-2">
+					<Label htmlFor="code">{t('code-input-label')}</Label>
 					<Input
 						{...register2fa('code')}
-						id='code'
+						id="code"
 						maxLength={6}
 						placeholder={t('code-input-label')}
-						data-testid='login-2fa'
-						className='text-center tracking-widest'
+						data-testid="login-2fa"
+						className="text-center tracking-widest"
 					/>
-					{errors2fa.code ? <p className='text-sm text-destructive'>{errors2fa.code.message}</p> : null}
+					{errors2fa.code ? <p className="text-sm text-destructive">{errors2fa.code.message}</p> : null}
 				</div>
 
-				<Button type='submit' disabled={isSubmitting2fa} className='w-full' data-testid='login-submit-2fa'>
+				<Button type="submit" disabled={isSubmitting2fa} className="w-full" data-testid="login-submit-2fa">
 					{isSubmitting2fa ? t('submit-button-loading-label') : t('submit-button-label')}
 				</Button>
 
-				{errors2fa.root ? <p className='text-sm text-destructive text-center'>{errors2fa.root.message}</p> : null}
+				{errors2fa.root ? <p className="text-sm text-destructive text-center">{errors2fa.root.message}</p> : null}
 			</form>
 		</div>
 	);

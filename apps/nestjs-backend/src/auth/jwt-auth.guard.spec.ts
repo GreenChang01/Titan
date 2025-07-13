@@ -8,12 +8,14 @@ import {JwtAuthGuard} from './jwt-auth.guard';
 
 // Properly mock the AuthGuard
 jest.mock('@nestjs/passport', () => ({
-	AuthGuard: jest.fn(() =>
-		class MockAuthGuard {
-			canActivate(): boolean | Promise<boolean> | Observable<boolean> {
-				return true;
-			}
-		}),
+	AuthGuard: jest.fn(
+		() =>
+			class MockAuthGuard {
+				canActivate(): boolean | Promise<boolean> | Observable<boolean> {
+					return true;
+				}
+			},
+	),
 }));
 
 describe('JwtAuthGuard', () => {
@@ -116,7 +118,7 @@ describe('JwtAuthGuard', () => {
 			superCanActivate.mockRestore();
 		});
 
-		it('should handle Observable return type from parent canActivate', done => {
+		it('should handle Observable return type from parent canActivate', (done) => {
 			// Setup
 			reflector.getAllAndOverride.mockReturnValue(false);
 
@@ -128,7 +130,7 @@ describe('JwtAuthGuard', () => {
 			const result = guard.canActivate(mockContext) as Observable<boolean>;
 
 			// Assert
-			result.subscribe(value => {
+			result.subscribe((value) => {
 				expect(value).toBe(true);
 				expect(reflector.getAllAndOverride).toHaveBeenCalledWith(IS_PUBLIC_KEY, [mockHandler, mockClass]);
 				expect(superCanActivate).toHaveBeenCalledWith(mockContext);

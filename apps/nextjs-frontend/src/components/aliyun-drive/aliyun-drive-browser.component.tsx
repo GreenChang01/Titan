@@ -200,16 +200,14 @@ export function AliyunDriveBrowser({
 
 	const fileNameTemplate = (file: FileItem): JSX.Element => (
 		<div className='flex items-center gap-2'>
-			{hasMultiSelect && file.type === 'file'
-				? (
-					<Checkbox
-						checked={selectedFiles.some(f => f.id === file.id)}
-						onChange={() => {
-							handleFileSelect(file);
-						}}
-					/>
-				)
-				: null}
+			{hasMultiSelect && file.type === 'file' ? (
+				<Checkbox
+					checked={selectedFiles.some(f => f.id === file.id)}
+					onChange={() => {
+						handleFileSelect(file);
+					}}
+				/>
+			) : null}
 			<span
 				className={file.type === 'folder' ? 'cursor-pointer text-blue-600 hover:underline' : ''}
 				onClick={() => {
@@ -327,48 +325,46 @@ export function AliyunDriveBrowser({
 
 				{/* 文件列表 */}
 				<div className='border rounded-lg'>
-					{loading
-						? (
-							<div className='flex justify-center items-center py-8'>
-								<ProgressSpinner/>
-								<span className='ml-2'>{t('loading', {defaultMessage: '加载中...'})}</span>
-							</div>
-						)
-						: (
-							<DataTable
-								className='border-0'
-								dataKey='id'
-								emptyMessage={t('no-files', {defaultMessage: '暂无文件'})}
-								selection={selectedFiles}
-								selectionMode={hasMultiSelect ? 'checkbox' : null}
-								value={filteredFiles}
-								onSelectionChange={(e: {value: FileItem[]}) => {
-									setSelectedFiles(e.value);
-								}}
-							>
-								<Column header='' body={fileIconTemplate} style={{width: '3rem'}}/>
-								<Column
-									sortable
-									field='name'
-									header={t('file-name', {defaultMessage: '文件名'})}
-									body={fileNameTemplate}
-								/>
-								<Column
-									sortable
-									field='size'
-									header={t('file-size', {defaultMessage: '大小'})}
-									body={fileSizeTemplate}
-									style={{width: '8rem'}}
-								/>
-								<Column
-									sortable
-									field='modifiedAt'
-									header={t('modified-date', {defaultMessage: '修改时间'})}
-									style={{width: '10rem'}}
-								/>
-								<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '5rem'}}/>
-							</DataTable>
-						)}
+					{loading ? (
+						<div className='flex justify-center items-center py-8'>
+							<ProgressSpinner/>
+							<span className='ml-2'>{t('loading', {defaultMessage: '加载中...'})}</span>
+						</div>
+					) : (
+						<DataTable
+							className='border-0'
+							dataKey='id'
+							emptyMessage={t('no-files', {defaultMessage: '暂无文件'})}
+							selection={selectedFiles}
+							selectionMode={hasMultiSelect ? 'checkbox' : null}
+							value={filteredFiles}
+							onSelectionChange={(e: {value: FileItem[]}) => {
+								setSelectedFiles(e.value);
+							}}
+						>
+							<Column header='' body={fileIconTemplate} style={{width: '3rem'}}/>
+							<Column
+								sortable
+								field='name'
+								header={t('file-name', {defaultMessage: '文件名'})}
+								body={fileNameTemplate}
+							/>
+							<Column
+								sortable
+								field='size'
+								header={t('file-size', {defaultMessage: '大小'})}
+								body={fileSizeTemplate}
+								style={{width: '8rem'}}
+							/>
+							<Column
+								sortable
+								field='modifiedAt'
+								header={t('modified-date', {defaultMessage: '修改时间'})}
+								style={{width: '10rem'}}
+							/>
+							<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '5rem'}}/>
+						</DataTable>
+					)}
 				</div>
 
 				{/* 选择提示 */}

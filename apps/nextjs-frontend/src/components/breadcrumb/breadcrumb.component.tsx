@@ -27,20 +27,18 @@ export function Breadcrumb({items}: BreadcrumbProps): JSX.Element {
 				{breadcrumbItems.map((item, index) => (
 					<li key={`breadcrumb-${item.href ?? item.label}`} className='flex items-center'>
 						{index > 0 && <i className='pi pi-chevron-right text-xs text-gray-400 mx-2' aria-hidden='true'/>}
-						{item.href && !item.isActive
-							? (
-								<Link href={item.href} className='hover:text-blue-600 transition-colors duration-200'>
-									{item.label}
-								</Link>
-							)
-							: (
-								<span
-									className={item.isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}
-									aria-current={item.isActive ? 'page' : undefined}
-								>
-									{item.label}
-								</span>
-							)}
+						{item.href && !item.isActive ? (
+							<Link href={item.href} className='hover:text-blue-600 transition-colors duration-200'>
+								{item.label}
+							</Link>
+						) : (
+							<span
+								className={item.isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}
+								aria-current={item.isActive ? 'page' : undefined}
+							>
+								{item.label}
+							</span>
+						)}
 					</li>
 				))}
 			</ol>

@@ -74,7 +74,7 @@ describe('HealthController', () => {
 
 		it('should call database ping check with correct parameters', async () => {
 			mikroOrmHealthIndicator.pingCheck.mockResolvedValue(mockHealthIndicatorResult);
-			healthCheckService.check.mockImplementation(async checks => {
+			healthCheckService.check.mockImplementation(async (checks) => {
 				// Execute the health check function that was passed
 				await checks[0]();
 				return mockHealthCheckResult;
@@ -141,7 +141,7 @@ describe('HealthController', () => {
 				},
 			};
 
-			healthCheckService.check.mockImplementation(async checks => {
+			healthCheckService.check.mockImplementation(async (checks) => {
 				try {
 					await checks[0]();
 				} catch {

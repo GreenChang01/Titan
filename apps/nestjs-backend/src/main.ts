@@ -32,11 +32,13 @@ async function bootstrap(): Promise<void> {
 	app.useLogger(new LoggerService());
 
 	// 配置全局验证管道
-	app.useGlobalPipes(new ValidationPipe({
-		transform: true, // 自动类型转换
-		whitelist: true, // 只保留 DTO 中定义的属性
-		forbidNonWhitelisted: true, // 禁止未定义的属性
-	}));
+	app.useGlobalPipes(
+		new ValidationPipe({
+			transform: true, // 自动类型转换
+			whitelist: true, // 只保留 DTO 中定义的属性
+			forbidNonWhitelisted: true, // 禁止未定义的属性
+		}),
+	);
 
 	// 启用 Cookie 解析中间件
 	app.use(cookieParser());
@@ -54,7 +56,9 @@ async function bootstrap(): Promise<void> {
 	if (process.env.ENABLE_SWAGGER === 'true') {
 		const swaggerConfig = new DocumentBuilder()
 			.setTitle('Titan | 智能内容生产与分发平台 API')
-			.setDescription('Titan V1.1 智能内容生产与分发平台后端接口文档 - 专为中老年ASMR内容批量生产和微信视频号自动发布设计')
+			.setDescription(
+				'Titan V1.1 智能内容生产与分发平台后端接口文档 - 专为中老年ASMR内容批量生产和微信视频号自动发布设计',
+			)
 			.setVersion('1.1')
 			.addBearerAuth(
 				{

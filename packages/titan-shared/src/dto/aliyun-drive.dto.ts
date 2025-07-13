@@ -1,123 +1,123 @@
 import {IsString, IsOptional, IsNumber, IsUUID, IsDateString, IsBoolean} from 'class-validator';
 
 export class AliyunDriveConfigDto {
-  @IsUUID()
-  id: string;
+	@IsUUID()
+	id: string;
 
-  @IsString()
-  webdavUrl: string;
+	@IsString()
+	webdavUrl: string;
 
-  @IsString()
-  username: string;
+	@IsString()
+	username: string;
 
-  @IsOptional()
-  @IsString()
-  displayName?: string;
+	@IsOptional()
+	@IsString()
+	displayName?: string;
 
-  @IsNumber()
-  timeout: number;
+	@IsNumber()
+	timeout: number;
 
-  @IsString()
-  basePath: string;
+	@IsString()
+	basePath: string;
 
-  @IsOptional()
-  @IsDateString()
-  lastSyncAt?: string;
+	@IsOptional()
+	@IsDateString()
+	lastSyncAt?: string;
 
-  @IsBoolean()
-  isActive: boolean;
+	@IsBoolean()
+	isActive: boolean;
 
-  @IsDateString()
-  createdAt: string;
+	@IsDateString()
+	createdAt: string;
 
-  @IsDateString()
-  updatedAt: string;
+	@IsDateString()
+	updatedAt: string;
 }
 
 export class CreateAliyunDriveConfigDto {
-  @IsString()
-  webdavUrl: string;
+	@IsString()
+	webdavUrl: string;
 
-  @IsString()
-  username: string;
+	@IsString()
+	username: string;
 
-  @IsString()
-  password: string;
+	@IsString()
+	password: string;
 
-  @IsOptional()
-  @IsString()
-  displayName?: string;
+	@IsOptional()
+	@IsString()
+	displayName?: string;
 
-  @IsOptional()
-  @IsNumber()
-  timeout?: number;
+	@IsOptional()
+	@IsNumber()
+	timeout?: number;
 
-  @IsOptional()
-  @IsString()
-  basePath?: string;
+	@IsOptional()
+	@IsString()
+	basePath?: string;
 }
 
 export class UpdateAliyunDriveConfigDto {
-  @IsOptional()
-  @IsString()
-  webdavUrl?: string;
+	@IsOptional()
+	@IsString()
+	webdavUrl?: string;
 
-  @IsOptional()
-  @IsString()
-  username?: string;
+	@IsOptional()
+	@IsString()
+	username?: string;
 
-  @IsOptional()
-  @IsString()
-  password?: string;
+	@IsOptional()
+	@IsString()
+	password?: string;
 
-  @IsOptional()
-  @IsString()
-  displayName?: string;
+	@IsOptional()
+	@IsString()
+	displayName?: string;
 
-  @IsOptional()
-  @IsNumber()
-  timeout?: number;
+	@IsOptional()
+	@IsNumber()
+	timeout?: number;
 
-  @IsOptional()
-  @IsString()
-  basePath?: string;
+	@IsOptional()
+	@IsString()
+	basePath?: string;
 }
 
 export class WebDavFileDto {
-  @IsString()
-  name: string;
+	@IsString()
+	name: string;
 
-  @IsString()
-  path: string;
+	@IsString()
+	path: string;
 
-  @IsBoolean()
-  isDirectory: boolean;
+	@IsBoolean()
+	isDirectory: boolean;
 
-  @IsOptional()
-  @IsNumber()
-  size?: number;
+	@IsOptional()
+	@IsNumber()
+	size?: number;
 
-  @IsOptional()
-  @IsString()
-  contentType?: string;
+	@IsOptional()
+	@IsString()
+	contentType?: string;
 
-  @IsOptional()
-  @IsDateString()
-  lastModified?: string;
+	@IsOptional()
+	@IsDateString()
+	lastModified?: string;
 }
 
 export class ListFilesDto {
-  @IsOptional()
-  @IsString()
-  path?: string;
+	@IsOptional()
+	@IsString()
+	path?: string;
 }
 
 export class ListFilesResponseDto {
-  @IsString()
-  path: string;
+	@IsString()
+	path: string;
 
-  @IsNumber()
-  total: number;
+	@IsNumber()
+	total: number;
 
-  files: WebDavFileDto[];
+	files: WebDavFileDto[];
 }

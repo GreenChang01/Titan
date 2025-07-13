@@ -263,20 +263,18 @@ export function Step3Soundscape(): JSX.Element {
 						<div>
 							<span className='text-muted-foreground'>质量:</span>
 							<span className='ml-2 font-medium'>
-								{customSettings.quality === 'standard' ? '标准' : (customSettings.quality === 'high' ? '高质量' : '专业')}
+								{customSettings.quality === 'standard' ? '标准' : customSettings.quality === 'high' ? '高质量' : '专业'}
 							</span>
 						</div>
 					</div>
-					{selectedPreset
-						? (
-							<div className='mt-3 pt-3 border-t border-muted'>
-								<div className='flex items-center gap-2'>
-									<Badge variant='secondary'>预设</Badge>
-									<span className='text-sm'>{presets.find(p => p.id === selectedPreset)?.name}</span>
-								</div>
+					{selectedPreset ? (
+						<div className='mt-3 pt-3 border-t border-muted'>
+							<div className='flex items-center gap-2'>
+								<Badge variant='secondary'>预设</Badge>
+								<span className='text-sm'>{presets.find(p => p.id === selectedPreset)?.name}</span>
 							</div>
-						)
-						: null}
+						</div>
+					) : null}
 				</CardContent>
 			</Card>
 		</div>

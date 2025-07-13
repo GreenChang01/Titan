@@ -192,17 +192,13 @@ export function AudioPlayer({
 					<div className='flex items-center space-x-4'>
 						{/* Play/Pause Button */}
 						<Button disabled={isLoading} size='sm' className='h-10 w-10 p-0' onClick={togglePlayPause}>
-							{isLoading
-								? (
-									<div className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent'/>
-								)
-								: (isPlaying
-									? (
-										<Pause className='h-4 w-4'/>
-									)
-									: (
-										<Play className='h-4 w-4 ml-0.5'/>
-									))}
+							{isLoading ? (
+								<div className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent'/>
+							) : isPlaying ? (
+								<Pause className='h-4 w-4'/>
+							) : (
+								<Play className='h-4 w-4 ml-0.5'/>
+							)}
 						</Button>
 
 						{/* Progress Bar */}
@@ -238,13 +234,11 @@ export function AudioPlayer({
 						</div>
 
 						{/* Download Button */}
-						{showDownload
-							? (
-								<Button variant='ghost' size='sm' className='h-8 w-8 p-0' title='下载音频' onClick={handleDownload}>
-									<Download className='h-4 w-4'/>
-								</Button>
-							)
-							: null}
+						{showDownload ? (
+							<Button variant='ghost' size='sm' className='h-8 w-8 p-0' title='下载音频' onClick={handleDownload}>
+								<Download className='h-4 w-4'/>
+							</Button>
+						) : null}
 					</div>
 				</div>
 			</CardContent>

@@ -139,7 +139,9 @@ export class MediaProcessingService {
 			try {
 				await fs.rm(temporaryJobDir, {recursive: true, force: true});
 			} catch (cleanupError) {
-				this.logger.warn(`Failed to cleanup temp directory: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
+				this.logger.warn(
+					`Failed to cleanup temp directory: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`,
+				);
 			}
 		}
 	}
@@ -215,17 +217,17 @@ export class MediaProcessingService {
 
 			command
 				.output(outputPath)
-				.on('start', commandLine => {
+				.on('start', (commandLine) => {
 					this.logger.log(`FFmpeg command: ${commandLine}`);
 				})
-				.on('progress', progress => {
+				.on('progress', (progress) => {
 					this.logger.log(`Processing: ${progress.percent}% done`);
 				})
 				.on('end', () => {
 					this.logger.log('ASMR video generation completed');
 					resolve(outputPath);
 				})
-				.on('error', error => {
+				.on('error', (error) => {
 					this.logger.error('ASMR video generation failed:', error.message);
 					reject(error);
 				})
@@ -281,17 +283,17 @@ export class MediaProcessingService {
 				.size(template.videoSettings?.resolution || '1080x1920')
 				.fps(template.videoSettings?.fps || 30)
 				.output(outputPath)
-				.on('start', commandLine => {
+				.on('start', (commandLine) => {
 					this.logger.log(`FFmpeg command: ${commandLine}`);
 				})
-				.on('progress', progress => {
+				.on('progress', (progress) => {
 					this.logger.log(`Processing: ${progress.percent}% done`);
 				})
 				.on('end', () => {
 					this.logger.log('Dynamic background video generation completed');
 					resolve(outputPath);
 				})
-				.on('error', error => {
+				.on('error', (error) => {
 					this.logger.error('Dynamic background video generation failed:', error.message);
 					reject(error);
 				})
@@ -316,7 +318,7 @@ export class MediaProcessingService {
 	 * 加载任务所需的素材
 	 */
 	private async loadJobAssets(job: ContentJob): Promise<Map<string, Asset>> {
-		const assetIds = job.inputAssets.map(asset => asset.assetId);
+		const assetIds = job.inputAssets.map((asset) => asset.assetId);
 		const assets = await this.assetRepository.find({id: {$in: assetIds}});
 
 		const assetMap = new Map<string, Asset>();
@@ -335,7 +337,7 @@ export class MediaProcessingService {
 		inputAssets: Array<{assetId: string; slotName: string; parameters?: Record<string, any>}>,
 		slotName: string,
 	): Asset | undefined {
-		const assetMapping = inputAssets.find(mapping => mapping.slotName === slotName);
+		const assetMapping = inputAssets.find((mapping) => mapping.slotName === slotName);
 		if (!assetMapping) {
 			return undefined;
 		}
@@ -391,7 +393,7 @@ export class MediaProcessingService {
 					this.logger.log('Audio combination completed');
 					resolve(outputPath);
 				})
-				.on('error', error => {
+				.on('error', (error) => {
 					this.logger.error('Audio combination failed:', error.message);
 					reject(error);
 				})

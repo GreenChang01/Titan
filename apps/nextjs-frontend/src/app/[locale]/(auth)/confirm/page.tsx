@@ -44,7 +44,7 @@ export default function Confirm(): JSX.Element {
 			{confirmStatus === 'success' && (
 				<p>
 					{t('status-confirmed')}{' '}
-					<Link className='underline' href='/login'>
+					<Link className="underline" href="/login">
 						{t('status-confirmed-login-link')}
 					</Link>
 				</p>

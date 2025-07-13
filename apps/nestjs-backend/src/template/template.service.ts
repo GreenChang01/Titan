@@ -104,8 +104,8 @@ export class TemplateService {
 
 		if (updateDto.slotDefinitions !== undefined) {
 			template.slotDefinitions = updateDto.slotDefinitions
-				.filter(slot => slot.name && slot.type && slot.required !== undefined)
-				.map(slot => ({
+				.filter((slot) => slot.name && slot.type && slot.required !== undefined)
+				.map((slot) => ({
 					name: slot.name!,
 					type: slot.type!,
 					required: slot.required!,

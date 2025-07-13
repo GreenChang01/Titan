@@ -106,7 +106,9 @@ describe('AuthService', () => {
 		it('should throw UnauthorizedException if user is not found', async (): Promise<void> => {
 			usersService.getUserByEmail.mockRejectedValue(new Error('User not found'));
 
-			await expect(service.validateUserCredentials('nonexistent@example.com', 'password123', AcceptedLanguages.EN)).rejects.toThrow(UnauthorizedException);
+			await expect(
+				service.validateUserCredentials('nonexistent@example.com', 'password123', AcceptedLanguages.EN),
+			).rejects.toThrow(UnauthorizedException);
 		});
 
 		it('should throw UnauthorizedException if user status is CONFIRMATION_PENDING', async (): Promise<void> => {
@@ -120,7 +122,9 @@ describe('AuthService', () => {
 
 			usersService.getUserByEmail.mockResolvedValue(mockUser);
 
-			await expect(service.validateUserCredentials('test@example.com', 'password123', AcceptedLanguages.EN)).rejects.toThrow(UnauthorizedException);
+			await expect(
+				service.validateUserCredentials('test@example.com', 'password123', AcceptedLanguages.EN),
+			).rejects.toThrow(UnauthorizedException);
 			expect(usersService.getUserByEmail).toHaveBeenCalledWith('test@example.com');
 		});
 
@@ -135,7 +139,9 @@ describe('AuthService', () => {
 
 			usersService.getUserByEmail.mockResolvedValue(mockUser);
 
-			await expect(service.validateUserCredentials('test@example.com', 'password123', AcceptedLanguages.EN)).rejects.toThrow(UnauthorizedException);
+			await expect(
+				service.validateUserCredentials('test@example.com', 'password123', AcceptedLanguages.EN),
+			).rejects.toThrow(UnauthorizedException);
 			expect(usersService.getUserByEmail).toHaveBeenCalledWith('test@example.com');
 		});
 
@@ -151,7 +157,9 @@ describe('AuthService', () => {
 			usersService.getUserByEmail.mockResolvedValue(mockUser);
 			cryptoService.compare.mockResolvedValue(false);
 
-			await expect(service.validateUserCredentials('test@example.com', 'wrong-password', AcceptedLanguages.EN)).rejects.toThrow(UnauthorizedException);
+			await expect(
+				service.validateUserCredentials('test@example.com', 'wrong-password', AcceptedLanguages.EN),
+			).rejects.toThrow(UnauthorizedException);
 			expect(usersService.getUserByEmail).toHaveBeenCalledWith('test@example.com');
 			expect(cryptoService.compare).toHaveBeenCalledWith('wrong-password', 'hashed-password');
 		});
@@ -217,7 +225,7 @@ describe('AuthService', () => {
 			await expect(service.validateTwoFactorAuth('hashed-2fa-id', '123456')).rejects.toThrow(UnauthorizedException);
 		});
 
-		it('should throw UnauthorizedException if found entries don\'t match the hashed 2FA id', async (): Promise<void> => {
+		it("should throw UnauthorizedException if found entries don't match the hashed 2FA id", async (): Promise<void> => {
 			const mockUser = new User({
 				email: 'test@example.com',
 				password: 'hashed-password',
@@ -238,7 +246,9 @@ describe('AuthService', () => {
 			// But make the ID comparison always fail
 			cryptoService.compare.mockResolvedValue(false);
 
-			await expect(service.validateTwoFactorAuth('wrong-hashed-2fa-id', '123456')).rejects.toThrow(UnauthorizedException);
+			await expect(service.validateTwoFactorAuth('wrong-hashed-2fa-id', '123456')).rejects.toThrow(
+				UnauthorizedException,
+			);
 
 			expect(em.find).toHaveBeenCalled();
 			expect(cryptoService.compare).toHaveBeenCalledWith('2fa-id', 'wrong-hashed-2fa-id');

@@ -2,40 +2,42 @@ import {createParamDecorator, type ExecutionContext, NotAcceptableException} fro
 import {type Request} from 'express';
 import {type HeaderDecoratorParam as HeaderDecoratorParameter} from './types/header-decorator.param.type';
 
-export const ValidateHeader = createParamDecorator((parameter: HeaderDecoratorParameter, ctx: ExecutionContext): string | string[] => {
-	const request: Request = ctx.switchToHttp().getRequest();
+export const ValidateHeader = createParamDecorator(
+	(parameter: HeaderDecoratorParameter, ctx: ExecutionContext): string | string[] => {
+		const request: Request = ctx.switchToHttp().getRequest();
 
-	// Handle both string and object parameters
-	const headerName = typeof parameter === 'string' ? parameter : parameter.headerName;
-	const options = typeof parameter === 'string' ? {} : (parameter.options ?? {});
+		// Handle both string and object parameters
+		const headerName = typeof parameter === 'string' ? parameter : parameter.headerName;
+		const options = typeof parameter === 'string' ? {} : (parameter.options ?? {});
 
-	const {expectedValue, caseSensitive = false, missingMessage, invalidValueMessage, allowEmpty = false} = options;
+		const {expectedValue, caseSensitive = false, missingMessage, invalidValueMessage, allowEmpty = false} = options;
 
-	const headerValue = request.headers[headerName.toLowerCase()];
+		const headerValue = request.headers[headerName.toLowerCase()];
 
-	// Check if header exists
-	if (!headerValue || (!allowEmpty && headerValue === '')) {
-		const message = missingMessage ?? `Missing required header: ${headerName}`;
-		throw new NotAcceptableException(message);
-	}
+		// Check if header exists
+		if (!headerValue || (!allowEmpty && headerValue === '')) {
+			const message = missingMessage ?? `Missing required header: ${headerName}`;
+			throw new NotAcceptableException(message);
+		}
 
-	// If no expected value specified, return the header value
-	if (expectedValue === undefined) {
-		return headerValue;
-	}
+		// If no expected value specified, return the header value
+		if (expectedValue === undefined) {
+			return headerValue;
+		}
 
-	// Validate header value
-	const isValid = validateHeaderValue(headerValue, expectedValue, caseSensitive);
+		// Validate header value
+		const isValid = validateHeaderValue(headerValue, expectedValue, caseSensitive);
 
-	if (!isValid) {
-		const message
+		if (!isValid) {
+			const message
 				= invalidValueMessage
 					?? `Invalid value for header '${headerName}'. Expected: ${formatExpectedValue(expectedValue)}`;
-		throw new NotAcceptableException(message);
-	}
+			throw new NotAcceptableException(message);
+		}
 
-	return headerValue;
-});
+		return headerValue;
+	},
+);
 
 /**
  * Validates header value against expected value(s)
@@ -50,23 +52,27 @@ function validateHeaderValue(
 
 	// RegExp validation
 	if (expectedValue instanceof RegExp) {
-		return headerValues.some(value => expectedValue.test(value));
+		return headerValues.some((value) => expectedValue.test(value));
 	}
 
 	// Enum validation (check if it's an object with string/number values)
 	if (typeof expectedValue === 'object' && !Array.isArray(expectedValue) && expectedValue !== null) {
 		const enumValues = Object.values(expectedValue).map(String);
-		return headerValues.some(headerValue_ =>
-			enumValues.some(enumValue =>
-				caseSensitive ? headerValue_ === enumValue : headerValue_.toLowerCase() === enumValue.toLowerCase()));
+		return headerValues.some((headerValue_) =>
+			enumValues.some((enumValue) =>
+				caseSensitive ? headerValue_ === enumValue : headerValue_.toLowerCase() === enumValue.toLowerCase(),
+			),
+		);
 	}
 
 	// String or array validation
 	const expectedValues = Array.isArray(expectedValue) ? expectedValue : [expectedValue];
 
-	return headerValues.some(headerValue_ =>
-		expectedValues.some(expectedValue_ =>
-			caseSensitive ? headerValue_ === expectedValue_ : headerValue_.toLowerCase() === expectedValue_.toLowerCase()));
+	return headerValues.some((headerValue_) =>
+		expectedValues.some((expectedValue_) =>
+			caseSensitive ? headerValue_ === expectedValue_ : headerValue_.toLowerCase() === expectedValue_.toLowerCase(),
+		),
+	);
 }
 
 /**

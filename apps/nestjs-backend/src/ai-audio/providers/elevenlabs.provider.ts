@@ -1,11 +1,7 @@
-import {
-	Injectable, Logger, HttpException, HttpStatus,
-} from '@nestjs/common';
+import {Injectable, Logger, HttpException, HttpStatus} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import axios, {AxiosInstance} from 'axios';
-import {
-	IAudioProvider, VoiceOptions, Voice, VoiceGenerationResult, VoiceCloneResult,
-} from '../interfaces';
+import {IAudioProvider, VoiceOptions, Voice, VoiceGenerationResult, VoiceCloneResult} from '../interfaces';
 
 type ElevenLabsVoice = {
 	voice_id: string;
@@ -49,22 +45,22 @@ export class ElevenLabsProvider implements IAudioProvider {
 
 	private setupInterceptors(): void {
 		this.client.interceptors.request.use(
-			config => {
+			(config) => {
 				this.logger.debug(`ElevenLabs API Request: ${config.method?.toUpperCase()} ${config.url}`);
 				return config;
 			},
-			async error => {
+			async (error) => {
 				this.logger.error('ElevenLabs API Request Error:', error.message);
 				throw error;
 			},
 		);
 
 		this.client.interceptors.response.use(
-			response => {
+			(response) => {
 				this.logger.debug(`ElevenLabs API Response: ${response.status} ${response.config.url}`);
 				return response;
 			},
-			error => {
+			(error) => {
 				const status = error.response?.status;
 				const message = error.response?.data?.detail || error.message;
 				this.logger.error(`ElevenLabs API Error: ${status} - ${message}`);
@@ -139,11 +135,11 @@ export class ElevenLabsProvider implements IAudioProvider {
 
 			const response = await this.client.get<ElevenLabsResponse>('/v1/voices');
 
-			let voices = response.data.voices.map(voice => this.transformVoice(voice));
+			let voices = response.data.voices.map((voice) => this.transformVoice(voice));
 
 			// 按分类过滤
 			if (category) {
-				voices = voices.filter(voice => voice.category?.toLowerCase() === category.toLowerCase());
+				voices = voices.filter((voice) => voice.category?.toLowerCase() === category.toLowerCase());
 			}
 
 			// 为ASMR用途标记推荐语音
@@ -280,13 +276,13 @@ export class ElevenLabsProvider implements IAudioProvider {
 	 * 标记适合ASMR的语音
 	 */
 	private markASMRSuitableVoices(voices: Voice[]): Voice[] {
-		return voices.map(voice => {
+		return voices.map((voice) => {
 			// 基于名称和描述判断是否适合ASMR
 			const name = voice.name.toLowerCase();
 			const description = voice.description?.toLowerCase() || '';
 
 			const asmrKeywords = ['calm', 'gentle', 'soft', 'soothing', 'warm', 'peaceful'];
-			const isASMRSuitable = asmrKeywords.some(keyword => name.includes(keyword) || description.includes(keyword));
+			const isASMRSuitable = asmrKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword));
 
 			if (isASMRSuitable) {
 				voice.description = `${voice.description || ''} [ASMR推荐]`.trim();

@@ -129,7 +129,9 @@ export class ASMRContentService {
 				optimizedRequest.qualityRequirements?.enableAutoRetry
 				&& qualityReport.overallScore < optimizedRequest.qualityRequirements.minimumScore
 			) {
-				this.logger.warn(`Quality score ${qualityReport.overallScore} below minimum ${optimizedRequest.qualityRequirements.minimumScore}, considering retry`);
+				this.logger.warn(
+					`Quality score ${qualityReport.overallScore} below minimum ${optimizedRequest.qualityRequirements.minimumScore}, considering retry`,
+				);
 
 				if (qualityReport.needsReprocessing) {
 					// 这里可以实现智能重试逻辑
@@ -180,7 +182,9 @@ export class ASMRContentService {
 		for (let index_ = 0; index_ < requests.length; index_ += maxConcurrent) {
 			const batch = requests.slice(index_, index_ + maxConcurrent);
 
-			this.logger.log(`Processing batch ${Math.floor(index_ / maxConcurrent) + 1}/${Math.ceil(requests.length / maxConcurrent)}`);
+			this.logger.log(
+				`Processing batch ${Math.floor(index_ / maxConcurrent) + 1}/${Math.ceil(requests.length / maxConcurrent)}`,
+			);
 
 			const batchPromises = batch.map(async (request, index) => {
 				try {

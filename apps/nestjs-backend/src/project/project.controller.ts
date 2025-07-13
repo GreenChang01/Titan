@@ -1,6 +1,4 @@
-import {
-	Controller, Get, Post, Delete, Body, Param, HttpStatus, HttpCode, Patch,
-} from '@nestjs/common';
+import {Controller, Get, Post, Delete, Body, Param, HttpStatus, HttpCode, Patch} from '@nestjs/common';
 import {ApiTags, ApiOperation, ApiResponse} from '@nestjs/swagger';
 import {User} from '../auth/decorators/user.decorator';
 import {User as UserEntity} from '../users/entities/user.entity';
@@ -90,7 +88,7 @@ export class ProjectController {
 	> {
 		const projects = await this.projectService.findAllByUser(user);
 
-		return projects.map(project => ({
+		return projects.map((project) => ({
 			id: project.id,
 			name: project.name,
 			description: project.description,
@@ -349,7 +347,7 @@ export class ProjectController {
 		const project = await this.projectService.validateProjectOwnership(projectId, user);
 		const materials = await this.projectService.findProjectMaterials(project);
 
-		return materials.map(material => ({
+		return materials.map((material) => ({
 			id: material.id,
 			aliyunFileId: material.aliyunFileId,
 			fileName: material.fileName,

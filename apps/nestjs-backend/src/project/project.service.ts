@@ -265,7 +265,7 @@ export class ProjectService {
 
 		const projectAssets = await this.projectAssetRepository.find({project: projectId}, {populate: ['asset']});
 
-		const assets = projectAssets.map(pa => pa.asset);
+		const assets = projectAssets.map((pa) => pa.asset);
 		return {...project, assets};
 	}
 
@@ -334,8 +334,8 @@ export class ProjectService {
 			asset: {$in: assetIds},
 		});
 
-		const existingAssetIds = new Set(existingProjectAssets.map(pa => pa.asset.id));
-		const newAssetIds = assetIds.filter(id => !existingAssetIds.has(id));
+		const existingAssetIds = new Set(existingProjectAssets.map((pa) => pa.asset.id));
+		const newAssetIds = assetIds.filter((id) => !existingAssetIds.has(id));
 
 		for (const assetId of newAssetIds) {
 			const asset = await this.em.findOne(Asset, {id: assetId});
@@ -386,6 +386,6 @@ export class ProjectService {
 
 		const projectAssets = await this.projectAssetRepository.find({project: projectId}, {populate: ['asset']});
 
-		return projectAssets.map(pa => pa.asset);
+		return projectAssets.map((pa) => pa.asset);
 	}
 }

@@ -295,7 +295,9 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		}
 
 		if (options.fadeOutDuration > 0) {
-			filters.push(`${finalFilter}afade=t=out:st=end-${options.fadeOutDuration}:d=${options.fadeOutDuration}:curve=exp[fadeout]`);
+			filters.push(
+				`${finalFilter}afade=t=out:st=end-${options.fadeOutDuration}:d=${options.fadeOutDuration}:curve=exp[fadeout]`,
+			);
 			finalFilter = '[fadeout]';
 		}
 
@@ -336,7 +338,9 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 
 		// 延迟效果
 		if (settings.leftDelay > 0 || settings.rightDelay > 0) {
-			filters.push(`[stereo]aecho=0.8:0.9:${settings.rightDelay}|${settings.leftDelay}:${settings.reverbAmount}|${settings.reverbAmount}[delayed]`);
+			filters.push(
+				`[stereo]aecho=0.8:0.9:${settings.rightDelay}|${settings.leftDelay}:${settings.reverbAmount}|${settings.reverbAmount}[delayed]`,
+			);
 		} else {
 			filters.push('[stereo]anull[delayed]');
 		}
@@ -404,11 +408,11 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 
 			let stderr = '';
 
-			process.stderr.on('data', data => {
+			process.stderr.on('data', (data) => {
 				stderr += data.toString();
 			});
 
-			process.on('close', code => {
+			process.on('close', (code) => {
 				if (code === 0) {
 					this.logger.debug(`${description} completed successfully`);
 					resolve();
@@ -419,7 +423,7 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 				}
 			});
 
-			process.on('error', error => {
+			process.on('error', (error) => {
 				this.logger.error(`Failed to start FFmpeg: ${error.message}`);
 				reject(error);
 			});
@@ -440,15 +444,15 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 			let stdout = '';
 			let stderr = '';
 
-			process.stdout.on('data', data => {
+			process.stdout.on('data', (data) => {
 				stdout += data.toString();
 			});
 
-			process.stderr.on('data', data => {
+			process.stderr.on('data', (data) => {
 				stderr += data.toString();
 			});
 
-			process.on('close', code => {
+			process.on('close', (code) => {
 				if (code === 0) {
 					try {
 						resolve(JSON.parse(stdout));

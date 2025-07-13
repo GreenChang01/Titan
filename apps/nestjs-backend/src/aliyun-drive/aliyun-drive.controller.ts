@@ -17,9 +17,7 @@ import {
 	HttpException,
 } from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
-import {
-	ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiQuery,
-} from '@nestjs/swagger';
+import {ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiQuery} from '@nestjs/swagger';
 import {Response} from 'express';
 import {User} from '../auth/decorators/user.decorator';
 import {User as UserEntity} from '../users/entities/user.entity';

@@ -1,6 +1,4 @@
-import {
-	Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post,
-} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post} from '@nestjs/common';
 import {ApiResponse, ApiTags, ApiOperation} from '@nestjs/swagger';
 import {Throttle} from '@nestjs/throttler';
 import {

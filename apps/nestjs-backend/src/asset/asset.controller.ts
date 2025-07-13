@@ -15,17 +15,13 @@ import {
 	ParseUUIDPipe,
 } from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
-import {
-	ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBearerAuth,
-} from '@nestjs/swagger';
+import {ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBearerAuth} from '@nestjs/swagger';
 import {JwtAuthGuard} from '../auth/jwt-auth.guard';
 import {User} from '../auth/decorators/user.decorator';
 import {ActiveUser} from '../auth/types/active-user.type';
 import {AssetService} from './asset.service';
 import {FileValidationPipe} from './pipes/file-validation.pipe';
-import {
-	UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto,
-} from './dto';
+import {UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto} from './dto';
 
 /**
  * 资源管理控制器

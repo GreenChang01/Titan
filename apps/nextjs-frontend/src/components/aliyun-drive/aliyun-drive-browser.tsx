@@ -239,22 +239,20 @@ function PathBreadcrumb({currentPath, onPathChange}: PathBreadcrumbProps) {
 					<React.Fragment key={index}>
 						<BreadcrumbSeparator/>
 						<BreadcrumbItem>
-							{index === pathSegments.length - 1
-								? (
-									<BreadcrumbPage>{segment}</BreadcrumbPage>
-								)
-								: (
-									<BreadcrumbLink
-										href='#'
-										onClick={e => {
-											e.preventDefault();
-											const newPath = '/' + pathSegments.slice(0, index + 1).join('/');
-											onPathChange(newPath);
-										}}
-									>
-										{segment}
-									</BreadcrumbLink>
-								)}
+							{index === pathSegments.length - 1 ? (
+								<BreadcrumbPage>{segment}</BreadcrumbPage>
+							) : (
+								<BreadcrumbLink
+									href='#'
+									onClick={e => {
+										e.preventDefault();
+										const newPath = '/' + pathSegments.slice(0, index + 1).join('/');
+										onPathChange(newPath);
+									}}
+								>
+									{segment}
+								</BreadcrumbLink>
+							)}
 						</BreadcrumbItem>
 					</React.Fragment>
 				))}
@@ -464,18 +462,16 @@ export function AliyunDriveBrowser({
 				{selectedFiles.length > 0 && (
 					<div className='flex items-center gap-2 p-2 bg-accent rounded-md'>
 						<Badge variant='secondary'>{selectedFiles.length} 个文件已选择</Badge>
-						{onFilesSelected
-							? (
-								<Button
-									size='sm'
-									onClick={() => {
-										onFilesSelected(selectedFileObjects);
-									}}
-								>
-									添加到项目
-								</Button>
-							)
-							: null}
+						{onFilesSelected ? (
+							<Button
+								size='sm'
+								onClick={() => {
+									onFilesSelected(selectedFileObjects);
+								}}
+							>
+								添加到项目
+							</Button>
+						) : null}
 						<Button
 							variant='outline'
 							size='sm'
@@ -503,38 +499,32 @@ export function AliyunDriveBrowser({
 
 					<ScrollArea className='h-[400px]'>
 						<div className='p-4'>
-							{isLoading
-								? (
-									<div className='flex items-center justify-center py-8'>
-										<Loader2 className='h-6 w-6 animate-spin'/>
-										<span className='ml-2'>加载中...</span>
-									</div>
-								)
-								: error
-									? (
-										<div className='text-center py-8'>
-											<p className='text-destructive'>加载失败</p>
-											<Button variant='outline' className='mt-2' onClick={async () => refetch()}>
-												重试
-											</Button>
-										</div>
-									)
-									: files.length === 0
-										? (
-											<div className='text-center py-8 text-muted-foreground'>
-												<FolderIcon className='h-12 w-12 mx-auto mb-4'/>
-												<p>此文件夹为空</p>
-											</div>
-										)
-										: (
-											<FileList
-												files={files}
-												selectedFiles={selectedFiles}
-												viewMode={viewMode}
-												onFileSelect={handleFileSelect}
-												onFileDoubleClick={handleFileDoubleClick}
-											/>
-										)}
+							{isLoading ? (
+								<div className='flex items-center justify-center py-8'>
+									<Loader2 className='h-6 w-6 animate-spin'/>
+									<span className='ml-2'>加载中...</span>
+								</div>
+							) : error ? (
+								<div className='text-center py-8'>
+									<p className='text-destructive'>加载失败</p>
+									<Button variant='outline' className='mt-2' onClick={async () => refetch()}>
+										重试
+									</Button>
+								</div>
+							) : files.length === 0 ? (
+								<div className='text-center py-8 text-muted-foreground'>
+									<FolderIcon className='h-12 w-12 mx-auto mb-4'/>
+									<p>此文件夹为空</p>
+								</div>
+							) : (
+								<FileList
+									files={files}
+									selectedFiles={selectedFiles}
+									viewMode={viewMode}
+									onFileSelect={handleFileSelect}
+									onFileDoubleClick={handleFileDoubleClick}
+								/>
+							)}
 						</div>
 					</ScrollArea>
 				</div>
