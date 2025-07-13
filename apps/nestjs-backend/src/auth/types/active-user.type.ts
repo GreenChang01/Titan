@@ -1,3 +1,3 @@
 export type ActiveUser = {
-  userId: string;
+	userId: string;
 };

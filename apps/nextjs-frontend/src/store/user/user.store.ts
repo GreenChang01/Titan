@@ -12,42 +12,42 @@ import {ApiError} from '@/utils/api/api-error.ts';
  * `loadUser` from the backend and `logout` the current user.
  */
 export const useUserStore = create<UserStoreState>(set => ({
-	user: undefined,
-	loading: true,
-	error: false,
+  user: undefined,
+  loading: true,
+  error: false,
 
-	/**
+  /**
    * Loads the current user from the backend API.
    * Sets `user`, `loading`, and `error` states based on the response.
    */
-	async loadUser(): LoadUserReturnType {
-		try {
-			// eslint-disable-next-line n/prefer-global/process
-			const response = await apiRequestHandler(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
-				method: 'GET',
-				credentials: 'include',
-			});
+  async loadUser(): LoadUserReturnType {
+    try {
+      // eslint-disable-next-line n/prefer-global/process
+      const response = await apiRequestHandler(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-			if (!response.ok) {
-				// 401/403 表示未认证，404/500 等其他错误也视为需要重新登录
-				set({user: undefined, loading: false, error: true});
-				return {success: false, error: new ApiError('Failed to load user', response)};
-			}
+      if (!response.ok) {
+        // 401/403 表示未认证，404/500 等其他错误也视为需要重新登录
+        set({user: undefined, loading: false, error: true});
+        return {success: false, error: new ApiError('Failed to load user', response)};
+      }
 
-			const userResponse: UserDto = (await response.json()) as UserDto;
-			set({user: userResponse, loading: false, error: false});
-			return {success: true};
-		} catch (error) {
-			// 网络错误或其他异常也视为需要重新登录
-			set({user: undefined, loading: false, error: true});
-			return {success: false, error: error as ApiError};
-		}
-	},
+      const userResponse: UserDto = (await response.json()) as UserDto;
+      set({user: userResponse, loading: false, error: false});
+      return {success: true};
+    } catch (error) {
+      // 网络错误或其他异常也视为需要重新登录
+      set({user: undefined, loading: false, error: true});
+      return {success: false, error: error as ApiError};
+    }
+  },
 
-	/**
+  /**
    * Logs the user out by clearing the user state and resetting loading and error flags.
    */
-	clearUser(): void {
-		set({user: undefined, loading: false, error: false});
-	},
+  clearUser(): void {
+    set({user: undefined, loading: false, error: false});
+  },
 }));

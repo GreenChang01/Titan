@@ -1,4 +1,4 @@
-// src/auth/jwt.strategy.ts
+// Src/auth/jwt.strategy.ts
 
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
@@ -10,25 +10,25 @@ import {ActiveUser} from './types/active-user.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
-    const jwtAccessSecret = configService.get<string>(ConfigKey.JWT_ACCESS_SECRET) ?? 'secret';
+	constructor(private readonly configService: ConfigService) {
+		const jwtAccessSecret = configService.get<string>(ConfigKey.JWT_ACCESS_SECRET) ?? 'secret';
 
-    super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request): string => req?.cookies?.access_token as string, // ← from cookie
-      ]),
-      ignoreExpiration: false,
-      secretOrKey: jwtAccessSecret,
-    });
-  }
+		super({
+			jwtFromRequest: ExtractJwt.fromExtractors([
+				(req: Request): string => req?.cookies?.access_token as string, // ← from cookie
+			]),
+			ignoreExpiration: false,
+			secretOrKey: jwtAccessSecret,
+		});
+	}
 
-  /**
+	/**
    * This method is called if the JWT is valid.
    * The returned value becomes `req.user`.
    */
-  async validate(payload: {sub: string}): Promise<ActiveUser> {
-    return {
-      userId: payload.sub,
-    };
-  }
+	async validate(payload: {sub: string}): Promise<ActiveUser> {
+		return {
+			userId: payload.sub,
+		};
+	}
 }

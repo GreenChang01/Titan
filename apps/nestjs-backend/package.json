@@ -88,5 +88,65 @@
     "typescript": "5.8.3",
     "xo": "1.1.1"
   },
-  "packageManager": "npm@11.4.2"
+  "packageManager": "npm@11.4.2",
+  "xo": {
+    "rules": {
+      "import-x/extensions": "off",
+      "@typescript-eslint/parameter-properties": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/class-literal-property-style": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/naming-convention": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/member-ordering": "off",
+      "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/no-restricted-types": "off",
+      "@typescript-eslint/switch-exhaustiveness-check": "off",
+      "@typescript-eslint/only-throw-error": "off",
+      "@typescript-eslint/return-await": "off",
+      "@typescript-eslint/consistent-type-assertions": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@stylistic/max-len": ["error", { 
+        "code": 200, 
+        "ignoreUrls": true, 
+        "ignoreStrings": true, 
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }],
+      "@stylistic/no-mixed-operators": "off",
+      "@stylistic/max-statements-per-line": "off",
+      "new-cap": "off",
+      "n/prefer-global/process": "off",
+      "n/prefer-global/buffer": "off",
+      "no-warning-comments": "off",
+      "max-params": "off",
+      "radix": "off",
+      "no-await-in-loop": "off",
+      "no-promise-executor-return": "off",
+      "import-x/order": "off",
+      "unicorn/prevent-abbreviations": ["error", {
+        "allowList": {
+          "e": true,
+          "params": true,
+          "req": true,
+          "res": true,
+          "ctx": true,
+          "dto": true,
+          "Dto": true,
+          "util": true,
+          "dir": true,
+          "Dir": true,
+          "createDirDto": true,
+          "configKey": true,
+          "ConfigKey": true,
+          "param": true,
+          "Param": true
+        }
+      }]
+    }
+  }
 }

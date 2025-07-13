@@ -5,9 +5,9 @@ import {TemplateService} from './template.service';
 import {ContentTemplate} from './entities/content-template.entity';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([ContentTemplate])],
-  controllers: [TemplateController],
-  providers: [TemplateService],
-  exports: [TemplateService],
+	imports: [MikroOrmModule.forFeature([ContentTemplate])],
+	controllers: [TemplateController],
+	providers: [TemplateService],
+	exports: [TemplateService],
 })
 export class TemplateModule {}

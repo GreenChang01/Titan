@@ -1,6 +1,6 @@
 import {type CreateUserBody} from '@titan/shared';
 
-export type RegisterParams = {
-	createUserData: CreateUserBody;
-	language: string;
+export type RegisterParameters = {
+  createUserData: CreateUserBody;
+  language: string;
 };

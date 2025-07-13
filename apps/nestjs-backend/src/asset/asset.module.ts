@@ -11,42 +11,42 @@ import {Asset} from './entities/asset.entity';
 import {ProjectAsset} from './entities/project-asset.entity';
 
 @Module({
-  imports: [
-    MikroOrmModule.forFeature([Asset, ProjectAsset]),
-    MulterModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        limits: {
-          fileSize: configService.get<number>(ConfigKey.MAX_FILE_SIZE) || 524_288_000, // 500MB
-        },
-        fileFilter(req, file, cb) {
-          // Basic filter - more detailed validation in pipe
-          const allowedMimes = (
-            configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*'
-          )
-            .split(',')
-            .map((type) => type.trim());
+	imports: [
+		MikroOrmModule.forFeature([Asset, ProjectAsset]),
+		MulterModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: async (configService: ConfigService) => ({
+				limits: {
+					fileSize: configService.get<number>(ConfigKey.MAX_FILE_SIZE) || 524_288_000, // 500MB
+				},
+				fileFilter(req, file, callback) {
+					// Basic filter - more detailed validation in pipe
+					const allowedMimes = (
+						configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*'
+					)
+						.split(',')
+						.map(type => type.trim());
 
-          const isAllowed = allowedMimes.some((allowedType) => {
-            if (allowedType.endsWith('/*')) {
-              const category = allowedType.replace('/*', '');
-              return file.mimetype.startsWith(category + '/');
-            }
-            return file.mimetype === allowedType;
-          });
+					const isAllowed = allowedMimes.some(allowedType => {
+						if (allowedType.endsWith('/*')) {
+							const category = allowedType.replace('/*', '');
+							return file.mimetype.startsWith(category + '/');
+						}
+						return file.mimetype === allowedType;
+					});
 
-          if (isAllowed) {
-            cb(null, true);
-          } else {
-            cb(new Error(`File type ${file.mimetype} is not allowed`), false);
-          }
-        },
-      }),
-      inject: [ConfigService],
-    }),
-  ],
-  controllers: [AssetController],
-  providers: [AssetService, ThumbnailService, MetadataExtractorService],
-  exports: [AssetService],
+					if (isAllowed) {
+						callback(null, true);
+					} else {
+						callback(new Error(`File type ${file.mimetype} is not allowed`), false);
+					}
+				},
+			}),
+			inject: [ConfigService],
+		}),
+	],
+	controllers: [AssetController],
+	providers: [AssetService, ThumbnailService, MetadataExtractorService],
+	exports: [AssetService],
 })
 export class AssetModule {}

@@ -1,9 +1,9 @@
-import {HttpStatus} from '@nestjs/common';
+import {type HttpStatus} from '@nestjs/common';
 
 export type ErrorResponse = {
-  statusCode: HttpStatus;
-  message: string;
-  timestamp: string;
-  path: string;
-  detail: string;
+	statusCode: HttpStatus;
+	message: string;
+	timestamp: string;
+	path: string;
+	detail: string;
 };

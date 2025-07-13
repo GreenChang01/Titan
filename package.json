@@ -28,5 +28,111 @@
     "node": ">=24.0.0",
     "pnpm": ">=10.0.0"
   },
-  "packageManager": "pnpm@10.13.0"
+  "packageManager": "pnpm@10.13.0",
+  "xo": {
+    "prettier": true,
+    "space": 2,
+    "rules": {
+      "capitalized-comments": "off",
+      "import-x/extensions": "off",
+      "@stylistic/max-len": ["error", { 
+        "code": 120, 
+        "ignoreUrls": true, 
+        "ignoreStrings": true, 
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }]
+    },
+    "overrides": [
+      {
+        "files": "apps/nextjs-frontend/**/*.{ts,tsx}",
+        "rules": {
+          "no-console": "off",
+          "react-hooks/rules-of-hooks": "error",
+          "react-hooks/exhaustive-deps": "warn",
+          "@typescript-eslint/no-unsafe-assignment": "off",
+          "@typescript-eslint/no-unsafe-call": "off", 
+          "@typescript-eslint/no-unsafe-return": "off",
+          "@typescript-eslint/no-unsafe-argument": "off",
+          "@typescript-eslint/no-unnecessary-type-arguments": "off",
+          "@typescript-eslint/explicit-function-return-type": "off",
+          "@typescript-eslint/no-deprecated": "off",
+          "@typescript-eslint/naming-convention": ["error", {
+            "selector": "default",
+            "format": ["camelCase"]
+          }, {
+            "selector": "variable",
+            "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+          }, {
+            "selector": "function",
+            "format": ["camelCase", "PascalCase"]
+          }, {
+            "selector": "typeLike",
+            "format": ["PascalCase"]
+          }, {
+            "selector": "property",
+            "format": ["camelCase", "PascalCase", "snake_case"],
+            "filter": {
+              "regex": "^(Authorization|refresh_token|access_token)$",
+              "match": false
+            }
+          }],
+          "react/prop-types": "off",
+          "unicorn/prevent-abbreviations": ["error", {
+            "allowList": {
+              "e": true,
+              "params": true,
+              "Props": true,
+              "props": true,
+              "ref": true,
+              "Ref": true
+            }
+          }],
+          "@stylistic/max-len": ["error", { 
+            "code": 200, 
+            "ignoreUrls": true, 
+            "ignoreStrings": true, 
+            "ignoreTemplateLiterals": true,
+            "ignoreRegExpLiterals": true,
+            "ignorePattern": "^\\s*className="
+          }]
+        }
+      },
+      {
+        "files": "apps/nestjs-backend/**/*.ts",
+        "rules": {
+          "@typescript-eslint/parameter-properties": "off",
+          "@typescript-eslint/no-unsafe-assignment": "off",
+          "@typescript-eslint/no-unsafe-call": "off",
+          "@typescript-eslint/no-unsafe-return": "off",
+          "@typescript-eslint/no-unsafe-argument": "off",
+          "@typescript-eslint/explicit-function-return-type": "off",
+          "unicorn/prevent-abbreviations": ["error", {
+            "allowList": {
+              "e": true,
+              "params": true,
+              "req": true,
+              "res": true,
+              "ctx": true,
+              "dto": true,
+              "Dto": true
+            }
+          }]
+        }
+      },
+      {
+        "files": "packages/titan-shared/**/*.ts",
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": "error"
+        }
+      },
+      {
+        "files": "**/*.config.{js,ts}",
+        "rules": {
+          "import-x/no-anonymous-default-export": "off",
+          "unicorn/prefer-module": "off"
+        }
+      }
+    ]
+  }
 }

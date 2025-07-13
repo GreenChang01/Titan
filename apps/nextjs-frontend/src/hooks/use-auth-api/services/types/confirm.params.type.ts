@@ -1,3 +1,3 @@
-export type ConfirmParams = {
-	token: string;
+export type ConfirmParameters = {
+  token: string;
 };

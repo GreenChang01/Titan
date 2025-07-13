@@ -1,9 +1,9 @@
 export class ApiError extends Error {
-	response: Response;
+  response: Response;
 
-	constructor(message: string, response: Response) {
-		super(message);
-		this.name = 'ApiError';
-		this.response = response;
-	}
+  constructor(message: string, response: Response) {
+    super(message);
+    this.name = 'ApiError';
+    this.response = response;
+  }
 }

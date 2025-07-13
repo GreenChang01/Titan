@@ -1,26 +1,28 @@
-import {IsString, IsOptional, IsUrl, IsInt, Min, Max} from 'class-validator';
+import {
+	IsString, IsOptional, IsUrl, IsInt, Min, Max,
+} from 'class-validator';
 
 export class CreateAliyunDriveConfigDto {
-  @IsUrl()
-  webdavUrl!: string;
+	@IsUrl()
+	webdavUrl!: string;
 
-  @IsString()
-  username!: string;
+	@IsString()
+	username!: string;
 
-  @IsString()
-  password!: string;
+	@IsString()
+	password!: string;
 
-  @IsOptional()
-  @IsString()
-  displayName?: string;
+	@IsOptional()
+	@IsString()
+	displayName?: string;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1000)
-  @Max(300_000)
-  timeout?: number;
+	@IsOptional()
+	@IsInt()
+	@Min(1000)
+	@Max(300_000)
+	timeout?: number;
 
-  @IsOptional()
-  @IsString()
-  basePath?: string;
+	@IsOptional()
+	@IsString()
+	basePath?: string;
 }

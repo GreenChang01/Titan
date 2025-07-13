@@ -34,6 +34,7 @@
     "@stylistic/max-len": "off",
     "@typescript-eslint/no-floating-promises": "warn",
     "react-hooks/exhaustive-deps": "off",
-    "n/prefer-global/process": "off"
+    "n/prefer-global/process": "off",
+    "import-x/order": "off"
   }
 }

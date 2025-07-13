@@ -10,8 +10,8 @@ import {ElevenLabsProvider} from './providers/elevenlabs.provider';
 import {ElevenLabsSoundscapeProvider} from './providers/soundverse.provider';
 
 @Module({
-  imports: [ConfigModule],
-  providers: [ElevenLabsProvider, ElevenLabsSoundscapeProvider, FfmpegAudioMixer, ASMRContentService],
-  exports: [ElevenLabsProvider, ElevenLabsSoundscapeProvider, FfmpegAudioMixer, ASMRContentService],
+	imports: [ConfigModule],
+	providers: [ElevenLabsProvider, ElevenLabsSoundscapeProvider, FfmpegAudioMixer, ASMRContentService],
+	exports: [ElevenLabsProvider, ElevenLabsSoundscapeProvider, FfmpegAudioMixer, ASMRContentService],
 })
 export class AIAudioModule {}

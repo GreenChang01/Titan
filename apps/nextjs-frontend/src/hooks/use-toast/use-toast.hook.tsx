@@ -12,7 +12,7 @@ import {type ShowToastFunction, ToastContext} from '@/providers/toast/toast.prov
  * showToast({...});
  */
 export const useToast = (): {showToast: ShowToastFunction} => {
-	const showToast = use(ToastContext);
+  const showToast = use(ToastContext);
 
-	return {showToast};
+  return {showToast};
 };

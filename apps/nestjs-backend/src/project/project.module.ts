@@ -8,9 +8,9 @@ import {ProjectService} from './project.service';
 import {ProjectController} from './project.controller';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Project, ProjectMaterial, Asset, ProjectAsset])],
-  providers: [ProjectService],
-  controllers: [ProjectController],
-  exports: [ProjectService],
+	imports: [MikroOrmModule.forFeature([Project, ProjectMaterial, Asset, ProjectAsset])],
+	providers: [ProjectService],
+	controllers: [ProjectController],
+	exports: [ProjectService],
 })
 export class ProjectModule {}

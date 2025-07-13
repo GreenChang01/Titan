@@ -12,27 +12,27 @@ import {AudioGenerationConsumer} from './processors/audio-generation.processor';
 import {ContentJob} from './entities/content-job.entity';
 
 @Module({
-  imports: [
-    MikroOrmModule.forFeature([ContentJob, Asset, ContentTemplate]),
-    AIAudioModule, // AI音频处理模块
-    BullModule.registerQueue({
-      name: 'media-processing',
-      defaultJobOptions: {
-        removeOnComplete: 10, // 保留最近10个完成的任务
-        removeOnFail: 50, // 保留最近50个失败的任务
-      },
-    }),
-    BullModule.registerQueue({
-      name: 'audio-generation',
-      defaultJobOptions: {
-        removeOnComplete: 10, // 保留最近10个完成的任务
-        removeOnFail: 50, // 保留最近50个失败的任务
-        delay: 1000, // 默认延迟1秒执行
-      },
-    }),
-  ],
-  controllers: [ContentJobController],
-  providers: [ContentJobService, MediaProcessingService, MediaProcessingProcessor, AudioGenerationConsumer],
-  exports: [ContentJobService, MediaProcessingService],
+	imports: [
+		MikroOrmModule.forFeature([ContentJob, Asset, ContentTemplate]),
+		AIAudioModule, // AI音频处理模块
+		BullModule.registerQueue({
+			name: 'media-processing',
+			defaultJobOptions: {
+				removeOnComplete: 10, // 保留最近10个完成的任务
+				removeOnFail: 50, // 保留最近50个失败的任务
+			},
+		}),
+		BullModule.registerQueue({
+			name: 'audio-generation',
+			defaultJobOptions: {
+				removeOnComplete: 10, // 保留最近10个完成的任务
+				removeOnFail: 50, // 保留最近50个失败的任务
+				delay: 1000, // 默认延迟1秒执行
+			},
+		}),
+	],
+	controllers: [ContentJobController],
+	providers: [ContentJobService, MediaProcessingService, MediaProcessingProcessor, AudioGenerationConsumer],
+	exports: [ContentJobService, MediaProcessingService],
 })
 export class ContentJobModule {}

@@ -8,63 +8,63 @@ import {EmailService} from '../../email/email.service';
 
 @Injectable()
 export class WeChatManualPublisher implements IPlatformPublisher {
-  readonly platform = 'wechat_channels';
-  private readonly logger = new Logger(WeChatManualPublisher.name);
+	readonly platform = 'wechat_channels';
+	private readonly logger = new Logger(WeChatManualPublisher.name);
 
-  constructor(
-    @InjectRepository(Publication)
-    private readonly publicationRepository: EntityRepository<Publication>,
-    private readonly em: EntityManager,
-    private readonly emailService: EmailService,
-    private readonly configService: ConfigService,
-  ) {}
+	constructor(
+		@InjectRepository(Publication)
+		private readonly publicationRepository: EntityRepository<Publication>,
+		private readonly em: EntityManager,
+		private readonly emailService: EmailService,
+		private readonly configService: ConfigService,
+	) {}
 
-  async publish(publication: Publication): Promise<void> {
-    try {
-      // 更新状态为等待手动上传
-      publication.status = PublicationStatus.PENDING_MANUAL_UPLOAD;
-      publication.platformMetadata = {
-        ...publication.platformMetadata,
-        manualUploadRequested: new Date().toISOString(),
-        uploadInstructions: '请手动上传生成的视频到微信视频号',
-      };
+	async publish(publication: Publication): Promise<void> {
+		try {
+			// 更新状态为等待手动上传
+			publication.status = PublicationStatus.PENDING_MANUAL_UPLOAD;
+			publication.platformMetadata = {
+				...publication.platformMetadata,
+				manualUploadRequested: new Date().toISOString(),
+				uploadInstructions: '请手动上传生成的视频到微信视频号',
+			};
 
-      await this.em.persistAndFlush(publication);
+			await this.em.persistAndFlush(publication);
 
-      // 发送通知给内容管理员
-      await this.sendUploadNotification(publication);
+			// 发送通知给内容管理员
+			await this.sendUploadNotification(publication);
 
-      this.logger.log(`WeChat manual upload requested for publication ${publication.id}`);
-    } catch (error) {
-      publication.status = PublicationStatus.UPLOAD_FAILED;
-      publication.failureReason = `Manual upload notification failed: ${(error as Error).message}`;
-      await this.em.persistAndFlush(publication);
-      throw error;
-    }
-  }
+			this.logger.log(`WeChat manual upload requested for publication ${publication.id}`);
+		} catch (error) {
+			publication.status = PublicationStatus.UPLOAD_FAILED;
+			publication.failureReason = `Manual upload notification failed: ${(error as Error).message}`;
+			await this.em.persistAndFlush(publication);
+			throw error;
+		}
+	}
 
-  async checkStatus(publication: Publication): Promise<void> {
-    // 对于手动上传，状态需要通过外部接口手动更新
-    // 这里可以检查是否长时间未处理并发送提醒
-    const pendingDuration = Date.now() - publication.updatedAt.getTime();
-    const maxPendingHours = 24; // 24小时提醒
+	async checkStatus(publication: Publication): Promise<void> {
+		// 对于手动上传，状态需要通过外部接口手动更新
+		// 这里可以检查是否长时间未处理并发送提醒
+		const pendingDuration = Date.now() - publication.updatedAt.getTime();
+		const maxPendingHours = 24; // 24小时提醒
 
-    if (pendingDuration > maxPendingHours * 60 * 60 * 1000) {
-      await this.sendReminderNotification(publication);
-    }
-  }
+		if (pendingDuration > maxPendingHours * 60 * 60 * 1000) {
+			await this.sendReminderNotification(publication);
+		}
+	}
 
-  private async sendUploadNotification(publication: Publication): Promise<void> {
-    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
-    if (!adminEmail) {
-      this.logger.warn('ADMIN_EMAIL not configured, skipping notification');
-      return;
-    }
+	private async sendUploadNotification(publication: Publication): Promise<void> {
+		const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
+		if (!adminEmail) {
+			this.logger.warn('ADMIN_EMAIL not configured, skipping notification');
+			return;
+		}
 
-    const videoUrl = this.getVideoDownloadUrl(publication);
-    const wechatUploadUrl = 'https://channels.weixin.qq.com/platform/post/create';
+		const videoUrl = this.getVideoDownloadUrl(publication);
+		const wechatUploadUrl = 'https://channels.weixin.qq.com/platform/post/create';
 
-    const emailContent = `
+		const emailContent = `
       <h2>微信视频号手动上传通知</h2>
       <p>有新的视频内容需要手动上传到微信视频号。</p>
       
@@ -88,18 +88,20 @@ export class WeChatManualPublisher implements IPlatformPublisher {
       <pre>${JSON.stringify(publication.publishConfig, null, 2)}</pre>
     `;
 
-    await this.emailService.sendEmail({
-      to: adminEmail,
-      subject: `微信视频号手动上传通知 - ${publication.id}`,
-      html: emailContent,
-    });
-  }
+		await this.emailService.sendEmail({
+			to: adminEmail,
+			subject: `微信视频号手动上传通知 - ${publication.id}`,
+			html: emailContent,
+		});
+	}
 
-  private async sendReminderNotification(publication: Publication): Promise<void> {
-    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
-    if (!adminEmail) return;
+	private async sendReminderNotification(publication: Publication): Promise<void> {
+		const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
+		if (!adminEmail) {
+			return;
+		}
 
-    const emailContent = `
+		const emailContent = `
       <h2>微信视频号上传提醒</h2>
       <p>以下视频已等待手动上传超过24小时，请及时处理。</p>
       
@@ -110,17 +112,17 @@ export class WeChatManualPublisher implements IPlatformPublisher {
       </ul>
     `;
 
-    await this.emailService.sendEmail({
-      to: adminEmail,
-      subject: `微信视频号上传提醒 - ${publication.id}`,
-      html: emailContent,
-    });
-  }
+		await this.emailService.sendEmail({
+			to: adminEmail,
+			subject: `微信视频号上传提醒 - ${publication.id}`,
+			html: emailContent,
+		});
+	}
 
-  private getVideoDownloadUrl(publication: Publication): string {
-    // 这里应该返回视频文件的下载链接
-    // 可以是S3预签名URL或其他安全的文件访问方式
-    const baseUrl = this.configService.get<string>('FRONTEND_HOST');
-    return `${baseUrl}/api/publications/${publication.id}/download`;
-  }
+	private getVideoDownloadUrl(publication: Publication): string {
+		// 这里应该返回视频文件的下载链接
+		// 可以是S3预签名URL或其他安全的文件访问方式
+		const baseUrl = this.configService.get<string>('FRONTEND_HOST');
+		return `${baseUrl}/api/publications/${publication.id}/download`;
+	}
 }
