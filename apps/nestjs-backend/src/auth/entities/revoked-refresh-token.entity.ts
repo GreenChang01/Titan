@@ -3,7 +3,7 @@ import {BaseEntity} from '../../common/entities/base-entity.entity';
 
 @Entity()
 export class RevokedRefreshToken extends BaseEntity {
-	@Property({type: types.string, nullable: false, unique: true})
+	@Property({type: types.string, nullable: false, unique: true, fieldName: 'refresh_token'})
 	token: string;
 
 	constructor({token}: {token: string}) {

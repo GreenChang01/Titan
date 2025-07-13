@@ -27,8 +27,8 @@ export function AuthenticatedLayout({children}: Props) {
 	const router = useRouter();
 
 	useEffect(() => {
-		// 如果加载完成且没有用户或有错误，重定向到登录页
-		if (!loading && (!user || error)) {
+		// 只有在明确没有用户且加载完成时才重定向到登录页
+		if (!loading && !user && error) {
 			router.push('/login');
 		}
 	}, [user, loading, error, router]);
@@ -38,12 +38,7 @@ export function AuthenticatedLayout({children}: Props) {
 		return <AuthLoadingSpinner/>;
 	}
 
-	// 没有用户或有错误，显示加载状态（重定向进行中）
-	if (!user || error) {
-		return <AuthLoadingSpinner/>;
-	}
-
-	// 用户已认证，显示正常布局
+	// 用户已认证或者加载中，显示正常布局
 	return (
 		<SidebarProvider defaultOpen>
 			<AppSidebar/>

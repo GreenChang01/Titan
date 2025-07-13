@@ -43,8 +43,8 @@ export default async function Layout({
 							<UserProvider>
 								<ReactQueryProvider>
 									{isAuthPage ? (
-										// Auth pages - simple centered layout
-										<div className='min-h-screen flex items-center justify-center bg-background'>{children}</div>
+										// Auth pages - use their own layout
+										children
 									) : (
 										// Dashboard pages - use shadcn-admin layout
 										<AuthenticatedLayout>{children}</AuthenticatedLayout>

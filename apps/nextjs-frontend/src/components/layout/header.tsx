@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import {Search, Settings, ChevronsUpDown} from 'lucide-react';
+import {usePathname} from 'next/navigation';
+import {Settings, ChevronsUpDown} from 'lucide-react';
 import {useTranslations} from 'next-intl';
 import Link from 'next/link';
-import {TopNav} from './top-nav.js';
 import {cn} from '@/lib/utils';
 import {Separator} from '@/components/ui/separator';
-import {SidebarTrigger} from '@/components/ui/sidebar';
+import {SidebarTrigger, useSidebar} from '@/components/ui/sidebar';
 import {Button} from '@/components/ui/button';
 import {Avatar, AvatarFallback} from '@/components/ui/avatar';
 import {
@@ -18,7 +18,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Input} from '@/components/ui/input';
 import {useRouter} from '@/i18n/navigation';
 import {useUserStore} from '@/store/user/user.store';
 import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook';
@@ -34,6 +33,20 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 	const router = useRouter();
 	const user = useUserStore(state => state.user);
 	const {logout} = useAuthApi();
+
+	// 条件性地使用 sidebar，只在有提供者时使用
+	const [hasSidebar, setHasSidebar] = React.useState(false);
+
+	React.useEffect(() => {
+		// 检查是否在 sidebar 上下文中
+		try {
+			// 这里我们只检查是否可以访问，不实际调用 hook
+			const element = document.querySelector('[data-sidebar]');
+			setHasSidebar(Boolean(element));
+		} catch {
+			setHasSidebar(false);
+		}
+	}, []);
 
 	React.useEffect(() => {
 		const onScroll = () => {
@@ -57,48 +70,28 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 	const userName = user?.username || 'User';
 	const userEmail = user?.email || 'user@example.com';
 
-	// Navigation links for top nav
-	const navLinks = [
-		{title: '概览', href: '/dashboard', isActive: true},
-		{title: '项目', href: '/projects/overview', isActive: false},
-		{title: '设置', href: '/settings', isActive: false},
-	];
-
 	return (
 		<header
 			className={cn(
-				'bg-background flex h-16 items-center gap-3 p-4 sm:gap-4',
+				'bg-background flex h-16 items-center gap-3 p-4 sm:gap-4 sticky top-0 z-50 border-b',
 				fixed && 'header-fixed peer/header fixed z-50 w-[inherit] rounded-md',
 				offset > 10 && fixed ? 'shadow-sm' : 'shadow-none',
 				className,
 			)}
 			{...props}
 		>
-			<SidebarTrigger variant='outline' className='scale-125 sm:scale-100'/>
-			<Separator orientation='vertical' className='h-6'/>
+			{hasSidebar ? (
+				<>
+					<SidebarTrigger variant='outline' className='scale-125 sm:scale-100'/>
+					<Separator orientation='vertical' className='h-6'/>
+				</>
+			) : null}
 
 			{/* Page title and navigation */}
-			<div className='flex-1 flex items-center gap-4'>
-				{children}
+			<div className='flex-1 flex items-center gap-4'>{children}</div>
 
-				{/* Top Navigation - only show on certain pages */}
-				<TopNav links={navLinks} className='ml-6'/>
-			</div>
-
-			{/* Right side - Search and User */}
+			{/* Right side - User Menu */}
 			<div className='flex items-center gap-3'>
-				{/* Search */}
-				<div className='relative hidden sm:block'>
-					<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground'/>
-					<Input type='search' placeholder='搜索...' className='w-64 pl-8'/>
-				</div>
-
-				{/* Mobile search button */}
-				<Button variant='outline' size='sm' className='sm:hidden h-8 w-8 p-0'>
-					<Search className='h-4 w-4'/>
-					<span className='sr-only'>搜索</span>
-				</Button>
-
 				{/* User Menu */}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>

@@ -1,718 +1,1927 @@
 {
-  "namespaces": ["public"],
-  "name": "public",
-  "tables": [
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "token": {
-          "name": "token",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        }
-      },
-      "name": "revoked_refresh_token",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": ["token"],
-          "composite": false,
-          "keyName": "revoked_refresh_token_token_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "revoked_refresh_token_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "confirmation_code": {
-          "name": "confirmation_code",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": ["active", "blocked", "pending"],
-          "mappedType": "enum"
-        },
-        "password_reset_token": {
-          "name": "password_reset_token",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "password_reset_token_created_at": {
-          "name": "password_reset_token_created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        }
-      },
-      "name": "user",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": ["email"],
-          "composite": false,
-          "keyName": "user_email_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": ["username"],
-          "composite": false,
-          "keyName": "user_username_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "user_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "code": {
-          "name": "code",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        }
-      },
-      "name": "two_factor_auth",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "two_factor_auth_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "two_factor_auth_user_id_foreign": {
-          "constraintName": "two_factor_auth_user_id_foreign",
-          "columnNames": ["user_id"],
-          "localTableName": "public.two_factor_auth",
-          "referencedColumnNames": ["id"],
-          "referencedTableName": "public.user",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "color": {
-          "name": "color",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
-        },
-        "last_accessed_at": {
-          "name": "last_accessed_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        }
-      },
-      "name": "project",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "project_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "project_user_id_foreign": {
-          "constraintName": "project_user_id_foreign",
-          "columnNames": ["user_id"],
-          "localTableName": "public.project",
-          "referencedColumnNames": ["id"],
-          "referencedTableName": "public.user",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "project_id": {
-          "name": "project_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "aliyun_file_id": {
-          "name": "aliyun_file_id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "file_name": {
-          "name": "file_name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "file_path": {
-          "name": "file_path",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "file_type": {
-          "name": "file_type",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "file_size": {
-          "name": "file_size",
-          "type": "bigint",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "bigint"
-        },
-        "thumbnail_url": {
-          "name": "thumbnail_url",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "file_created_at": {
-          "name": "file_created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "file_updated_at": {
-          "name": "file_updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "metadata": {
-          "name": "metadata",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        }
-      },
-      "name": "project_material",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "project_material_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "project_material_project_id_foreign": {
-          "constraintName": "project_material_project_id_foreign",
-          "columnNames": ["project_id"],
-          "localTableName": "public.project_material",
-          "referencedColumnNames": ["id"],
-          "referencedTableName": "public.project",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "webdav_url": {
-          "name": "webdav_url",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "encrypted_password": {
-          "name": "encrypted_password",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "timeout": {
-          "name": "timeout",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "30000",
-          "mappedType": "integer"
-        },
-        "base_path": {
-          "name": "base_path",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "default": "'/'",
-          "mappedType": "string"
-        },
-        "last_sync_at": {
-          "name": "last_sync_at",
-          "type": "timestamp",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
-        }
-      },
-      "name": "aliyun_drive_config",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "aliyun_drive_config_pkey",
-          "columnNames": ["id"],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "aliyun_drive_config_user_id_foreign": {
-          "constraintName": "aliyun_drive_config_user_id_foreign",
-          "columnNames": ["user_id"],
-          "localTableName": "public.aliyun_drive_config",
-          "referencedColumnNames": ["id"],
-          "referencedTableName": "public.user",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    }
-  ],
-  "nativeEnums": {}
+	"namespaces": ["public"],
+	"name": "public",
+	"tables": [
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_name": {
+					"name": "file_name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"original_name": {
+					"name": "original_name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_path": {
+					"name": "file_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_size": {
+					"name": "file_size",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "integer"
+				},
+				"mime_type": {
+					"name": "mime_type",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"asset_type": {
+					"name": "asset_type",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": [
+						"background_image",
+						"background_video",
+						"narration_audio",
+						"bgm_audio",
+						"text_content",
+						"subtitle_file",
+						"watermark_image"
+					],
+					"mappedType": "enum"
+				},
+				"tags": {
+					"name": "tags",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"description": {
+					"name": "description",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"metadata": {
+					"name": "metadata",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"upload_source": {
+					"name": "upload_source",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["local", "aliyun_drive"],
+					"mappedType": "enum"
+				},
+				"thumbnail_path": {
+					"name": "thumbnail_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				}
+			},
+			"name": "asset",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "asset_user_id_asset_type_index",
+					"columnNames": ["user_id", "asset_type"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "asset_user_id_created_at_index",
+					"columnNames": ["user_id", "created_at"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "asset_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"project_id": {
+					"name": "project_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"template_id": {
+					"name": "template_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"job_type": {
+					"name": "job_type",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["single", "batch"],
+					"mappedType": "enum"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "'queued'",
+					"enumItems": ["queued", "processing", "completed", "failed"],
+					"mappedType": "enum"
+				},
+				"input_assets": {
+					"name": "input_assets",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"output_path": {
+					"name": "output_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"progress": {
+					"name": "progress",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "0",
+					"mappedType": "integer"
+				},
+				"error_message": {
+					"name": "error_message",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"processing_time": {
+					"name": "processing_time",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "integer"
+				},
+				"started_at": {
+					"name": "started_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"completed_at": {
+					"name": "completed_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				}
+			},
+			"name": "content_job",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "content_job_status_created_at_index",
+					"columnNames": ["status", "created_at"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "content_job_user_id_status_index",
+					"columnNames": ["user_id", "status"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "content_job_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"name": {
+					"name": "name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"description": {
+					"name": "description",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"template_config": {
+					"name": "template_config",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"slot_definitions": {
+					"name": "slot_definitions",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"video_settings": {
+					"name": "video_settings",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"is_public": {
+					"name": "is_public",
+					"type": "boolean",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "false",
+					"mappedType": "boolean"
+				}
+			},
+			"name": "content_template",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "content_template_is_public_index",
+					"columnNames": ["is_public"],
+					"composite": false,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "content_template_user_id_created_at_index",
+					"columnNames": ["user_id", "created_at"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "content_template_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"project_id": {
+					"name": "project_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"job_id": {
+					"name": "job_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_name": {
+					"name": "file_name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_path": {
+					"name": "file_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_size": {
+					"name": "file_size",
+					"type": "bigint",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "bigint"
+				},
+				"duration": {
+					"name": "duration",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "integer"
+				},
+				"thumbnail_path": {
+					"name": "thumbnail_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"publish_status": {
+					"name": "publish_status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "'pending'",
+					"enumItems": ["pending", "published", "failed"],
+					"mappedType": "enum"
+				},
+				"published_at": {
+					"name": "published_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"publish_platforms": {
+					"name": "publish_platforms",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"metadata": {
+					"name": "metadata",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "json"
+				}
+			},
+			"name": "generated_content",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "generated_content_job_id_index",
+					"columnNames": ["job_id"],
+					"composite": false,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "generated_content_project_id_index",
+					"columnNames": ["project_id"],
+					"composite": false,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "generated_content_user_id_publish_status_index",
+					"columnNames": ["user_id", "publish_status"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "generated_content_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"content_job_id": {
+					"name": "content_job_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"platform": {
+					"name": "platform",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["wechat_channels", "douyin", "kuaishou", "bilibili"],
+					"mappedType": "enum"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "'pending_upload'",
+					"enumItems": [
+						"pending_upload",
+						"uploading",
+						"upload_failed",
+						"pending_review",
+						"review_passed",
+						"review_rejected",
+						"published",
+						"pending_manual_upload"
+					],
+					"mappedType": "enum"
+				},
+				"platform_post_id": {
+					"name": "platform_post_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"failure_reason": {
+					"name": "failure_reason",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "text"
+				},
+				"scheduled_at": {
+					"name": "scheduled_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"published_at": {
+					"name": "published_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"publish_config": {
+					"name": "publish_config",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				},
+				"platform_metadata": {
+					"name": "platform_metadata",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "json"
+				}
+			},
+			"name": "publication",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "publication_status_scheduled_at_index",
+					"columnNames": ["status", "scheduled_at"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publication_platform_status_index",
+					"columnNames": ["platform", "status"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publication_content_job_id_index",
+					"columnNames": ["content_job_id"],
+					"composite": false,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publication_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"content_id": {
+					"name": "content_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"platform": {
+					"name": "platform",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"scheduled_time": {
+					"name": "scheduled_time",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["pending", "published", "cancelled", "failed"],
+					"mappedType": "enum"
+				},
+				"publish_result": {
+					"name": "publish_result",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "json"
+				},
+				"retry_count": {
+					"name": "retry_count",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "0",
+					"mappedType": "integer"
+				},
+				"last_attempt_at": {
+					"name": "last_attempt_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"published_at": {
+					"name": "published_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"publish_config": {
+					"name": "publish_config",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "json"
+				}
+			},
+			"name": "publish_schedule",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "publish_schedule_platform_scheduled_time_index",
+					"columnNames": ["platform", "scheduled_time"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publish_schedule_status_scheduled_time_index",
+					"columnNames": ["status", "scheduled_time"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publish_schedule_user_id_status_index",
+					"columnNames": ["user_id", "status"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "publish_schedule_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"refresh_token": {
+					"name": "refresh_token",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				}
+			},
+			"name": "revoked_refresh_token",
+			"schema": "public",
+			"indexes": [
+				{
+					"columnNames": ["refresh_token"],
+					"composite": false,
+					"keyName": "revoked_refresh_token_refresh_token_unique",
+					"constraint": true,
+					"primary": false,
+					"unique": true
+				},
+				{
+					"keyName": "revoked_refresh_token_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"email": {
+					"name": "email",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"password": {
+					"name": "password",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"username": {
+					"name": "username",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"confirmation_code": {
+					"name": "confirmation_code",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["active", "blocked", "pending"],
+					"mappedType": "enum"
+				},
+				"password_reset_token": {
+					"name": "password_reset_token",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"password_reset_token_created_at": {
+					"name": "password_reset_token_created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"wechat_video_channel_id": {
+					"name": "wechat_video_channel_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"subscription_plan": {
+					"name": "subscription_plan",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"default": "'free'",
+					"mappedType": "string"
+				},
+				"content_quota": {
+					"name": "content_quota",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "10",
+					"mappedType": "integer"
+				}
+			},
+			"name": "user",
+			"schema": "public",
+			"indexes": [
+				{
+					"columnNames": ["email"],
+					"composite": false,
+					"keyName": "user_email_unique",
+					"constraint": true,
+					"primary": false,
+					"unique": true
+				},
+				{
+					"columnNames": ["username"],
+					"composite": false,
+					"keyName": "user_username_unique",
+					"constraint": true,
+					"primary": false,
+					"unique": true
+				},
+				{
+					"keyName": "user_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"code": {
+					"name": "code",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				}
+			},
+			"name": "two_factor_auth",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "two_factor_auth_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {
+				"two_factor_auth_user_id_foreign": {
+					"constraintName": "two_factor_auth_user_id_foreign",
+					"columnNames": ["user_id"],
+					"localTableName": "public.two_factor_auth",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.user",
+					"updateRule": "cascade"
+				}
+			},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"name": {
+					"name": "name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "text"
+				},
+				"color": {
+					"name": "color",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"enumItems": ["active", "completed", "paused"],
+					"mappedType": "enum"
+				},
+				"asset_count": {
+					"name": "asset_count",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "0",
+					"mappedType": "integer"
+				},
+				"content_count": {
+					"name": "content_count",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "0",
+					"mappedType": "integer"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "boolean",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "true",
+					"mappedType": "boolean"
+				},
+				"last_accessed_at": {
+					"name": "last_accessed_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				}
+			},
+			"name": "project",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "project_status_index",
+					"columnNames": ["status"],
+					"composite": false,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "project_user_id_created_at_index",
+					"columnNames": ["user_id", "created_at"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "project_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {
+				"project_user_id_foreign": {
+					"constraintName": "project_user_id_foreign",
+					"columnNames": ["user_id"],
+					"localTableName": "public.project",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.user",
+					"updateRule": "cascade"
+				}
+			},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"project_id": {
+					"name": "project_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"aliyun_file_id": {
+					"name": "aliyun_file_id",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_name": {
+					"name": "file_name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_path": {
+					"name": "file_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_type": {
+					"name": "file_type",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_size": {
+					"name": "file_size",
+					"type": "bigint",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "bigint"
+				},
+				"thumbnail_url": {
+					"name": "thumbnail_url",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"file_created_at": {
+					"name": "file_created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"file_updated_at": {
+					"name": "file_updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "boolean",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "true",
+					"mappedType": "boolean"
+				},
+				"description": {
+					"name": "description",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"metadata": {
+					"name": "metadata",
+					"type": "jsonb",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"mappedType": "json"
+				}
+			},
+			"name": "project_material",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "project_material_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {
+				"project_material_project_id_foreign": {
+					"constraintName": "project_material_project_id_foreign",
+					"columnNames": ["project_id"],
+					"localTableName": "public.project_material",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.project",
+					"updateRule": "cascade"
+				}
+			},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"project_id": {
+					"name": "project_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"asset_id": {
+					"name": "asset_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"added_at": {
+					"name": "added_at",
+					"type": "timestamptz",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				}
+			},
+			"name": "project_asset",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "project_asset_project_id_asset_id_index",
+					"columnNames": ["project_id", "asset_id"],
+					"composite": true,
+					"constraint": false,
+					"primary": false,
+					"unique": false
+				},
+				{
+					"keyName": "project_asset_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {
+				"project_asset_project_id_foreign": {
+					"constraintName": "project_asset_project_id_foreign",
+					"columnNames": ["project_id"],
+					"localTableName": "public.project_asset",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.project",
+					"updateRule": "cascade"
+				},
+				"project_asset_asset_id_foreign": {
+					"constraintName": "project_asset_asset_id_foreign",
+					"columnNames": ["asset_id"],
+					"localTableName": "public.project_asset",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.asset",
+					"updateRule": "cascade"
+				}
+			},
+			"nativeEnums": {}
+		},
+		{
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "uuid"
+				},
+				"webdav_url": {
+					"name": "webdav_url",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"username": {
+					"name": "username",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"encrypted_password": {
+					"name": "encrypted_password",
+					"type": "text",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"mappedType": "text"
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 255,
+					"mappedType": "string"
+				},
+				"timeout": {
+					"name": "timeout",
+					"type": "int",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "30000",
+					"mappedType": "integer"
+				},
+				"base_path": {
+					"name": "base_path",
+					"type": "varchar(255)",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"length": 255,
+					"default": "'/'",
+					"mappedType": "string"
+				},
+				"last_sync_at": {
+					"name": "last_sync_at",
+					"type": "timestamp",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": true,
+					"length": 6,
+					"mappedType": "datetime"
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "boolean",
+					"unsigned": false,
+					"autoincrement": false,
+					"primary": false,
+					"nullable": false,
+					"default": "true",
+					"mappedType": "boolean"
+				}
+			},
+			"name": "aliyun_drive_config",
+			"schema": "public",
+			"indexes": [
+				{
+					"keyName": "aliyun_drive_config_pkey",
+					"columnNames": ["id"],
+					"composite": false,
+					"constraint": true,
+					"primary": true,
+					"unique": true
+				}
+			],
+			"checks": [],
+			"foreignKeys": {
+				"aliyun_drive_config_user_id_foreign": {
+					"constraintName": "aliyun_drive_config_user_id_foreign",
+					"columnNames": ["user_id"],
+					"localTableName": "public.aliyun_drive_config",
+					"referencedColumnNames": ["id"],
+					"referencedTableName": "public.user",
+					"updateRule": "cascade"
+				}
+			},
+			"nativeEnums": {}
+		}
+	],
+	"nativeEnums": {}
 }

@@ -3,15 +3,17 @@
 import {useState, type JSX} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useSearchParams} from 'next/navigation';
-import {Button} from 'primereact/button';
 import {type SubmitHandler, useForm} from 'react-hook-form';
 import {useLocale, useTranslations} from 'next-intl';
 import {type ResetPasswordFormFields} from './types/reset-password-form-fields.type.ts';
 import {resetPasswordSchema} from './types/reset-password.schema.ts';
-import {FloatLabelInputText} from '@/components/float-label-input-text/float-label-input-text.component.tsx';
 import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {type ApiError} from '@/utils/api/api-error.ts';
 import {Link} from '@/i18n/navigation.ts';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 
 export default function ResetPassword(): JSX.Element {
 	const t = useTranslations('Page-Reset-Password');
@@ -32,7 +34,7 @@ export default function ResetPassword(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<ResetPasswordFormFields> = async data => {
+	const onSubmit: SubmitHandler<ResetPasswordFormFields> = async (data) => {
 		const token = searchParameters.get('token');
 
 		if (!token) {
@@ -53,6 +55,11 @@ export default function ResetPassword(): JSX.Element {
 				setDidResetPasswordSuccessfully(true);
 			},
 			onError(error: ApiError) {
+				if (!error.response) {
+					setError('root', {message: '网络连接失败，请检查后端服务是否运行'});
+					return;
+				}
+
 				switch (error.response.status) {
 					case 410: {
 						setError('root', {message: t('error-410')});
@@ -82,42 +89,59 @@ export default function ResetPassword(): JSX.Element {
 
 	if (didResetPasswordSuccessfully) {
 		return (
-			<div className='flex flex-col items-center'>
-				<h2>{t('success-header')}</h2>
-				<p className='mt-4 md:mt-6 lg:mt-8'>{t('success-message')}</p>
-				<Link className='underline' href='/login'>
-					{t('success-login-link')}
-				</Link>
+			<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+				<Card className="w-full max-w-md">
+					<CardContent className="p-6">
+						<div className="text-center space-y-4">
+							<h2 className="text-2xl font-bold text-green-600">{t('success-header')}</h2>
+							<p className="text-muted-foreground">{t('success-message')}</p>
+							<Link href="/login" className="inline-block">
+								<Button>{t('success-login-link')}</Button>
+							</Link>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		);
 	}
 
 	return (
-		<div className='flex flex-col items-center'>
-			<h2>{t('title')}</h2>
-			<form
-				className='mt-6 flex flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8'
-				onSubmit={handleSubmit(onSubmit)}
-			>
-				<div className='flex flex-col flex-wrap items-center gap-1'>
-					<FloatLabelInputText
-						label={t('password-input-label')}
-						{...register('password')}
-						type='password'
-						data-testid='reset-password-password-input'
-					/>
-					{errors.password ? <p className='text-red-700'>{errors.password.message}</p> : null}
-				</div>
-				<div>
-					<Button
-						label={isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
-						type='submit'
-						disabled={isSubmitting}
-						data-testid='reset-password-submit-button'
-					/>
-				</div>
-				{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
-			</form>
+		<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+			<Card className="w-full max-w-md">
+				<CardHeader>
+					<CardTitle className="text-center text-2xl font-bold">{t('title')}</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-6">
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="password">{t('password-input-label')}</Label>
+							<Input
+								id="password"
+								type="password"
+								placeholder={t('password-input-label')}
+								data-testid="reset-password-password-input"
+								{...register('password')}
+							/>
+							{errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+						</div>
+
+						{errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
+
+						<Button type="submit" className="w-full" disabled={isSubmitting} data-testid="reset-password-submit-button">
+							{isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
+						</Button>
+					</form>
+
+					<div className="text-center">
+						<p className="text-sm text-muted-foreground">
+							记起密码了？{' '}
+							<Link className="text-primary hover:underline" href="/login">
+								返回登录
+							</Link>
+						</p>
+					</div>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }

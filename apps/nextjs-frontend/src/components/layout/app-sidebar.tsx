@@ -1,15 +1,11 @@
 'use client';
 
-import {
-	HomeIcon, ProjectorIcon, SettingsIcon, UserIcon, FolderIcon, BarChart3Icon, FileTextIcon,
-} from 'lucide-react';
+import {HomeIcon, ProjectorIcon, Zap} from 'lucide-react';
 import Link from 'next/link';
 import {useTranslations} from 'next-intl';
-import {NavUser} from './nav-user.js';
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarFooter,
 	SidebarHeader,
 	SidebarRail,
 	SidebarGroup,
@@ -32,85 +28,29 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 					</div>
 					<div className='flex flex-col gap-0.5 leading-none'>
 						<span className='font-semibold'>Titan</span>
-						<span className='text-xs text-muted-foreground'>{t('subtitle')}</span>
+						<span className='text-xs text-muted-foreground'>ASMR创作平台</span>
 					</div>
 				</div>
 			</SidebarHeader>
 
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>{t('main-features')}</SidebarGroupLabel>
+					<SidebarGroupLabel>核心功能</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
 									<Link href='/dashboard'>
 										<HomeIcon/>
-										<span>{t('dashboard')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-
-				<SidebarGroup>
-					<SidebarGroupLabel>{t('project-management')}</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href='/projects/overview'>
-										<FileTextIcon/>
-										<span>{t('overview')}</span>
+										<span>工作台</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
-									<Link href='/projects/management'>
-										<ProjectorIcon/>
-										<span>{t('project-management')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href='/projects/materials'>
-										<FolderIcon/>
-										<span>{t('materials')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href='/projects/analytics'>
-										<BarChart3Icon/>
-										<span>{t('analytics')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-
-				<SidebarGroup>
-					<SidebarGroupLabel>{t('settings')}</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href='/profile'>
-										<UserIcon/>
-										<span>{t('profile')}</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link href='/settings'>
-										<SettingsIcon/>
-										<span>{t('settings')}</span>
+									<Link href='/generate'>
+										<Zap/>
+										<span>ASMR生成</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
@@ -118,10 +58,6 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
-
-			<SidebarFooter>
-				<NavUser/>
-			</SidebarFooter>
 
 			<SidebarRail/>
 		</Sidebar>

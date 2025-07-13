@@ -191,18 +191,6 @@ export function Step2Voice(): JSX.Element {
 					</div>
 				</CardContent>
 			</Card>
-
-			{/* 继续按钮 */}
-			<div className='flex justify-end'>
-				<Button
-					disabled={!formData.voiceSettings?.voiceId}
-					size='lg'
-					className='min-w-[120px]'
-					onClick={handleContinue}
-				>
-					继续选择音景
-				</Button>
-			</div>
 		</div>
 	);
 }

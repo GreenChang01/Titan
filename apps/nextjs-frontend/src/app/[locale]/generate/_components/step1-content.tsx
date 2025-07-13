@@ -148,13 +148,6 @@ export function Step1Content(): JSX.Element {
 					</div>
 				</CardContent>
 			</Card>
-
-			{/* 继续按钮 */}
-			<div className='flex justify-end'>
-				<Button disabled={!isValidLength} size='lg' className='min-w-[120px]' onClick={handleContinue}>
-					继续配置语音
-				</Button>
-			</div>
 		</div>
 	);
 }

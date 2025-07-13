@@ -2,15 +2,17 @@
 
 import {useState, type JSX} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Button} from 'primereact/button';
 import {type SubmitHandler, useForm} from 'react-hook-form';
 import {useLocale, useTranslations} from 'next-intl';
 import {type RegisterFormFields} from './types/register-form-fields.type.ts';
 import {registerSchema} from './types/register.schema.ts';
-import {FloatLabelInputText} from '@/components/float-label-input-text/float-label-input-text.component.tsx';
 import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {type ApiError} from '@/utils/api/api-error.ts';
 import {Link} from '@/i18n/navigation.ts';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 
 export default function Register(): JSX.Element {
 	const t = useTranslations('Page-Register');
@@ -29,7 +31,7 @@ export default function Register(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<RegisterFormFields> = async data => {
+	const onSubmit: SubmitHandler<RegisterFormFields> = async (data) => {
 		await registerFunction({
 			params: {createUserData: data, language: locale},
 			onSuccess() {
@@ -37,11 +39,17 @@ export default function Register(): JSX.Element {
 				setDidRegisterSuccessfully(true);
 			},
 			async onError(error: ApiError) {
+				// 网络错误时 error.response 可能为 undefined
+				if (!error.response) {
+					setError('root', {message: '网络连接失败，请检查后端服务是否运行'});
+					return;
+				}
+
 				switch (error.response.status) {
 					case 400: {
 						const errorResponse = (await error.response.json()) as {message?: string[]};
 						const message: string = errorResponse?.message
-							? errorResponse.message.map(message_ => message_.charAt(0).toUpperCase() + message_.slice(1)).join(', ')
+							? errorResponse.message.map((message_) => message_.charAt(0).toUpperCase() + message_.slice(1)).join(', ')
 							: t('error-default');
 						setError('root', {message});
 
@@ -70,65 +78,85 @@ export default function Register(): JSX.Element {
 
 	if (didRegisterSuccessfully) {
 		return (
-			<div className='flex flex-col items-center'>
-				<h2>{t('success-header')}</h2>
-				<p className='mt-4 md:mt-6 lg:mt-8'>{t('success-message')}</p>
+			<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+				<Card className="w-full max-w-md">
+					<CardContent className="p-6">
+						<div className="text-center space-y-4">
+							<h2 className="text-2xl font-bold text-green-600">{t('success-header')}</h2>
+							<p className="text-muted-foreground">{t('success-message')}</p>
+							<Link href="/login" className="inline-block">
+								<Button>返回登录</Button>
+							</Link>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		);
 	}
 
 	return (
-		<div className='flex flex-col items-center'>
-			<h2>{t('title')}</h2>
-			<form
-				className='mt-6 flex w-full max-w-sm flex-col items-center gap-4 md:mt-10 md:gap-6 lg:mt-12 lg:gap-8'
-				onSubmit={handleSubmit(onSubmit)}
-			>
-				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
-					<FloatLabelInputText
-						label={t('email-input-label')}
-						{...register('email')}
-						data-testid='register-email-input'
-						type='email'
-					/>
-					<small>{t('email-input-info')}</small>
-					{errors.email ? <p className='text-red-700'>{errors.email.message}</p> : null}
-				</div>
-				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
-					<FloatLabelInputText
-						label={t('username-input-label')}
-						{...register('username')}
-						data-testid='register-username-input'
-						type='text'
-					/>
-					<small>{t('username-input-info')}</small>
-					{errors.username ? <p className='text-red-700'>{errors.username.message}</p> : null}
-				</div>
-				<div className='flex w-full flex-col flex-wrap items-center gap-1'>
-					<FloatLabelInputText
-						label={t('password-input-label')}
-						{...register('password')}
-						data-testid='register-password-input'
-						type='password'
-					/>
-					{errors.password ? <p className='text-red-700'>{errors.password.message}</p> : null}
-				</div>
-				<div>
-					<Button
-						label={isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
-						type='submit'
-						data-testid='register-submit-button'
-						disabled={isSubmitting}
-					/>
-				</div>
-				{errors.root ? <p className='text-red-700'>{errors.root.message}</p> : null}
-			</form>
-			<p className='mt-4 md:mt-6 lg:mt-8'>
-				{t('login-question')}{' '}
-				<Link className='underline' href='/login'>
-					{t('login-link')}
-				</Link>
-			</p>
+		<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+			<Card className="w-full max-w-md">
+				<CardHeader>
+					<CardTitle className="text-center text-2xl font-bold">{t('title')}</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-6">
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="email">{t('email-input-label')}</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder={t('email-input-label')}
+								data-testid="register-email-input"
+								{...register('email')}
+							/>
+							<p className="text-xs text-muted-foreground">{t('email-input-info')}</p>
+							{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="username">{t('username-input-label')}</Label>
+							<Input
+								id="username"
+								type="text"
+								placeholder={t('username-input-label')}
+								data-testid="register-username-input"
+								{...register('username')}
+							/>
+							<p className="text-xs text-muted-foreground">{t('username-input-info')}</p>
+							{errors.username && <p className="text-sm text-destructive">{errors.username.message}</p>}
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="password">{t('password-input-label')}</Label>
+							<Input
+								id="password"
+								type="password"
+								placeholder={t('password-input-label')}
+								data-testid="register-password-input"
+								{...register('password')}
+							/>
+							{errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+						</div>
+
+						{errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
+
+						<Button type="submit" className="w-full" disabled={isSubmitting} data-testid="register-submit-button">
+							{isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
+						</Button>
+					</form>
+
+					<div className="text-center space-y-2">
+						<p className="text-sm text-muted-foreground">
+							{t('login-question')}{' '}
+							<Link className="text-primary hover:underline" href="/login">
+								{t('login-link')}
+							</Link>
+						</p>
+					</div>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }

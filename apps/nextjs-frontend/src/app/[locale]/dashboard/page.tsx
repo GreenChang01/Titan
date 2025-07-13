@@ -30,23 +30,9 @@ export default function Dashboard(): JSX.Element {
 		<>
 			{/* ===== Top Heading ===== */}
 			<Header>
-				<div className='flex items-center justify-between'>
-					<div>
-						<h1 className='text-lg font-medium'>项目看板</h1>
-						<p className='text-sm text-muted-foreground'>管理您的素材协作项目和ASMR内容生产</p>
-					</div>
-					<div className='flex items-center space-x-2'>
-						<Link href='/generate'>
-							<Button className='flex items-center gap-2'>
-								<Zap className='h-4 w-4'/>
-								创建ASMR音频
-							</Button>
-						</Link>
-						<Button variant='outline'>
-							<PlusIcon className='h-4 w-4 mr-2'/>
-							创建项目
-						</Button>
-					</div>
+				<div>
+					<h1 className='text-lg font-medium'>项目看板</h1>
+					<p className='text-sm text-muted-foreground'>管理您的素材协作项目和ASMR内容生产</p>
 				</div>
 			</Header>
 
@@ -119,7 +105,7 @@ export default function Dashboard(): JSX.Element {
 							<div className='flex flex-col items-center justify-center py-12 text-center'>
 								<FolderOpenIcon className='h-12 w-12 text-muted-foreground mb-4'/>
 								<h3 className='text-lg font-semibold mb-2'>
-									{statsLoading ? '加载中...' : (stats?.totalProjects === 0 ? '暂无项目' : '项目列表')}
+									{statsLoading ? '加载中...' : stats?.totalProjects === 0 ? '暂无项目' : '项目列表'}
 								</h3>
 								<p className='text-muted-foreground mb-6 max-w-sm'>
 									{stats?.totalProjects === 0 ? '创建您的第一个项目来开始管理素材和协作' : '项目管理功能正在开发中...'}
@@ -137,7 +123,7 @@ export default function Dashboard(): JSX.Element {
 							<CardTitle>快速操作</CardTitle>
 							<CardDescription>常用功能快捷入口</CardDescription>
 						</CardHeader>
-						<CardContent className='space-y-3'>
+						<CardContent className='grid gap-2'>
 							<Link href='/generate'>
 								<Button variant='outline' className='w-full justify-start'>
 									<Zap className='h-4 w-4 mr-2'/>

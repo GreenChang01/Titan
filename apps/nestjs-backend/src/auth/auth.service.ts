@@ -72,13 +72,13 @@ export class AuthService {
 	}
 
 	/**
-	 * 验证用户凭据并发送双因子验证码
+	 * 验证用户凭据 - 开发环境直接返回用户，跳过2FA
 	 * @param email 用户邮箱
 	 * @param password 用户密码
 	 * @param language 邮件语言
-	 * @returns 双因子验证码的哈希值
+	 * @returns 用户实体
 	 */
-	async validateUserCredentials(email: string, password: string, language: AcceptedLanguages): Promise<string> {
+	async validateUserCredentials(email: string, password: string, language: AcceptedLanguages): Promise<User> {
 		let user: User | undefined;
 
 		try {
@@ -87,10 +87,10 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		// 检查用户状态
-		if (user.status === UserStatus.CONFIRMATION_PENDING) {
-			throw new UnauthorizedException('User is not confirmed');
-		}
+		// 检查用户状态 - 开发环境跳过验证检查
+		// if (user.status === UserStatus.CONFIRMATION_PENDING) {
+		// 	throw new UnauthorizedException('User is not confirmed');
+		// }
 
 		if (user.status === UserStatus.BLOCKED) {
 			throw new UnauthorizedException('User is blocked');
@@ -103,20 +103,8 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		// 生成双因子验证码
-		const twoFactorAuth = new TwoFactorAuth({
-			user,
-			code: this.cryptoService.generateRandomCode(),
-		});
-
-		await this.em.persistAndFlush(twoFactorAuth);
-
-		// 发送验证码邮件
-		await this.emailService.sendTwoFactorAuthCodeEmail(language, user.email, twoFactorAuth.code);
-
-		const twoFactorAuthCode = await this.cryptoService.hash(twoFactorAuth.id);
-
-		return twoFactorAuthCode;
+		// 开发环境跳过2FA，直接返回用户
+		return user;
 	}
 
 	/**
@@ -146,14 +134,16 @@ export class AuthService {
 		// 通过哈希对比找到正确的验证记录
 		let matching2FaEntry;
 		try {
-			matching2FaEntry = await Promise.any(entriesWithMatchingCode.map(async entry => {
-				const isEntry = await this.cryptoService.compare(entry.id, twoFactorAuthHashedId);
-				if (isEntry) {
-					return entry;
-				}
+			matching2FaEntry = await Promise.any(
+				entriesWithMatchingCode.map(async (entry) => {
+					const isEntry = await this.cryptoService.compare(entry.id, twoFactorAuthHashedId);
+					if (isEntry) {
+						return entry;
+					}
 
-				throw new Error('no-match');
-			}));
+					throw new Error('no-match');
+				}),
+			);
 		} catch {
 			// Handle the case where Promise.any rejects (all promises rejected)
 			matching2FaEntry = undefined;

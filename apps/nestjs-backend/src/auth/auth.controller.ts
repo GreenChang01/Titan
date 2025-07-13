@@ -1,13 +1,11 @@
-import {
-	Controller, Post, Body, Res, Req, HttpCode, HttpStatus,
-} from '@nestjs/common';
+import {Controller, Post, Body, Res, Req, HttpCode, HttpStatus} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {ApiResponse, ApiTags, ApiOperation} from '@nestjs/swagger';
 import {Throttle} from '@nestjs/throttler';
 import type {Response, Request} from 'express';
 import {LoginCredentialsBodyDto, LoginTwoFactorAuthBodyDto} from '@titan/shared';
 import {ConfigKey} from '../config/config-key.enum';
-import {oneMinute, oneWeek} from '../utils/time.util';
+import {oneMinute, oneWeek, oneDay} from '../utils/time.util';
 import {ValidateHeader} from '../common/decorators/validate-header/validate-header.decorator';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {AuthService} from './auth.service';
@@ -64,18 +62,25 @@ export class AuthController {
 		})
 		language: AcceptedLanguages,
 	): Promise<void> {
-		const twoFactorAuthHashedId = await this.authService.validateUserCredentials(
-			loginDto.email,
-			loginDto.password,
-			language,
-		);
+		// 开发环境直接验证用户并生成令牌，跳过2FA
+		const user = await this.authService.validateUserCredentials(loginDto.email, loginDto.password, language);
 
-		// 设置双因子验证 Cookie（15 分钟有效期）
-		response.cookie(TWO_FACTOR_AUTH_COOKIE_KEY, twoFactorAuthHashedId, {
+		// 直接生成并设置访问令牌和刷新令牌 Cookie
+		const accessToken = await this.authService.generateAccessToken(user);
+		const refreshToken = await this.authService.generateRefreshToken(user);
+
+		response.cookie(ACCESS_TOKEN_COOKIE_KEY, accessToken, {
 			httpOnly: true,
 			secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
 			sameSite: 'lax',
-			maxAge: oneMinute * 15, // 15 minutes
+			maxAge: oneDay * 7, // 7 days
+		});
+
+		response.cookie(REFRESH_TOKEN_COOKIE_KEY, refreshToken, {
+			httpOnly: true,
+			secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
+			sameSite: 'lax',
+			maxAge: oneDay * 30, // 30 days
 		});
 	}
 

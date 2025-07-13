@@ -1,52 +1,49 @@
 import {create} from 'zustand';
+import {persist} from 'zustand/middleware';
 import {type UserDto} from '@titan/shared';
 import {type UserStoreState} from './types/user-store.state.type';
 import {type LoadUserReturnType} from './types/load-user.return.type';
 import {apiRequestHandler} from '@/utils/api/api-request-handler.ts';
 import {ApiError} from '@/utils/api/api-error.ts';
 
-/**
- * Zustand store to manage user authentication state.
- *
- * Provides `user`, `loading`, and `error` state, along with methods to
- * `loadUser` from the backend and `logout` the current user.
- */
-export const useUserStore = create<UserStoreState>(set => ({
-	user: undefined,
-	loading: true,
-	error: false,
+export const useUserStore = create<UserStoreState>()(persist(
+	set => ({
+		user: undefined,
+		loading: false,
+		error: false,
 
-	/**
-	 * Loads the current user from the backend API.
-	 * Sets `user`, `loading`, and `error` states based on the response.
-	 */
-	async loadUser(): LoadUserReturnType {
-		try {
-			const response = await apiRequestHandler(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
-				method: 'GET',
-				credentials: 'include',
-			});
+		async loadUser(): LoadUserReturnType {
+			set({loading: true});
+			try {
+				const response = await apiRequestHandler(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
+					method: 'GET',
+					credentials: 'include',
+				});
 
-			if (!response.ok) {
-				// 401/403 表示未认证，404/500 等其他错误也视为需要重新登录
+				if (!response.ok) {
+					set({user: undefined, loading: false, error: true});
+					return {success: false, error: new ApiError('Failed to load user', response)};
+				}
+
+				const responseJson = await response.json();
+				if (responseJson.success && responseJson.data) {
+					set({user: responseJson.data, loading: false, error: false});
+					return {success: true};
+				}
+
 				set({user: undefined, loading: false, error: true});
-				return {success: false, error: new ApiError('Failed to load user', response)};
+				return {success: false, error: new ApiError('Invalid user response format', response)};
+			} catch (error) {
+				set({user: undefined, loading: false, error: true});
+				return {success: false, error: error as ApiError};
 			}
+		},
 
-			const userResponse: UserDto = (await response.json()) as UserDto;
-			set({user: userResponse, loading: false, error: false});
-			return {success: true};
-		} catch (error) {
-			// 网络错误或其他异常也视为需要重新登录
-			set({user: undefined, loading: false, error: true});
-			return {success: false, error: error as ApiError};
-		}
+		clearUser(): void {
+			set({user: undefined, loading: false, error: false});
+		},
+	}),
+	{
+		name: 'user-storage',
 	},
-
-	/**
-	 * Logs the user out by clearing the user state and resetting loading and error flags.
-	 */
-	clearUser(): void {
-		set({user: undefined, loading: false, error: false});
-	},
-}));
+));

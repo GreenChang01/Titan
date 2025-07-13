@@ -2,11 +2,11 @@
 
 import {type JSX} from 'react';
 import {ChevronLeft, ChevronRight, Zap} from 'lucide-react';
-import {Step1Content} from './_components/step1-content.js';
-import {Step2Voice} from './_components/step2-voice.js';
-import {Step3Soundscape} from './_components/step3-soundscape.js';
-import {Step4Advanced} from './_components/step4-advanced.js';
-import {Step5Review} from './_components/step5-review.js';
+import {Step1Content} from './_components/step1-content.tsx';
+import {Step2Voice} from './_components/step2-voice.tsx';
+import {Step3Soundscape} from './_components/step3-soundscape.tsx';
+import {Step4Advanced} from './_components/step4-advanced.tsx';
+import {Step5Review} from './_components/step5-review.tsx';
 import {useASMRStore} from '@/store/asmr/asmr.store';
 import {Header} from '@/components/layout/header';
 import {Main} from '@/components/layout/main';
@@ -16,10 +16,9 @@ import {
 import {Button} from '@/components/ui/button';
 import {Progress} from '@/components/ui/progress';
 
-// Wizard Step Components (to be created)
-
 export default function ASMRGenerationPage(): JSX.Element {
-	const {currentStep, maxSteps, wizardSteps, isSubmitting, error, nextStep, prevStep, goToStep} = useASMRStore();
+	const {currentStep, maxSteps, wizardSteps, isSubmitting, error, formData, nextStep, prevStep, goToStep}
+		= useASMRStore();
 
 	const currentStepData = wizardSteps.find(step => step.id === currentStep);
 	const progress = ((currentStep - 1) / (maxSteps - 1)) * 100;
@@ -55,23 +54,69 @@ export default function ASMRGenerationPage(): JSX.Element {
 	const canGoNext = currentStep < maxSteps;
 	const canGoPrevious = currentStep > 1;
 
+	const getNextButtonText = (): string => {
+		switch (currentStep) {
+			case 1: {
+				return '配置语音';
+			}
+
+			case 2: {
+				return '选择音景';
+			}
+
+			case 3: {
+				return '高级设置';
+			}
+
+			case 4: {
+				return '预览确认';
+			}
+
+			case 5: {
+				return '开始生成';
+			}
+
+			default: {
+				return '下一步';
+			}
+		}
+	};
+
+	const isCurrentStepValid = (): boolean => {
+		switch (currentStep) {
+			case 1: {
+				return Boolean(formData.text && formData.text.trim().length > 10);
+			}
+
+			case 2: {
+				return Boolean(formData.voiceSettings?.voiceId);
+			}
+
+			case 3: {
+				return Boolean(formData.soundscapeConfig?.prompt || formData.soundscapeConfig?.category);
+			}
+
+			case 4: {
+				return true;
+			} // 高级设置是可选的
+
+			case 5: {
+				return true;
+			} // 预览页面
+
+			default: {
+				return false;
+			}
+		}
+	};
+
 	return (
 		<>
 			<Header>
-				<div className='flex items-center justify-between'>
-					<div>
-						<h1 className='text-lg font-medium flex items-center gap-2'>
-							<Zap className='h-5 w-5 text-primary'/>
-							ASMR音频生成
-						</h1>
-						<p className='text-sm text-muted-foreground'>
-							{currentStepData?.description ?? '创建您的专属ASMR音频内容'}
-						</p>
-					</div>
-					<div className='text-sm text-muted-foreground'>
-						步骤 {currentStep} / {maxSteps}
-					</div>
-				</div>
+				<h1 className='text-lg font-medium flex items-center gap-2'>
+					<Zap className='h-5 w-5 text-primary'/>
+					ASMR音频生成
+				</h1>
 			</Header>
 
 			<Main>
@@ -94,9 +139,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 											className={`flex flex-col items-center space-y-1 text-xs transition-colors ${
 												step.isActive
 													? 'text-primary font-medium'
-													: (step.isCompleted
+													: step.isCompleted
 														? 'text-green-600'
-														: 'text-muted-foreground hover:text-foreground')
+														: 'text-muted-foreground hover:text-foreground'
 											}`}
 											disabled={isSubmitting}
 											onClick={() => {
@@ -107,9 +152,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 												className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
 													step.isActive
 														? 'bg-primary text-primary-foreground'
-														: (step.isCompleted
+														: step.isCompleted
 															? 'bg-green-100 text-green-600'
-															: 'bg-muted')
+															: 'bg-muted'
 												}`}
 											>
 												{step.isCompleted ? '✓' : step.id}
@@ -123,17 +168,15 @@ export default function ASMRGenerationPage(): JSX.Element {
 					</Card>
 
 					{/* Error Display */}
-					{error
-						? (
-							<Card className='border-destructive'>
-								<CardContent className='pt-6'>
-									<div className='text-sm text-destructive'>
-										<strong>错误:</strong> {error}
-									</div>
-								</CardContent>
-							</Card>
-						)
-						: null}
+					{error ? (
+						<Card className='border-destructive'>
+							<CardContent className='pt-6'>
+								<div className='text-sm text-destructive'>
+									<strong>错误:</strong> {error}
+								</div>
+							</CardContent>
+						</Card>
+					) : null}
 
 					{/* Current Step Content */}
 					<Card>
@@ -141,26 +184,39 @@ export default function ASMRGenerationPage(): JSX.Element {
 							<CardTitle>{currentStepData?.title}</CardTitle>
 							<CardDescription>{currentStepData?.description}</CardDescription>
 						</CardHeader>
-						<CardContent>{renderStepContent()}</CardContent>
+						<CardContent>
+							{renderStepContent()}
+							{/* Navigation */}
+							<div className='flex justify-between items-center mt-6'>
+								<div>
+									{canGoPrevious ? (
+										<Button
+											variant='outline'
+											disabled={isSubmitting}
+											className='flex items-center gap-2'
+											onClick={prevStep}
+										>
+											<ChevronLeft className='h-4 w-4'/>
+											上一步
+										</Button>
+									) : null}
+								</div>
+								<div>
+									{canGoNext ? (
+										<Button
+											disabled={isSubmitting || !isCurrentStepValid()}
+											size='lg'
+											className='min-w-[120px] flex items-center gap-2'
+											onClick={nextStep}
+										>
+											{getNextButtonText()}
+											<ChevronRight className='h-4 w-4'/>
+										</Button>
+									) : null}
+								</div>
+							</div>
+						</CardContent>
 					</Card>
-
-					{/* Navigation */}
-					<div className='flex justify-between'>
-						<Button
-							variant='outline'
-							disabled={!canGoPrevious || isSubmitting}
-							className='flex items-center gap-2'
-							onClick={prevStep}
-						>
-							<ChevronLeft className='h-4 w-4'/>
-							上一步
-						</Button>
-
-						<Button disabled={!canGoNext || isSubmitting} className='flex items-center gap-2' onClick={nextStep}>
-							{currentStep === maxSteps ? '开始生成' : '下一步'}
-							<ChevronRight className='h-4 w-4'/>
-						</Button>
-					</div>
 				</div>
 			</Main>
 		</>

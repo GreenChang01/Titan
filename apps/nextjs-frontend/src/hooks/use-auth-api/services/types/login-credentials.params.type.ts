@@ -1,6 +1,6 @@
 import {type LoginCredentialsBody} from '@titan/shared';
 
-export type LoginCredentialsParameters = {
+export type LoginCredentialsParams = {
 	loginCredentialsData: LoginCredentialsBody;
 	language: string;
 };
