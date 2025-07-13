@@ -270,20 +270,20 @@ pnpm run start:dev
 ```typescript
 // 创建ASMR内容任务
 const job = await fetch('/api/content-jobs', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`,
-  },
-  body: JSON.stringify({
-    type: 'ASMR_AUDIO_GENERATION',
-    content: {
-      text: '欢迎来到放松时光，让我们一起进入宁静的世界...',
-      voiceId: 'soothing-female',
-      backgroundSound: 'rain-forest',
-      duration: 600, // 10分钟
-    },
-  }),
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		Authorization: `Bearer ${accessToken}`,
+	},
+	body: JSON.stringify({
+		type: 'ASMR_AUDIO_GENERATION',
+		content: {
+			text: '欢迎来到放松时光，让我们一起进入宁静的世界...',
+			voiceId: 'soothing-female',
+			backgroundSound: 'rain-forest',
+			duration: 600, // 10分钟
+		},
+	}),
 });
 ```
 
@@ -335,14 +335,14 @@ NEXT_PUBLIC_APP_NAME = 'Titan';
 ```typescript
 // 注册新用户
 const response = await fetch('/api/auth/register', {
-  method: 'POST',
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify({
-    email: 'user@example.com',
-    password: 'securePassword123',
-    firstName: '张',
-    lastName: '三',
-  }),
+	method: 'POST',
+	headers: {'Content-Type': 'application/json'},
+	body: JSON.stringify({
+		email: 'user@example.com',
+		password: 'securePassword123',
+		firstName: '张',
+		lastName: '三',
+	}),
 });
 ```
 
@@ -351,14 +351,14 @@ const response = await fetch('/api/auth/register', {
 ```typescript
 // 配置阿里云盘连接
 const configResponse = await fetch('/api/aliyun-drive/config', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`,
-  },
-  body: JSON.stringify({
-    refreshToken: 'your-aliyun-refresh-token',
-  }),
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		Authorization: `Bearer ${accessToken}`,
+	},
+	body: JSON.stringify({
+		refreshToken: 'your-aliyun-refresh-token',
+	}),
 });
 ```
 
@@ -367,15 +367,15 @@ const configResponse = await fetch('/api/aliyun-drive/config', {
 ```typescript
 // 创建新项目
 const project = await fetch('/api/projects', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`,
-  },
-  body: JSON.stringify({
-    name: '我的项目',
-    description: '项目描述',
-  }),
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		Authorization: `Bearer ${accessToken}`,
+	},
+	body: JSON.stringify({
+		name: '我的项目',
+		description: '项目描述',
+	}),
 });
 ```
 

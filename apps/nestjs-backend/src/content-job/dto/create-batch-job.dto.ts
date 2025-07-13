@@ -1,6 +1,4 @@
-import {
-	IsArray, ValidateNested, IsOptional, IsNumber, Min, Max,
-} from 'class-validator';
+import {IsArray, ValidateNested, IsOptional, IsNumber, Min, Max} from 'class-validator';
 import {Type} from 'class-transformer';
 import {ApiProperty} from '@nestjs/swagger';
 import {CreateContentJobDto} from './create-content-job.dto';

@@ -1,6 +1,4 @@
-import {
-	IsString, IsOptional, IsUrl, IsInt, Min, Max,
-} from 'class-validator';
+import {IsString, IsOptional, IsUrl, IsInt, Min, Max} from 'class-validator';
 
 export class UpdateAliyunDriveConfigDto {
 	@IsOptional()

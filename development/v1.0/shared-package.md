@@ -47,19 +47,19 @@
   - **实现内容**:
     ```json
     {
-      "name": "@titan/shared",
-      "version": "1.0.0",
-      "main": "dist/index.js",
-      "types": "dist/index.d.ts",
-      "scripts": {
-        "build": "tsc",
-        "dev": "tsc --watch",
-        "clean": "rm -rf dist"
-      },
-      "dependencies": {
-        "class-validator": "^0.14.0",
-        "class-transformer": "^0.5.1"
-      }
+    	"name": "@titan/shared",
+    	"version": "1.0.0",
+    	"main": "dist/index.js",
+    	"types": "dist/index.d.ts",
+    	"scripts": {
+    		"build": "tsc",
+    		"dev": "tsc --watch",
+    		"clean": "rm -rf dist"
+    	},
+    	"dependencies": {
+    		"class-validator": "^0.14.0",
+    		"class-transformer": "^0.5.1"
+    	}
     }
     ```
   - **验收标准**: 自动构建和类型生成
@@ -76,30 +76,30 @@
 
     ```typescript
     export enum UserStatus {
-      CONFIRMATION_PENDING = 'CONFIRMATION_PENDING',
-      ACTIVE = 'ACTIVE',
-      BLOCKED = 'BLOCKED',
+    	CONFIRMATION_PENDING = 'CONFIRMATION_PENDING',
+    	ACTIVE = 'ACTIVE',
+    	BLOCKED = 'BLOCKED',
     }
 
     export interface User {
-      id: string;
-      email: string;
-      username: string;
-      status: UserStatus;
-      isEmailVerified: boolean;
-      passwordResetToken?: string;
-      passwordResetTokenCreatedAt?: Date;
-      createdAt: Date;
-      updatedAt: Date;
+    	id: string;
+    	email: string;
+    	username: string;
+    	status: UserStatus;
+    	isEmailVerified: boolean;
+    	passwordResetToken?: string;
+    	passwordResetTokenCreatedAt?: Date;
+    	createdAt: Date;
+    	updatedAt: Date;
     }
 
     export interface UserProfile {
-      id: string;
-      email: string;
-      username: string;
-      status: UserStatus;
-      isEmailVerified: boolean;
-      createdAt: Date;
+    	id: string;
+    	email: string;
+    	username: string;
+    	status: UserStatus;
+    	isEmailVerified: boolean;
+    	createdAt: Date;
     }
     ```
 
@@ -115,19 +115,19 @@
 
     ```typescript
     export interface Project {
-      id: string;
-      name: string;
-      description?: string;
-      color?: string;
-      isActive: boolean;
-      lastAccessedAt?: Date;
-      createdAt: Date;
-      updatedAt: Date;
-      materialsCount?: number; // 计算字段
+    	id: string;
+    	name: string;
+    	description?: string;
+    	color?: string;
+    	isActive: boolean;
+    	lastAccessedAt?: Date;
+    	createdAt: Date;
+    	updatedAt: Date;
+    	materialsCount?: number; // 计算字段
     }
 
     export interface ProjectWithMaterials extends Project {
-      materials: ProjectMaterial[];
+    	materials: ProjectMaterial[];
     }
     ```
 
@@ -143,27 +143,27 @@
 
     ```typescript
     export interface AliyunDriveConfig {
-      id: string;
-      webdavUrl: string;
-      username: string;
-      displayName?: string;
-      timeout: number;
-      basePath: string;
-      lastSyncAt?: Date;
-      isActive: boolean;
-      createdAt: Date;
-      updatedAt: Date;
+    	id: string;
+    	webdavUrl: string;
+    	username: string;
+    	displayName?: string;
+    	timeout: number;
+    	basePath: string;
+    	lastSyncAt?: Date;
+    	isActive: boolean;
+    	createdAt: Date;
+    	updatedAt: Date;
     }
 
     export interface AliyunDriveFile {
-      id: string;
-      name: string;
-      path: string;
-      type: 'file' | 'directory';
-      size?: number;
-      mimeType?: string;
-      createdAt?: Date;
-      updatedAt?: Date;
+    	id: string;
+    	name: string;
+    	path: string;
+    	type: 'file' | 'directory';
+    	size?: number;
+    	mimeType?: string;
+    	createdAt?: Date;
+    	updatedAt?: Date;
     }
     ```
 
@@ -179,23 +179,23 @@
 
     ```typescript
     export interface ProjectMaterial {
-      id: string;
-      aliyunFileId: string;
-      fileName: string;
-      filePath: string;
-      fileType?: string;
-      fileSize?: number;
-      thumbnailUrl?: string;
-      fileCreatedAt?: Date;
-      fileUpdatedAt?: Date;
-      description?: string;
-      metadata?: Record<string, any>;
-      createdAt: Date;
-      updatedAt: Date;
+    	id: string;
+    	aliyunFileId: string;
+    	fileName: string;
+    	filePath: string;
+    	fileType?: string;
+    	fileSize?: number;
+    	thumbnailUrl?: string;
+    	fileCreatedAt?: Date;
+    	fileUpdatedAt?: Date;
+    	description?: string;
+    	metadata?: Record<string, any>;
+    	createdAt: Date;
+    	updatedAt: Date;
     }
 
     export interface MaterialWithProject extends ProjectMaterial {
-      project: Pick<Project, 'id' | 'name'>;
+    	project: Pick<Project, 'id' | 'name'>;
     }
     ```
 
@@ -215,32 +215,32 @@
     import {IsEmail, IsString, MinLength} from 'class-validator';
 
     export class LoginDto {
-      @IsEmail()
-      email: string;
+    	@IsEmail()
+    	email: string;
 
-      @IsString()
-      @MinLength(6)
-      password: string;
+    	@IsString()
+    	@MinLength(6)
+    	password: string;
     }
 
     export class RegisterDto {
-      @IsEmail()
-      email: string;
+    	@IsEmail()
+    	email: string;
 
-      @IsString()
-      @MinLength(3)
-      username: string;
+    	@IsString()
+    	@MinLength(3)
+    	username: string;
 
-      @IsString()
-      @MinLength(8)
-      password: string;
+    	@IsString()
+    	@MinLength(8)
+    	password: string;
     }
 
     export interface AuthResponse {
-      user: UserProfile;
-      accessToken: string;
-      refreshToken: string;
-      expiresIn: number;
+    	user: UserProfile;
+    	accessToken: string;
+    	refreshToken: string;
+    	expiresIn: number;
     }
     ```
 
@@ -258,63 +258,63 @@
     import {IsString, IsOptional, MaxLength, IsHexColor} from 'class-validator';
 
     export class CreateProjectDto {
-      @IsString()
-      @MaxLength(100)
-      name: string;
+    	@IsString()
+    	@MaxLength(100)
+    	name: string;
 
-      @IsOptional()
-      @IsString()
-      @MaxLength(500)
-      description?: string;
+    	@IsOptional()
+    	@IsString()
+    	@MaxLength(500)
+    	description?: string;
 
-      @IsOptional()
-      @IsHexColor()
-      color?: string;
+    	@IsOptional()
+    	@IsHexColor()
+    	color?: string;
     }
 
     export class UpdateProjectDto {
-      @IsOptional()
-      @IsString()
-      @MaxLength(100)
-      name?: string;
+    	@IsOptional()
+    	@IsString()
+    	@MaxLength(100)
+    	name?: string;
 
-      @IsOptional()
-      @IsString()
-      @MaxLength(500)
-      description?: string;
+    	@IsOptional()
+    	@IsString()
+    	@MaxLength(500)
+    	description?: string;
 
-      @IsOptional()
-      @IsHexColor()
-      color?: string;
+    	@IsOptional()
+    	@IsHexColor()
+    	color?: string;
     }
 
     export class AddMaterialDto {
-      @IsString()
-      aliyunFileId: string;
+    	@IsString()
+    	aliyunFileId: string;
 
-      @IsString()
-      fileName: string;
+    	@IsString()
+    	fileName: string;
 
-      @IsString()
-      filePath: string;
+    	@IsString()
+    	filePath: string;
 
-      @IsOptional()
-      @IsString()
-      fileType?: string;
+    	@IsOptional()
+    	@IsString()
+    	fileType?: string;
 
-      @IsOptional()
-      description?: string;
+    	@IsOptional()
+    	description?: string;
     }
 
     export interface ProjectResponse {
-      id: string;
-      name: string;
-      description?: string;
-      color?: string;
-      isActive: boolean;
-      lastAccessedAt?: Date;
-      createdAt: Date;
-      updatedAt: Date;
+    	id: string;
+    	name: string;
+    	description?: string;
+    	color?: string;
+    	isActive: boolean;
+    	lastAccessedAt?: Date;
+    	createdAt: Date;
+    	updatedAt: Date;
     }
     ```
 
@@ -332,60 +332,60 @@
     import {IsString, IsOptional, IsNumber, IsUrl, Min, Max} from 'class-validator';
 
     export class CreateAliyunDriveConfigDto {
-      @IsUrl()
-      webdavUrl: string;
+    	@IsUrl()
+    	webdavUrl: string;
 
-      @IsString()
-      username: string;
+    	@IsString()
+    	username: string;
 
-      @IsString()
-      password: string; // 仅在创建时使用
+    	@IsString()
+    	password: string; // 仅在创建时使用
 
-      @IsOptional()
-      @IsString()
-      displayName?: string;
+    	@IsOptional()
+    	@IsString()
+    	displayName?: string;
 
-      @IsOptional()
-      @IsNumber()
-      @Min(5000)
-      @Max(300000)
-      timeout?: number;
+    	@IsOptional()
+    	@IsNumber()
+    	@Min(5000)
+    	@Max(300000)
+    	timeout?: number;
 
-      @IsOptional()
-      @IsString()
-      basePath?: string;
+    	@IsOptional()
+    	@IsString()
+    	basePath?: string;
     }
 
     export class ListFilesDto {
-      @IsOptional()
-      @IsString()
-      path?: string;
+    	@IsOptional()
+    	@IsString()
+    	path?: string;
 
-      @IsOptional()
-      @IsNumber()
-      @Min(1)
-      @Max(1000)
-      limit?: number;
+    	@IsOptional()
+    	@IsNumber()
+    	@Min(1)
+    	@Max(1000)
+    	limit?: number;
 
-      @IsOptional()
-      @IsString()
-      offset?: string;
+    	@IsOptional()
+    	@IsString()
+    	offset?: string;
     }
 
     export class UploadFileDto {
-      @IsString()
-      path: string;
+    	@IsString()
+    	path: string;
 
-      @IsOptional()
-      @IsString()
-      fileName?: string;
+    	@IsOptional()
+    	@IsString()
+    	fileName?: string;
     }
 
     export interface FileListResponse {
-      files: AliyunDriveFile[];
-      hasMore: boolean;
-      nextOffset?: string;
-      totalCount?: number;
+    	files: AliyunDriveFile[];
+    	hasMore: boolean;
+    	nextOffset?: string;
+    	totalCount?: number;
     }
     ```
 
@@ -403,28 +403,28 @@
 
     ```typescript
     export interface ApiResponse<T = any> {
-      success: boolean;
-      data?: T;
-      error?: ApiError;
-      timestamp: string;
+    	success: boolean;
+    	data?: T;
+    	error?: ApiError;
+    	timestamp: string;
     }
 
     export interface ApiError {
-      code: string;
-      message: string;
-      details?: Record<string, any>;
+    	code: string;
+    	message: string;
+    	details?: Record<string, any>;
     }
 
     export interface PaginatedResponse<T> {
-      items: T[];
-      pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        totalPages: number;
-        hasNext: boolean;
-        hasPrev: boolean;
-      };
+    	items: T[];
+    	pagination: {
+    		page: number;
+    		limit: number;
+    		total: number;
+    		totalPages: number;
+    		hasNext: boolean;
+    		hasPrev: boolean;
+    	};
     }
     ```
 
@@ -440,29 +440,29 @@
 
     ```typescript
     export enum FileType {
-      IMAGE = 'image',
-      VIDEO = 'video',
-      AUDIO = 'audio',
-      DOCUMENT = 'document',
-      OTHER = 'other',
+    	IMAGE = 'image',
+    	VIDEO = 'video',
+    	AUDIO = 'audio',
+    	DOCUMENT = 'document',
+    	OTHER = 'other',
     }
 
     export enum ProjectStatus {
-      ACTIVE = 'active',
-      ARCHIVED = 'archived',
-      DELETED = 'deleted',
+    	ACTIVE = 'active',
+    	ARCHIVED = 'archived',
+    	DELETED = 'deleted',
     }
 
     export enum MaterialStatus {
-      ACTIVE = 'active',
-      PROCESSING = 'processing',
-      ERROR = 'error',
-      DELETED = 'deleted',
+    	ACTIVE = 'active',
+    	PROCESSING = 'processing',
+    	ERROR = 'error',
+    	DELETED = 'deleted',
     }
 
     export enum SortOrder {
-      ASC = 'asc',
-      DESC = 'desc',
+    	ASC = 'asc',
+    	DESC = 'desc',
     }
     ```
 
@@ -477,27 +477,27 @@
   - **实现内容**:
     ```typescript
     export const VALIDATION_RULES = {
-      PASSWORD: {
-        MIN_LENGTH: 8,
-        MAX_LENGTH: 100,
-        REQUIRE_UPPERCASE: true,
-        REQUIRE_LOWERCASE: true,
-        REQUIRE_NUMBER: true,
-        REQUIRE_SPECIAL_CHAR: false,
-      },
-      USERNAME: {
-        MIN_LENGTH: 3,
-        MAX_LENGTH: 30,
-        PATTERN: /^[a-zA-Z0-9_-]+$/,
-      },
-      PROJECT: {
-        NAME_MAX_LENGTH: 100,
-        DESCRIPTION_MAX_LENGTH: 500,
-      },
-      FILE: {
-        MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
-        ALLOWED_MIME_TYPES: ['image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'],
-      },
+    	PASSWORD: {
+    		MIN_LENGTH: 8,
+    		MAX_LENGTH: 100,
+    		REQUIRE_UPPERCASE: true,
+    		REQUIRE_LOWERCASE: true,
+    		REQUIRE_NUMBER: true,
+    		REQUIRE_SPECIAL_CHAR: false,
+    	},
+    	USERNAME: {
+    		MIN_LENGTH: 3,
+    		MAX_LENGTH: 30,
+    		PATTERN: /^[a-zA-Z0-9_-]+$/,
+    	},
+    	PROJECT: {
+    		NAME_MAX_LENGTH: 100,
+    		DESCRIPTION_MAX_LENGTH: 500,
+    	},
+    	FILE: {
+    		MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+    		ALLOWED_MIME_TYPES: ['image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'],
+    	},
     } as const;
     ```
   - **验收标准**: 统一的验证规则，类型安全
@@ -534,7 +534,7 @@
     export type Timestamp = Date;
     export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
     export interface JSONObject {
-      [key: string]: JSONValue;
+    	[key: string]: JSONValue;
     }
     export interface JSONArray extends Array<JSONValue> {}
     ```

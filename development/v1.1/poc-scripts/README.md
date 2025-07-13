@@ -198,17 +198,17 @@ volume: {
 
    ```typescript
    interface IAudioProvider {
-     generateVoice(text: string, voiceId: string): Promise<Buffer>;
-     getVoices(): Promise<Voice[]>;
-     cloneVoice(audioSample: Buffer): Promise<string>;
+   	generateVoice(text: string, voiceId: string): Promise<Buffer>;
+   	getVoices(): Promise<Voice[]>;
+   	cloneVoice(audioSample: Buffer): Promise<string>;
    }
    ```
 
 2. **Soundverse Service**
    ```typescript
    interface ISoundscapeProvider {
-     generateSoundscape(prompt: string, duration: number): Promise<Buffer>;
-     getBatchCost(requests: number): Promise<number>;
+   	generateSoundscape(prompt: string, duration: number): Promise<Buffer>;
+   	getBatchCost(requests: number): Promise<number>;
    }
    ```
 
@@ -216,10 +216,10 @@ volume: {
 
 ```typescript
 interface IAudioMixer {
-  mixVoiceAndSoundscape(voice: Buffer, soundscape: Buffer, options: MixingOptions): Promise<Buffer>;
+	mixVoiceAndSoundscape(voice: Buffer, soundscape: Buffer, options: MixingOptions): Promise<Buffer>;
 
-  applyBinauralEffects(audio: Buffer): Promise<Buffer>;
-  optimizeForASMR(audio: Buffer): Promise<Buffer>;
+	applyBinauralEffects(audio: Buffer): Promise<Buffer>;
+	optimizeForASMR(audio: Buffer): Promise<Buffer>;
 }
 ```
 
@@ -227,21 +227,21 @@ interface IAudioMixer {
 
 ```typescript
 class ASMRContentGenerator {
-  async generateContent(request: ASMRGenerationRequest): Promise<string> {
-    // 1. Generate voice with ElevenLabs
-    const voice = await this.audioProvider.generateVoice(request.text, request.voiceId);
+	async generateContent(request: ASMRGenerationRequest): Promise<string> {
+		// 1. Generate voice with ElevenLabs
+		const voice = await this.audioProvider.generateVoice(request.text, request.voiceId);
 
-    // 2. Generate soundscape with Soundverse
-    const soundscape = await this.soundscapeProvider.generateSoundscape(request.soundscapePrompt, request.duration);
+		// 2. Generate soundscape with Soundverse
+		const soundscape = await this.soundscapeProvider.generateSoundscape(request.soundscapePrompt, request.duration);
 
-    // 3. Mix and optimize with FFmpeg
-    const mixed = await this.audioMixer.mixVoiceAndSoundscape(voice, soundscape, request.mixingOptions);
+		// 3. Mix and optimize with FFmpeg
+		const mixed = await this.audioMixer.mixVoiceAndSoundscape(voice, soundscape, request.mixingOptions);
 
-    // 4. Apply ASMR optimization
-    const optimized = await this.audioMixer.optimizeForASMR(mixed);
+		// 4. Apply ASMR optimization
+		const optimized = await this.audioMixer.optimizeForASMR(mixed);
 
-    return this.saveToFile(optimized);
-  }
+		return this.saveToFile(optimized);
+	}
 }
 ```
 

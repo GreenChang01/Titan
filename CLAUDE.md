@@ -156,7 +156,8 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 - ✅ **架构**: 清晰的关注点分离，正确的React Query集成
 - 🟡 **代码质量**: 正在进行系统性lint错误修复
 
-**Lint配置策略**: 
+**Lint配置策略**:
+
 - 保留了命名约定检查（允许API标准如Authorization, refresh_token）
 - 将关键问题（floating promises, nullish coalescing）降级为警告
 - 移除过于严格的规则（max-len, prevent-abbreviations）
@@ -167,16 +168,19 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 ### 项目里程碑状态
 
 #### ✅ 里程碑1: 核心后端服务 (已完成)
+
 - **描述**: 可生产使用的NestJS应用，能够协调ASMR音频生成
 - **组件**: ElevenLabs语音合成集成、FFmpeg音频处理、项目管理API、用户认证
 - **状态**: 稳定且可为前端提供服务
 
-#### ✅ 里程碑2: 前端基础与集成 (已完成) 
+#### ✅ 里程碑2: 前端基础与集成 (已完成)
+
 - **描述**: 具有完整数据层和基础UI组件的健壮前端应用
 - **组件**: Next.js配置、React Query服务器状态管理、shadcn/ui组件库、所有后端服务的API客户端、阿里云盘(WebDAV)文件管理
 - **状态**: 所有后端API已集成，应用可管理项目、用户和文件
 
 #### 🟡 里程碑3: 代码质量与稳定性 (进行中)
+
 - **描述**: 确保代码库可维护、健壮且无隐藏bug
 - **组件**: Lint配置、TypeScript类型覆盖、错误处理模式
 - **状态**: 已完成初步处理，**当前任务是正确解决剩余错误**
@@ -189,7 +193,7 @@ This is a Turborepo monorepo containing a fullstack authentication system with:
 
 1. **任务: 系统性Lint错误解决**
    - **目标**: 通过修复（而非禁用）规则达到"零错误"lint状态
-   - **步骤**: 
+   - **步骤**:
      - 优先修复关键的TS/React错误
      - 合理配置过于严格的规则
      - 清理样式和格式问题

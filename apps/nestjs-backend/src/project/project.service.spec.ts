@@ -169,7 +169,9 @@ describe('ProjectService', () => {
 			projectRepository.findOne.mockResolvedValue(null);
 
 			// Act & Assert
-			await expect(service.validateProjectOwnership('nonexistent', mockUser)).rejects.toThrow('Project not found or you do not have access to it');
+			await expect(service.validateProjectOwnership('nonexistent', mockUser)).rejects.toThrow(
+				'Project not found or you do not have access to it',
+			);
 		});
 	});
 
@@ -287,7 +289,9 @@ describe('ProjectService', () => {
 			projectMaterialRepository.findOne.mockResolvedValue(null);
 
 			// Act & Assert
-			await expect(service.removeMaterial(mockProject, 'nonexistent')).rejects.toThrow('Material not found in this project');
+			await expect(service.removeMaterial(mockProject, 'nonexistent')).rejects.toThrow(
+				'Material not found in this project',
+			);
 		});
 	});
 

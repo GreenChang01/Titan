@@ -37,7 +37,7 @@ export class LoggerMiddleware implements NestMiddleware {
 			}
 		});
 
-		response.on('error', error => {
+		response.on('error', (error) => {
 			const duration = Date.now() - startTime;
 
 			this.logger.error(`[${method}] ${originalUrl} - IP: ${ip} - ${duration}ms - Error: ${error.message}`);

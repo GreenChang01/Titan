@@ -1,6 +1,4 @@
-import {
-	IsString, IsOptional, Length, IsHexColor, IsEnum,
-} from 'class-validator';
+import {IsString, IsOptional, Length, IsHexColor, IsEnum} from 'class-validator';
 import {ProjectStatus} from '../../common/enums';
 
 export class UpdateProjectDto {

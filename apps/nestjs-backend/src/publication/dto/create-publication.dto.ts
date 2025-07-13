@@ -1,6 +1,4 @@
-import {
-	IsEnum, IsUUID, IsOptional, IsDateString, IsObject,
-} from 'class-validator';
+import {IsEnum, IsUUID, IsOptional, IsDateString, IsObject} from 'class-validator';
 import {ApiProperty} from '@nestjs/swagger';
 import {PublicationPlatform} from '../entities/publication.entity';
 

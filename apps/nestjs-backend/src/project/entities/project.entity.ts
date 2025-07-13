@@ -1,6 +1,4 @@
-import {
-	Cascade, Collection, Entity, ManyToOne, OneToMany, Property, types, Enum, Index,
-} from '@mikro-orm/core';
+import {Cascade, Collection, Entity, ManyToOne, OneToMany, Property, types, Enum, Index} from '@mikro-orm/core';
 import {User} from '../../users/entities/user.entity';
 import {BaseEntity} from '../../common/entities/base-entity.entity';
 import {ProjectMaterial} from '../../project-material/entities/project-material.entity';
@@ -43,7 +41,7 @@ export class Project extends BaseEntity {
 	user!: User;
 
 	/** 项目包含的素材列表 */
-	@OneToMany(() => ProjectMaterial, material => material.project, {
+	@OneToMany(() => ProjectMaterial, (material) => material.project, {
 		cascade: [Cascade.REMOVE],
 	})
 	materials = new Collection<ProjectMaterial>(this);

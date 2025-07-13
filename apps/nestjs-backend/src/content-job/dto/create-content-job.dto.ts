@@ -1,6 +1,4 @@
-import {
-	IsUUID, IsEnum, IsArray, ValidateNested, IsOptional, IsString,
-} from 'class-validator';
+import {IsUUID, IsEnum, IsArray, ValidateNested, IsOptional, IsString} from 'class-validator';
 import {Type} from 'class-transformer';
 import {ApiProperty} from '@nestjs/swagger';
 import {JobType} from '../../common/enums';

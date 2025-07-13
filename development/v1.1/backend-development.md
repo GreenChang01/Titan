@@ -171,12 +171,12 @@
 
   ```typescript
   interface IAudioProvider {
-    generateVoice(text: string, options: VoiceOptions): Promise<VoiceGenerationResult>;
-    getVoices(): Promise<Voice[]>;
-    cloneVoice(audioSample: Buffer, name: string): Promise<VoiceCloneResult>;
-    getVoiceById(voiceId: string): Promise<Voice>;
-    estimateCost(text: string, options: VoiceOptions): Promise<number>;
-    validateConnection(): Promise<boolean>;
+  	generateVoice(text: string, options: VoiceOptions): Promise<VoiceGenerationResult>;
+  	getVoices(): Promise<Voice[]>;
+  	cloneVoice(audioSample: Buffer, name: string): Promise<VoiceCloneResult>;
+  	getVoiceById(voiceId: string): Promise<Voice>;
+  	estimateCost(text: string, options: VoiceOptions): Promise<number>;
+  	validateConnection(): Promise<boolean>;
   }
   ```
 
@@ -195,10 +195,10 @@
   ```typescript
   // 针对中老年人ASMR优化的预设
   const ELDERLY_FRIENDLY = {
-    stability: 0.85, // 高稳定性
-    similarityBoost: 0.9, // 高一致性
-    style: 0.1, // 低风格强度，更自然
-    speakerBoost: true, // 增强说话者特征
+  	stability: 0.85, // 高稳定性
+  	similarityBoost: 0.9, // 高一致性
+  	style: 0.1, // 低风格强度，更自然
+  	speakerBoost: true, // 增强说话者特征
   };
   ```
 
@@ -224,13 +224,13 @@
 - [x] **ASMR音景模板库** ✅ **已实现**
   ```typescript
   export const ASMRSoundscapeTemplates = {
-    RAIN_FOREST: {
-      prompt: 'Gentle rain falling on leaves, very peaceful and calming for relaxation',
-      category: 'nature',
-      intensity: 3, // 中老年人友好强度
-      duration: 300,
-    },
-    // ... 其他专业化模板
+  	RAIN_FOREST: {
+  		prompt: 'Gentle rain falling on leaves, very peaceful and calming for relaxation',
+  		category: 'nature',
+  		intensity: 3, // 中老年人友好强度
+  		duration: 300,
+  	},
+  	// ... 其他专业化模板
   };
   ```
 
@@ -254,17 +254,17 @@
 - [x] **ASMR混音预设** ✅ **已实现**
   ```typescript
   export const ASMRMixingPresets = {
-    ELDERLY_FRIENDLY: {
-      voiceVolume: 0.7,
-      soundscapeVolume: 0.3,
-      fadeInDuration: 3, // 长淡入避免突然变化
-      fadeOutDuration: 5, // 长淡出
-      eqSettings: {
-        lowFreq: -2, // 减少低频噪音
-        midFreq: 1, // 增强人声清晰度
-        highFreq: -1, // 柔和高频
-      },
-    },
+  	ELDERLY_FRIENDLY: {
+  		voiceVolume: 0.7,
+  		soundscapeVolume: 0.3,
+  		fadeInDuration: 3, // 长淡入避免突然变化
+  		fadeOutDuration: 5, // 长淡出
+  		eqSettings: {
+  			lowFreq: -2, // 减少低频噪音
+  			midFreq: 1, // 增强人声清晰度
+  			highFreq: -1, // 柔和高频
+  		},
+  	},
   };
   ```
 
@@ -295,15 +295,15 @@
 - [x] **ASMR质量标准定义** ✅ **已实现**
   ```typescript
   interface AudioQualityReport {
-    overallScore: number; // 1-10分
-    asmrMetrics: {
-      voiceClarity: number;
-      soundscapeHarmony: number;
-      binauralEffectiveness: number;
-      relaxationPotential: number;
-    };
-    recommendations: string[];
-    needsReprocessing: boolean;
+  	overallScore: number; // 1-10分
+  	asmrMetrics: {
+  		voiceClarity: number;
+  		soundscapeHarmony: number;
+  		binauralEffectiveness: number;
+  		relaxationPotential: number;
+  	};
+  	recommendations: string[];
+  	needsReprocessing: boolean;
   }
   ```
 
@@ -332,12 +332,12 @@
   ```typescript
   // ContentJobModule配置
   BullModule.registerQueue({
-    name: 'audio-generation',
-    defaultJobOptions: {
-      removeOnComplete: 10,
-      removeOnFail: 50,
-      delay: 1000,
-    },
+  	name: 'audio-generation',
+  	defaultJobOptions: {
+  		removeOnComplete: 10,
+  		removeOnFail: 50,
+  		delay: 1000,
+  	},
   });
   ```
 
@@ -494,19 +494,19 @@ POST /projects/:id/assets // 添加素材到项目
 ```typescript
 // ASMR音频模板示例
 const ASMRAudioTemplate = {
-  name: '舒缓ASMR音频模板',
-  type: 'AUDIO_ONLY',
-  slots: [
-    {name: '主音频', type: 'VOICE_AUDIO', required: true},
-    {name: '背景音景', type: 'SOUNDSCAPE_AUDIO', required: true},
-    {name: '混音配置', type: 'MIXING_CONFIG', required: false},
-  ],
-  audioSettings: {
-    format: 'wav',
-    sampleRate: 44100,
-    channels: 2,
-    duration: 'auto',
-  },
+	name: '舒缓ASMR音频模板',
+	type: 'AUDIO_ONLY',
+	slots: [
+		{name: '主音频', type: 'VOICE_AUDIO', required: true},
+		{name: '背景音景', type: 'SOUNDSCAPE_AUDIO', required: true},
+		{name: '混音配置', type: 'MIXING_CONFIG', required: false},
+	],
+	audioSettings: {
+		format: 'wav',
+		sampleRate: 44100,
+		channels: 2,
+		duration: 'auto',
+	},
 };
 ```
 

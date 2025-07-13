@@ -158,7 +158,7 @@ describe('Logger', () => {
 // Helper function to convert mock calls to string for easier testing
 function mockToString(mockCalls: unknown[][]): string {
 	return mockCalls
-		.map(call => {
+		.map((call) => {
 			if (typeof call[0] === 'string') {
 				return call[0];
 			}

@@ -115,6 +115,7 @@
 			"unicorn/no-useless-switch-case": "off",
 			"unicorn/prefer-top-level-await": "off",
 			"@typescript-eslint/restrict-template-expressions": "off",
+      "@stylistic/no-mixed-spaces-and-tabs": "off",
 			"@stylistic/max-len": [
 				"error",
 				{

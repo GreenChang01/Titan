@@ -1,6 +1,4 @@
-import {
-	Cascade, Collection, Entity, Enum, OneToMany, Property, types, Unique,
-} from '@mikro-orm/core';
+import {Cascade, Collection, Entity, Enum, OneToMany, Property, types, Unique} from '@mikro-orm/core';
 import {UserStatus} from '@titan/shared';
 import {TwoFactorAuth} from '../../auth/entities/two-factor-auth.entity';
 import {BaseEntity} from '../../common/entities/base-entity.entity';
@@ -44,21 +42,21 @@ export class User extends BaseEntity {
 	passwordResetTokenCreatedAt?: Date | undefined;
 
 	/** 关联的双因子验证记录 */
-	@OneToMany(() => TwoFactorAuth, twoFactorAuth => twoFactorAuth.user, {
+	@OneToMany(() => TwoFactorAuth, (twoFactorAuth) => twoFactorAuth.user, {
 		cascade: [Cascade.REMOVE],
 		nullable: true,
 	})
 	twoFactorAuth?: TwoFactorAuth[];
 
 	/** 关联的阿里云盘配置 */
-	@OneToMany(() => AliyunDriveConfig, config => config.user, {
+	@OneToMany(() => AliyunDriveConfig, (config) => config.user, {
 		cascade: [Cascade.REMOVE],
 		nullable: true,
 	})
 	aliyunDriveConfig?: AliyunDriveConfig[];
 
 	/** 关联的项目列表 */
-	@OneToMany(() => Project, project => project.user, {
+	@OneToMany(() => Project, (project) => project.user, {
 		cascade: [Cascade.REMOVE],
 	})
 	projects = new Collection<Project>(this);

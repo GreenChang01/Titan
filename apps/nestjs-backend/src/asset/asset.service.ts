@@ -1,8 +1,6 @@
 import * as path from 'node:path';
 import {promises as fsPromises} from 'node:fs';
-import {
-	Injectable, Logger, NotFoundException, ForbiddenException,
-} from '@nestjs/common';
+import {Injectable, Logger, NotFoundException, ForbiddenException} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
 import {EntityRepository} from '@mikro-orm/core';
 import {EntityManager} from '@mikro-orm/postgresql';
@@ -11,9 +9,7 @@ import {v4 as uuidv4} from 'uuid';
 import {ConfigKey} from '../config/config-key.enum';
 import {AssetType, UploadSource} from '../common/enums';
 import {Asset} from './entities/asset.entity';
-import {
-	UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto, BatchOperationType,
-} from './dto';
+import {UploadAssetDto, AssetSearchDto, UpdateAssetDto, BatchOperationDto, BatchOperationType} from './dto';
 import {ThumbnailService} from './services/thumbnail.service';
 import {MetadataExtractorService} from './services/metadata-extractor.service';
 

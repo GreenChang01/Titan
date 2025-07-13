@@ -1,6 +1,4 @@
-import {
-	Entity, Property, Enum, Index,
-} from '@mikro-orm/core';
+import {Entity, Property, Enum, Index} from '@mikro-orm/core';
 import {BaseEntity} from '../../common/entities/base-entity.entity';
 import {ScheduleStatus} from '../../common/enums';
 

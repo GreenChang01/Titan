@@ -25,9 +25,9 @@ import {ProjectAsset} from './entities/project-asset.entity';
 						configService.get<string>(ConfigKey.ALLOWED_MIME_TYPES) || 'image/*,video/*,audio/*,text/*'
 					)
 						.split(',')
-						.map(type => type.trim());
+						.map((type) => type.trim());
 
-					const isAllowed = allowedMimes.some(allowedType => {
+					const isAllowed = allowedMimes.some((allowedType) => {
 						if (allowedType.endsWith('/*')) {
 							const category = allowedType.replace('/*', '');
 							return file.mimetype.startsWith(category + '/');

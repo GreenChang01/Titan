@@ -105,22 +105,22 @@
 ```typescript
 // 新增ASMR专用字段
 interface ASMRGenerationRequest {
-  voiceSettings: {
-    stability: number; // 声音稳定性
-    similarity_boost: number; // 相似度增强
-    style: number; // 风格系数
-    speaker_boost: boolean; // 说话者增强
-  };
-  soundscapeConfig: {
-    type: 'rain' | 'ocean' | 'fireplace' | 'forest';
-    intensity: number; // 强度 0-1
-    duration: number; // 时长(秒)
-  };
-  binauralSettings: {
-    enabled: boolean; // 是否启用双耳效果
-    spatialWidth: number; // 空间宽度
-    reverbAmount: number; // 混响量
-  };
+	voiceSettings: {
+		stability: number; // 声音稳定性
+		similarity_boost: number; // 相似度增强
+		style: number; // 风格系数
+		speaker_boost: boolean; // 说话者增强
+	};
+	soundscapeConfig: {
+		type: 'rain' | 'ocean' | 'fireplace' | 'forest';
+		intensity: number; // 强度 0-1
+		duration: number; // 时长(秒)
+	};
+	binauralSettings: {
+		enabled: boolean; // 是否启用双耳效果
+		spatialWidth: number; // 空间宽度
+		reverbAmount: number; // 混响量
+	};
 }
 ```
 
@@ -129,28 +129,28 @@ interface ASMRGenerationRequest {
 ```typescript
 // 新的音频优先服务架构
 class ASMRContentService {
-  constructor(
-    private elevenlabsProvider: IVoiceProvider,
-    private soundverseProvider: ISoundscapeProvider,
-    private audioMixer: IAudioMixer,
-    private qualityValidator: IAudioQualityValidator,
-  ) {}
+	constructor(
+		private elevenlabsProvider: IVoiceProvider,
+		private soundverseProvider: ISoundscapeProvider,
+		private audioMixer: IAudioMixer,
+		private qualityValidator: IAudioQualityValidator,
+	) {}
 
-  async generateASMRContent(request: ASMRGenerationRequest): Promise<string> {
-    // 1. AI语音合成
-    const voice = await this.elevenlabsProvider.synthesizeVoice(request.text, request.voiceSettings);
+	async generateASMRContent(request: ASMRGenerationRequest): Promise<string> {
+		// 1. AI语音合成
+		const voice = await this.elevenlabsProvider.synthesizeVoice(request.text, request.voiceSettings);
 
-    // 2. AI音景生成
-    const soundscape = await this.soundverseProvider.generateSoundscape(request.soundscapeConfig);
+		// 2. AI音景生成
+		const soundscape = await this.soundverseProvider.generateSoundscape(request.soundscapeConfig);
 
-    // 3. 专业音频混合
-    const mixed = await this.audioMixer.mixASMRAudio(voice, soundscape, request.binauralSettings);
+		// 3. 专业音频混合
+		const mixed = await this.audioMixer.mixASMRAudio(voice, soundscape, request.binauralSettings);
 
-    // 4. 质量验证和优化
-    const optimized = await this.qualityValidator.optimizeForASMR(mixed);
+		// 4. 质量验证和优化
+		const optimized = await this.qualityValidator.optimizeForASMR(mixed);
 
-    return this.saveAudioFile(optimized);
-  }
+		return this.saveAudioFile(optimized);
+	}
 }
 ```
 

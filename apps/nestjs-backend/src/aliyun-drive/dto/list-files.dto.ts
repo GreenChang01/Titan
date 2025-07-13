@@ -1,6 +1,4 @@
-import {
-	IsOptional, IsString, IsInt, Min, Max,
-} from 'class-validator';
+import {IsOptional, IsString, IsInt, Min, Max} from 'class-validator';
 
 export class ListFilesDto {
 	@IsOptional()

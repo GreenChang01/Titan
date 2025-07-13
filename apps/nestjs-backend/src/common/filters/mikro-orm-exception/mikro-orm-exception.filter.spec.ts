@@ -72,12 +72,14 @@ describe('MikroOrmExceptionFilter', () => {
 			filter.catch(exception, mockArgumentsHost);
 
 			expect(mockResponse.status).toHaveBeenCalledWith(expectedStatus);
-			expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
-				statusCode: expectedStatus,
-				message: expectedMessage,
-				path: '/test-url',
-				detail: 'Sample DB error',
-			}));
+			expect(mockResponse.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					statusCode: expectedStatus,
+					message: expectedMessage,
+					path: '/test-url',
+					detail: 'Sample DB error',
+				}),
+			);
 		},
 	);
 });

@@ -1,8 +1,6 @@
 import {Test, type TestingModule} from '@nestjs/testing';
 import {mock} from 'jest-mock-extended';
-import {
-	type CreateUserBodyDto, type ResetPasswordConfirmBodyDto, type UpdateUserBodyDto, UserDto,
-} from '@titan/shared';
+import {type CreateUserBodyDto, type ResetPasswordConfirmBodyDto, type UpdateUserBodyDto, UserDto} from '@titan/shared';
 import {type ResetPasswordRequestBodyDto} from '@titan/shared/src/dto/reset-password-request.body.dto';
 import {type ActiveUser} from '../auth/types/active-user.type';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';

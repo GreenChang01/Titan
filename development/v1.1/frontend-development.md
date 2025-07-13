@@ -24,38 +24,38 @@
 export type JobStatus = 'pending' | 'queued' | 'processing' | 'completed' | 'failed';
 
 export interface VoiceOptions {
-  voiceId: string;
-  stability: number;
-  similarity: number;
-  style: number;
-  speakerBoost: boolean;
+	voiceId: string;
+	stability: number;
+	similarity: number;
+	style: number;
+	speakerBoost: boolean;
 }
 
 export interface SoundscapeOptions {
-  prompt: string;
-  duration: number;
-  category: 'nature' | 'indoor' | 'urban' | 'abstract';
-  intensity: number;
-  quality: 'standard' | 'high' | 'premium';
+	prompt: string;
+	duration: number;
+	category: 'nature' | 'indoor' | 'urban' | 'abstract';
+	intensity: number;
+	quality: 'standard' | 'high' | 'premium';
 }
 
 export interface MixingSettings {
-  voiceVolume: number;
-  soundscapeVolume: number;
-  fadeInDuration: number;
-  fadeOutDuration: number;
-  eqSettings: {
-    lowFreq: number;
-    midFreq: number;
-    highFreq: number;
-  };
+	voiceVolume: number;
+	soundscapeVolume: number;
+	fadeInDuration: number;
+	fadeOutDuration: number;
+	eqSettings: {
+		lowFreq: number;
+		midFreq: number;
+		highFreq: number;
+	};
 }
 
 export interface QualityRequirements {
-  minimumScore: number;
-  enableAutoRetry: boolean;
-  maxRetries: number;
-  strictValidation: boolean;
+	minimumScore: number;
+	enableAutoRetry: boolean;
+	maxRetries: number;
+	strictValidation: boolean;
 }
 ```
 
@@ -66,37 +66,37 @@ export interface QualityRequirements {
 ```typescript
 // Zustand ASMR状态管理
 interface ASMRStore {
-  // 5步向导状态
-  currentStep: number;
-  maxSteps: number;
-  wizardSteps: WizardStep[];
+	// 5步向导状态
+	currentStep: number;
+	maxSteps: number;
+	wizardSteps: WizardStep[];
 
-  // 表单数据
-  formData: {
-    text?: string;
-    voiceSettings?: VoiceOptions;
-    soundscapeConfig?: SoundscapeOptions;
-    mixingSettings?: MixingSettings;
-    qualityRequirements?: QualityRequirements;
-  };
+	// 表单数据
+	formData: {
+		text?: string;
+		voiceSettings?: VoiceOptions;
+		soundscapeConfig?: SoundscapeOptions;
+		mixingSettings?: MixingSettings;
+		qualityRequirements?: QualityRequirements;
+	};
 
-  // 任务管理
-  jobs: Job[];
-  isSubmitting: boolean;
-  error: string | null;
-  estimatedCost: CostEstimate | null;
+	// 任务管理
+	jobs: Job[];
+	isSubmitting: boolean;
+	error: string | null;
+	estimatedCost: CostEstimate | null;
 
-  // Actions
-  setText: (text: string) => void;
-  setVoiceSettings: (settings: VoiceOptions) => void;
-  setSoundscapeConfig: (config: SoundscapeOptions) => void;
-  setMixingSettings: (settings: MixingSettings) => void;
-  setQualityRequirements: (requirements: QualityRequirements) => void;
-  nextStep: () => void;
-  prevStep: () => void;
-  goToStep: (step: number) => void;
-  addJob: (job: Job) => void;
-  setEstimatedCost: (cost: CostEstimate) => void;
+	// Actions
+	setText: (text: string) => void;
+	setVoiceSettings: (settings: VoiceOptions) => void;
+	setSoundscapeConfig: (config: SoundscapeOptions) => void;
+	setMixingSettings: (settings: MixingSettings) => void;
+	setQualityRequirements: (requirements: QualityRequirements) => void;
+	nextStep: () => void;
+	prevStep: () => void;
+	goToStep: (step: number) => void;
+	addJob: (job: Job) => void;
+	setEstimatedCost: (cost: CostEstimate) => void;
 }
 ```
 
@@ -319,18 +319,18 @@ src/components/
 
   ```typescript
   interface AssetStore {
-    assets: Asset[];
-    selectedAssets: Asset[];
-    filters: AssetFilters;
-    uploadProgress: UploadProgress[];
+  	assets: Asset[];
+  	selectedAssets: Asset[];
+  	filters: AssetFilters;
+  	uploadProgress: UploadProgress[];
 
-    // Actions
-    loadAssets: (filters?: AssetFilters) => Promise<void>;
-    uploadAssets: (files: File[], metadata: AssetMetadata) => Promise<void>;
-    selectAsset: (asset: Asset) => void;
-    selectMultipleAssets: (assets: Asset[]) => void;
-    updateAssetTags: (assetId: string, tags: string[]) => Promise<void>;
-    deleteAsset: (assetId: string) => Promise<void>;
+  	// Actions
+  	loadAssets: (filters?: AssetFilters) => Promise<void>;
+  	uploadAssets: (files: File[], metadata: AssetMetadata) => Promise<void>;
+  	selectAsset: (asset: Asset) => void;
+  	selectMultipleAssets: (assets: Asset[]) => void;
+  	updateAssetTags: (assetId: string, tags: string[]) => Promise<void>;
+  	deleteAsset: (assetId: string) => Promise<void>;
   }
   ```
 
@@ -338,16 +338,16 @@ src/components/
 
   ```typescript
   interface ProjectStore {
-    projects: Project[];
-    currentProject: Project | null;
-    projectAssets: Asset[];
+  	projects: Project[];
+  	currentProject: Project | null;
+  	projectAssets: Asset[];
 
-    // Actions
-    loadProjects: () => Promise<void>;
-    createProject: (projectData: CreateProjectDto) => Promise<void>;
-    selectProject: (projectId: string) => Promise<void>;
-    addAssetsToProject: (assetIds: string[]) => Promise<void>;
-    removeAssetFromProject: (assetId: string) => Promise<void>;
+  	// Actions
+  	loadProjects: () => Promise<void>;
+  	createProject: (projectData: CreateProjectDto) => Promise<void>;
+  	selectProject: (projectId: string) => Promise<void>;
+  	addAssetsToProject: (assetIds: string[]) => Promise<void>;
+  	removeAssetFromProject: (assetId: string) => Promise<void>;
   }
   ```
 
@@ -355,15 +355,15 @@ src/components/
 
   ```typescript
   interface ContentStore {
-    contentJobs: ContentJob[];
-    generatedContent: GeneratedContent[];
-    productionProgress: ProductionProgress;
+  	contentJobs: ContentJob[];
+  	generatedContent: GeneratedContent[];
+  	productionProgress: ProductionProgress;
 
-    // Actions
-    createBatchProduction: (config: BatchProductionConfig) => Promise<void>;
-    checkJobProgress: (jobId: string) => Promise<void>;
-    loadGeneratedContent: () => Promise<void>;
-    deleteContent: (contentId: string) => Promise<void>;
+  	// Actions
+  	createBatchProduction: (config: BatchProductionConfig) => Promise<void>;
+  	checkJobProgress: (jobId: string) => Promise<void>;
+  	loadGeneratedContent: () => Promise<void>;
+  	deleteContent: (contentId: string) => Promise<void>;
   }
   ```
 
@@ -371,15 +371,15 @@ src/components/
 
   ```typescript
   interface PublishStore {
-    schedules: PublishSchedule[];
-    publishPlatforms: PublishPlatform[];
-    calendarData: CalendarData;
+  	schedules: PublishSchedule[];
+  	publishPlatforms: PublishPlatform[];
+  	calendarData: CalendarData;
 
-    // Actions
-    loadSchedules: (dateRange: DateRange) => Promise<void>;
-    createSchedule: (schedule: CreateScheduleDto) => Promise<void>;
-    updateScheduleTime: (scheduleId: string, newTime: Date) => Promise<void>;
-    publishNow: (contentId: string, platform: string) => Promise<void>;
+  	// Actions
+  	loadSchedules: (dateRange: DateRange) => Promise<void>;
+  	createSchedule: (schedule: CreateScheduleDto) => Promise<void>;
+  	updateScheduleTime: (scheduleId: string, newTime: Date) => Promise<void>;
+  	publishNow: (contentId: string, platform: string) => Promise<void>;
   }
   ```
 
@@ -391,12 +391,12 @@ src/components/
 
   ```typescript
   interface FileUploaderProps {
-    accept: string[];
-    multiple?: boolean;
-    maxSize?: number;
-    onUpload: (files: File[]) => void;
-    onProgress?: (progress: UploadProgress[]) => void;
-    className?: string;
+  	accept: string[];
+  	multiple?: boolean;
+  	maxSize?: number;
+  	onUpload: (files: File[]) => void;
+  	onProgress?: (progress: UploadProgress[]) => void;
+  	className?: string;
   }
   ```
 
@@ -411,11 +411,11 @@ src/components/
 
   ```typescript
   interface MediaPlayerProps {
-    src: string;
-    type: 'image' | 'video' | 'audio';
-    autoPlay?: boolean;
-    controls?: boolean;
-    className?: string;
+  	src: string;
+  	type: 'image' | 'video' | 'audio';
+  	autoPlay?: boolean;
+  	controls?: boolean;
+  	className?: string;
   }
   ```
 
@@ -429,10 +429,10 @@ src/components/
 
   ```typescript
   interface FilterPanelProps {
-    filters: FilterConfig[];
-    values: FilterValues;
-    onChange: (values: FilterValues) => void;
-    onReset: () => void;
+  	filters: FilterConfig[];
+  	values: FilterValues;
+  	onChange: (values: FilterValues) => void;
+  	onReset: () => void;
   }
   ```
 
@@ -472,11 +472,11 @@ src/components/
 
   ```typescript
   interface AssetCardProps {
-    asset: Asset;
-    selected?: boolean;
-    onSelect?: (asset: Asset) => void;
-    onPreview?: (asset: Asset) => void;
-    showDetails?: boolean;
+  	asset: Asset;
+  	selected?: boolean;
+  	onSelect?: (asset: Asset) => void;
+  	onPreview?: (asset: Asset) => void;
+  	showDetails?: boolean;
   }
   ```
 
@@ -494,9 +494,9 @@ src/components/
 
   ```typescript
   interface AssetUploadProps {
-    onUploadComplete?: (assets: Asset[]) => void;
-    defaultAssetType?: AssetType;
-    projectId?: string; // 可选：直接上传到项目
+  	onUploadComplete?: (assets: Asset[]) => void;
+  	defaultAssetType?: AssetType;
+  	projectId?: string; // 可选：直接上传到项目
   }
   ```
 
@@ -513,10 +513,10 @@ src/components/
 - [ ] **AssetMetadataForm 组件**
   ```typescript
   interface MetadataFormData {
-    assetType: AssetType;
-    tags: string[];
-    description?: string;
-    customMetadata?: Record<string, any>;
+  	assetType: AssetType;
+  	tags: string[];
+  	description?: string;
+  	customMetadata?: Record<string, any>;
   }
   ```
 
@@ -557,9 +557,9 @@ src/components/
 
   ```typescript
   interface ProjectOverviewProps {
-    project: Project;
-    onEdit: (project: Project) => void;
-    onDelete: (projectId: string) => void;
+  	project: Project;
+  	onEdit: (project: Project) => void;
+  	onDelete: (projectId: string) => void;
   }
   ```
 
@@ -580,20 +580,20 @@ src/components/
 
   ```typescript
   interface TemplateEditorProps {
-    template?: ContentTemplate;
-    onSave: (template: ContentTemplate) => void;
-    onPreview: (template: ContentTemplate) => void;
+  	template?: ContentTemplate;
+  	onSave: (template: ContentTemplate) => void;
+  	onPreview: (template: ContentTemplate) => void;
   }
   ```
 
 - [ ] **插槽定义编辑器**
   ```typescript
   interface SlotDefinition {
-    name: string;
-    type: AssetType;
-    required: boolean;
-    description?: string;
-    constraints?: SlotConstraints;
+  	name: string;
+  	type: AssetType;
+  	required: boolean;
+  	description?: string;
+  	constraints?: SlotConstraints;
   }
   ```
 
@@ -616,11 +616,11 @@ src/components/
 - [ ] **生产向导界面**
   ```typescript
   interface BatchProductionSteps {
-    1: 'template-selection'; // 选择模板
-    2: 'asset-mapping'; // 素材映射
-    3: 'production-config'; // 生产配置
-    4: 'preview-confirm'; // 预览确认
-    5: 'execution-monitor'; // 执行监控
+  	1: 'template-selection'; // 选择模板
+  	2: 'asset-mapping'; // 素材映射
+  	3: 'production-config'; // 生产配置
+  	4: 'preview-confirm'; // 预览确认
+  	5: 'execution-monitor'; // 执行监控
   }
   ```
 
@@ -638,9 +638,9 @@ src/components/
 
   ```typescript
   interface AssetMappingProps {
-    template: ContentTemplate;
-    projectAssets: Asset[];
-    onMappingChange: (mapping: AssetMapping) => void;
+  	template: ContentTemplate;
+  	projectAssets: Asset[];
+  	onMappingChange: (mapping: AssetMapping) => void;
   }
   ```
 
@@ -657,11 +657,11 @@ src/components/
 
   ```typescript
   interface ProductionProgress {
-    totalJobs: number;
-    completedJobs: number;
-    failedJobs: number;
-    currentJob?: ContentJob;
-    estimatedTimeRemaining: number;
+  	totalJobs: number;
+  	completedJobs: number;
+  	failedJobs: number;
+  	currentJob?: ContentJob;
+  	estimatedTimeRemaining: number;
   }
   ```
 
@@ -703,15 +703,15 @@ src/components/
   import {FullCalendar} from '@fullcalendar/react';
 
   interface CalendarEvent {
-    id: string;
-    title: string;
-    start: Date;
-    end?: Date;
-    extendedProps: {
-      contentId: string;
-      platform: string;
-      status: ScheduleStatus;
-    };
+  	id: string;
+  	title: string;
+  	start: Date;
+  	end?: Date;
+  	extendedProps: {
+  		contentId: string;
+  		platform: string;
+  		status: ScheduleStatus;
+  	};
   }
   ```
 
@@ -727,10 +727,10 @@ src/components/
 - [ ] **ScheduleCreator 组件**
   ```typescript
   interface ScheduleCreatorProps {
-    contents: GeneratedContent[];
-    onScheduleCreated: (schedules: PublishSchedule[]) => void;
-    defaultPlatform?: string;
-    defaultTime?: Date;
+  	contents: GeneratedContent[];
+  	onScheduleCreated: (schedules: PublishSchedule[]) => void;
+  	defaultPlatform?: string;
+  	defaultTime?: Date;
   }
   ```
 
@@ -763,10 +763,10 @@ src/components/
 - [ ] **LoadingStates 组件系统**
   ```typescript
   interface LoadingStateProps {
-    loading: boolean;
-    error?: string;
-    empty?: boolean;
-    children: React.ReactNode;
+  	loading: boolean;
+  	error?: string;
+  	empty?: boolean;
+  	children: React.ReactNode;
   }
   ```
 
@@ -785,12 +785,12 @@ src/components/
   ```typescript
   // 使用React.memo优化重渲染
   const AssetCard = React.memo(({asset, selected, onSelect}) => {
-    // ...
+  	// ...
   });
 
   // 使用useMemo缓存计算结果
   const filteredAssets = useMemo(() => {
-    return assets.filter((asset) => matchesFilters(asset, filters));
+  	return assets.filter((asset) => matchesFilters(asset, filters));
   }, [assets, filters]);
   ```
 
@@ -841,17 +841,17 @@ src/components/
 
   ```css
   :root {
-    /* 状态颜色 */
-    --color-status-pending: #f59e0b;
-    --color-status-processing: #3b82f6;
-    --color-status-completed: #10b981;
-    --color-status-failed: #ef4444;
+  	/* 状态颜色 */
+  	--color-status-pending: #f59e0b;
+  	--color-status-processing: #3b82f6;
+  	--color-status-completed: #10b981;
+  	--color-status-failed: #ef4444;
 
-    /* 素材类型颜色 */
-    --color-asset-image: #8b5cf6;
-    --color-asset-video: #f59e0b;
-    --color-asset-audio: #10b981;
-    --color-asset-text: #6b7280;
+  	/* 素材类型颜色 */
+  	--color-asset-image: #8b5cf6;
+  	--color-asset-video: #f59e0b;
+  	--color-asset-audio: #10b981;
+  	--color-asset-text: #6b7280;
   }
   ```
 
@@ -861,18 +861,18 @@ src/components/
 
   ```typescript
   interface StatusBadgeProps {
-    status: 'pending' | 'processing' | 'completed' | 'failed';
-    size?: 'sm' | 'md' | 'lg';
-    showIcon?: boolean;
+  	status: 'pending' | 'processing' | 'completed' | 'failed';
+  	size?: 'sm' | 'md' | 'lg';
+  	showIcon?: boolean;
   }
   ```
 
 - [ ] **ProgressTracker 组件**
   ```typescript
   interface ProgressTrackerProps {
-    steps: ProgressStep[];
-    currentStep: number;
-    orientation?: 'horizontal' | 'vertical';
+  	steps: ProgressStep[];
+  	currentStep: number;
+  	orientation?: 'horizontal' | 'vertical';
   }
   ```
 
@@ -886,9 +886,9 @@ src/components/
   ```typescript
   // AssetCard.test.tsx
   describe('AssetCard', () => {
-    it('displays asset information correctly', () => {});
-    it('handles selection state', () => {});
-    it('calls onPreview when clicked', () => {});
+  	it('displays asset information correctly', () => {});
+  	it('handles selection state', () => {});
+  	it('calls onPreview when clicked', () => {});
   });
   ```
 
@@ -898,11 +898,11 @@ src/components/
   ```typescript
   // batch-production.e2e.spec.ts
   test('complete batch production workflow', async ({page}) => {
-    // 1. 上传素材
-    // 2. 创建项目
-    // 3. 选择模板
-    // 4. 配置生产
-    // 5. 验证结果
+  	// 1. 上传素材
+  	// 2. 创建项目
+  	// 3. 选择模板
+  	// 4. 配置生产
+  	// 5. 验证结果
   });
   ```
 
@@ -931,10 +931,10 @@ src/components/
   ```json
   // manifest.json
   {
-    "name": "Titan Content Platform",
-    "short_name": "Titan",
-    "display": "standalone",
-    "orientation": "landscape-primary"
+  	"name": "Titan Content Platform",
+  	"short_name": "Titan",
+  	"display": "standalone",
+  	"orientation": "landscape-primary"
   }
   ```
 

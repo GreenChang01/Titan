@@ -1,8 +1,6 @@
 /* eslint-disable complexity */
 import {DriverException} from '@mikro-orm/core';
-import {
-	ArgumentsHost, Catch, ExceptionFilter, HttpStatus,
-} from '@nestjs/common';
+import {ArgumentsHost, Catch, ExceptionFilter, HttpStatus} from '@nestjs/common';
 import {Request, Response} from 'express';
 import {ErrorResponse} from './types/error-response.type';
 

@@ -36,7 +36,7 @@ describe('LoggerMiddleware', () => {
 		next = jest.fn();
 	});
 
-	it('should log a 2xx response', done => {
+	it('should log a 2xx response', (done) => {
 		response.statusCode = 200;
 
 		middleware.use(req, response, next);
@@ -47,7 +47,7 @@ describe('LoggerMiddleware', () => {
 		}, 10);
 	});
 
-	it('should warn on 4xx response', done => {
+	it('should warn on 4xx response', (done) => {
 		response.statusCode = 404;
 
 		middleware.use(req, response, next);
@@ -61,7 +61,7 @@ describe('LoggerMiddleware', () => {
 		}, 10);
 	});
 
-	it('should error on 5xx response', done => {
+	it('should error on 5xx response', (done) => {
 		response.statusCode = 500;
 
 		middleware.use(req, response, next);

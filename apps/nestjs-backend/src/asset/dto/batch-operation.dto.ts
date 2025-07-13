@@ -1,6 +1,4 @@
-import {
-	IsEnum, IsArray, IsString, IsOptional,
-} from 'class-validator';
+import {IsEnum, IsArray, IsString, IsOptional} from 'class-validator';
 
 export enum BatchOperationType {
 	DELETE = 'delete',

@@ -9,44 +9,44 @@ import {usePathname, useRouter} from '@/i18n/navigation.ts';
 import {routing} from '@/i18n/routing.ts';
 
 export function LocaleSelect(): JSX.Element {
-  const t = useTranslations('Component-Footer-LocaleSelect');
+	const t = useTranslations('Component-Footer-LocaleSelect');
 
-  const locale = useLocale();
+	const locale = useLocale();
 
-  const [isPending, startTransition] = useTransition();
+	const [isPending, startTransition] = useTransition();
 
-  const pathname = usePathname();
+	const pathname = usePathname();
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const parameters = useParams();
+	const parameters = useParams();
 
-  const localeOptions: SelectItemOptionsType = routing.locales.map(locale => ({
-    label: t(locale),
-    value: locale,
-  }));
+	const localeOptions: SelectItemOptionsType = routing.locales.map((locale) => ({
+		label: t(locale),
+		value: locale,
+	}));
 
-  const onLocaleChange = (event: DropdownChangeEvent): void => {
-    const nextLocale = event.target.value as Locale;
-    startTransition(() => {
-      router.replace(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        {pathname, params: parameters},
-        {locale: nextLocale},
-      );
-    });
-  };
+	const onLocaleChange = (event: DropdownChangeEvent): void => {
+		const nextLocale = event.target.value as Locale;
+		startTransition(() => {
+			router.replace(
+				// @ts-expect-error -- TypeScript will validate that only known `params`
+				// are used in combination with a given `pathname`. Since the two will
+				// always match for the current route, we can skip runtime checks.
+				{pathname, params: parameters},
+				{locale: nextLocale},
+			);
+		});
+	};
 
-  return (
-    <Dropdown
-      className='locale-select-dropdown'
-      disabled={isPending}
-      value={locale}
-      options={localeOptions}
-      dropdownIcon='pi pi-language'
-      onChange={onLocaleChange}
-    />
-  );
+	return (
+		<Dropdown
+			className="locale-select-dropdown"
+			disabled={isPending}
+			value={locale}
+			options={localeOptions}
+			dropdownIcon="pi pi-language"
+			onChange={onLocaleChange}
+		/>
+	);
 }
