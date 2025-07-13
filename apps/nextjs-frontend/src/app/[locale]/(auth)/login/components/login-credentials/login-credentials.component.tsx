@@ -100,12 +100,6 @@ export function LoginCredentials(): JSX.Element {
 						{t('forgot-password-link-label')}
 					</Link>
 				</p>
-				<p className="text-sm text-muted-foreground">
-					{t('register-question')}{' '}
-					<Link className="text-primary hover:underline" href="/register">
-						{t('register-link-label')}
-					</Link>
-				</p>
 			</div>
 		</div>
 	);

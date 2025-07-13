@@ -5,15 +5,11 @@ import {useCallback} from 'react';
 import {confirm as confirmRequest} from './services/confirm.service.ts';
 import {forgotPassword as forgotPasswordRequest} from './services/forgot-password.service.ts';
 import {loginCredentials as loginCredentialsRequest} from './services/login-credentials.service.ts';
-import {loginTwoFactorAuth} from './services/login-two-factor.service.ts';
 import {logout as logoutRequest} from './services/logout.service.ts';
-import {register as registerRequest} from './services/register.service.ts';
 import {resetPassword as resetPasswordRequest} from './services/reset-password.service.ts';
 import {type ConfirmParams} from './services/types/confirm.params.type.ts';
 import {type ForgotPasswordParams} from './services/types/forgot-password.params.type.ts';
 import {type LoginCredentialsParams} from './services/types/login-credentials.params.type.ts';
-import {type LoginTwoFactorParams} from './services/types/login-two-factor.params.type.ts';
-import {type RegisterParams} from './services/types/register.params.type.ts';
 import {type ResetPasswordParams} from './services/types/reset-password.params.type.ts';
 import {type MutationState} from './types/mutation-state.type.ts';
 import {type AuthHookParams} from './types/auth-hook.params.ts';
@@ -22,16 +18,14 @@ import type {ApiError} from '@/utils/api/api-error.ts';
 
 export function useAuthApi(): {
 	loginCredentials: (parameters: AuthHookParams<LoginCredentialsParams>) => Promise<void>;
-	loginTwoFactor: (parameters: AuthHookParams<LoginTwoFactorParams>) => Promise<void>;
-	register: (parameters: AuthHookParams<RegisterParams>) => Promise<void>;
 	confirm: (parameters: AuthHookParams<ConfirmParams>) => Promise<void>;
 	forgotPassword: (parameters: AuthHookParams<ForgotPasswordParams>) => Promise<void>;
 	resetPassword: (parameters: AuthHookParams<ResetPasswordParams>) => Promise<void>;
 	logout: (parameters?: AuthHookParams) => Promise<void>;
 	state: Record<string, MutationState>;
 } {
-	const loadUser = useUserStore((state) => state.loadUser);
-	const clearUser = useUserStore((state) => state.clearUser);
+	const loadUser = useUserStore(state => state.loadUser);
+	const clearUser = useUserStore(state => state.clearUser);
 
 	const useCreateMutation = <ParametersType, ReturnType = void>(
 		mutationFn: (args: ParametersType) => Promise<ReturnType>,
@@ -39,8 +33,6 @@ export function useAuthApi(): {
 
 	const mutations = {
 		loginCredentials: useCreateMutation<LoginCredentialsParams>(loginCredentialsRequest),
-		loginTwoFactor: useCreateMutation<LoginTwoFactorParams>(loginTwoFactorAuth),
-		register: useCreateMutation<RegisterParams>(registerRequest),
 		confirm: useCreateMutation<ConfirmParams>(confirmRequest),
 		forgotPassword: useCreateMutation<ForgotPasswordParams>(forgotPasswordRequest),
 		resetPassword: useCreateMutation<ResetPasswordParams>(resetPasswordRequest),
@@ -78,29 +70,6 @@ export function useAuthApi(): {
 					await loadUser();
 					await onSuccess?.();
 				},
-				onError,
-				onSettled,
-			});
-		},
-
-		async loginTwoFactor({params, onSuccess, onError, onSettled}): Promise<void> {
-			await executeMutation<LoginTwoFactorParams>({
-				mutation: mutations.loginTwoFactor,
-				params,
-				async onSuccess() {
-					await loadUser();
-					await onSuccess?.();
-				},
-				onError,
-				onSettled,
-			});
-		},
-
-		async register({params, onSuccess, onError, onSettled}): Promise<void> {
-			await executeMutation<RegisterParams>({
-				mutation: mutations.register,
-				params,
-				onSuccess,
 				onError,
 				onSettled,
 			});
@@ -147,17 +116,15 @@ export function useAuthApi(): {
 			clearUser();
 		},
 
-		state: Object.fromEntries(
-			Object.entries(mutations).map(([key, mutation]) => [
-				key,
-				{
-					isPending: mutation.isPending,
-					isError: mutation.isError,
-					isSuccess: mutation.isSuccess,
-					isIdle: mutation.isIdle,
-					error: mutation.error,
-				},
-			]),
-		) as Record<string, MutationState>,
+		state: Object.fromEntries(Object.entries(mutations).map(([key, mutation]) => [
+			key,
+			{
+				isPending: mutation.isPending,
+				isError: mutation.isError,
+				isSuccess: mutation.isSuccess,
+				isIdle: mutation.isIdle,
+				error: mutation.error,
+			},
+		])) as Record<string, MutationState>,
 	};
 }

@@ -3,7 +3,7 @@ import {ConfigService} from '@nestjs/config';
 import {ApiResponse, ApiTags, ApiOperation} from '@nestjs/swagger';
 import {Throttle} from '@nestjs/throttler';
 import type {Response, Request} from 'express';
-import {LoginCredentialsBodyDto, LoginTwoFactorAuthBodyDto} from '@titan/shared';
+import {LoginCredentialsBodyDto} from '@titan/shared';
 import {ConfigKey} from '../config/config-key.enum';
 import {oneMinute, oneWeek, oneDay} from '../utils/time.util';
 import {ValidateHeader} from '../common/decorators/validate-header/validate-header.decorator';
@@ -12,16 +12,12 @@ import {AuthService} from './auth.service';
 import {Public} from './decorators/public.decorator';
 
 // Cookie 键名常量
-
 const ACCESS_TOKEN_COOKIE_KEY = 'access_token';
-
 const REFRESH_TOKEN_COOKIE_KEY = 'refresh_token';
 
-const TWO_FACTOR_AUTH_COOKIE_KEY = 'two_factor_auth';
-
 /**
- * 身份验证控制器
- * 处理用户登录、双因子验证、令牌刷新和退出登录的 API 端点
+ * 身份验证控制器 - 单用户简化版
+ * 处理用户登录、令牌刷新和退出登录的 API 端点
  */
 @ApiTags('身份验证')
 @Controller('auth')
@@ -32,19 +28,19 @@ export class AuthController {
 	) {}
 
 	/**
-	 * 用户凭据登录并发送双因子验证码
-	 * 接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱
+	 * 单用户直接登录
+	 * 接受用户邮箱和密码，验证成功后直接生成访问令牌
 	 */
 	@Post('login/credentials')
 	@Public()
 	@Throttle({default: {ttl: oneMinute, limit: 5}})
 	@ApiOperation({
-		summary: '用户凭据登录并发送双因子验证码',
-		description: '接受用户邮箱和密码，验证成功后发送双因子验证码到邮箱，用于进一步身份验证',
+		summary: '单用户直接登录',
+		description: '接受用户邮箱和密码，验证成功后直接生成访问令牌和刷新令牌',
 	})
 	@ApiResponse({
 		status: HttpStatus.OK,
-		description: '登录成功，双因子验证码已发送',
+		description: '登录成功，令牌已生成',
 	})
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
@@ -62,7 +58,7 @@ export class AuthController {
 		})
 		language: AcceptedLanguages,
 	): Promise<void> {
-		// 开发环境直接验证用户并生成令牌，跳过2FA
+		// 单用户模式：直接验证用户并生成令牌，无需2FA
 		const user = await this.authService.validateUserCredentials(loginDto.email, loginDto.password, language);
 
 		// 直接生成并设置访问令牌和刷新令牌 Cookie
@@ -81,55 +77,6 @@ export class AuthController {
 			secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
 			sameSite: 'lax',
 			maxAge: oneDay * 30, // 30 days
-		});
-	}
-
-	/**
-	 * 双因子验证码登录并生成令牌
-	 * 验证双因子验证码，成功后生成访问令牌和刷新令牌
-	 */
-	@Post('login/2fa')
-	@Public()
-	@Throttle({default: {ttl: oneMinute, limit: 5}})
-	@ApiOperation({
-		summary: '双因子验证码登录并生成令牌',
-		description: '验证双因子验证码，成功后生成访问令牌和刷新令牌用于用户身份验证',
-	})
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: '登录成功，令牌已生成',
-	})
-	@ApiResponse({
-		status: HttpStatus.UNAUTHORIZED,
-		description: '双因子验证码无效',
-	})
-	@HttpCode(HttpStatus.OK)
-	async login2fa(
-		@Body() body: LoginTwoFactorAuthBodyDto,
-		@Req() req: Request,
-		@Res({passthrough: true}) response: Response,
-	): Promise<void> {
-		const {code} = body;
-		const twoFactorAuthHashedId = req.cookies[TWO_FACTOR_AUTH_COOKIE_KEY] as string;
-		const user = await this.authService.validateTwoFactorAuth(twoFactorAuthHashedId, code);
-
-		const accessToken = await this.authService.generateAccessToken(user);
-		const refreshToken = await this.authService.generateRefreshToken(user);
-
-		// 设置访问令牌 Cookie（15 分钟有效期）
-		response.cookie(ACCESS_TOKEN_COOKIE_KEY, accessToken, {
-			httpOnly: true,
-			secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
-			sameSite: 'lax',
-			maxAge: oneMinute * 15, // 15 minutes
-		});
-
-		// 设置刷新令牌 Cookie（7 天有效期）
-		response.cookie(REFRESH_TOKEN_COOKIE_KEY, refreshToken, {
-			httpOnly: true,
-			secure: this.configService.get<string>(ConfigKey.NODE_ENV) === 'production',
-			sameSite: 'lax',
-			maxAge: oneWeek,
 		});
 	}
 

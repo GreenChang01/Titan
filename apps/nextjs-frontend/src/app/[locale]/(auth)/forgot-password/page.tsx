@@ -80,7 +80,7 @@ export default function ForgotPassword(): JSX.Element {
 					<CardTitle className="text-center text-2xl font-bold">{t('title')}</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 						<div className="space-y-2">
 							<Label htmlFor="email">{t('email-input-label')}</Label>
 							<Input
@@ -90,10 +90,10 @@ export default function ForgotPassword(): JSX.Element {
 								data-testid="forgot-password-email-input"
 								{...register('email')}
 							/>
-							{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+							{errors.email ? <p className="text-sm text-destructive">{errors.email.message}</p> : null}
 						</div>
 
-						{errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
+						{errors.root ? <p className="text-sm text-destructive text-center">{errors.root.message}</p> : null}
 
 						<Button
 							type="submit"

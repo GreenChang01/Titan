@@ -112,7 +112,7 @@ export default function ResetPassword(): JSX.Element {
 					<CardTitle className="text-center text-2xl font-bold">{t('title')}</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
 						<div className="space-y-2">
 							<Label htmlFor="password">{t('password-input-label')}</Label>
 							<Input
@@ -122,10 +122,10 @@ export default function ResetPassword(): JSX.Element {
 								data-testid="reset-password-password-input"
 								{...register('password')}
 							/>
-							{errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+							{errors.password ? <p className="text-sm text-destructive">{errors.password.message}</p> : null}
 						</div>
 
-						{errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
+						{errors.root ? <p className="text-sm text-destructive text-center">{errors.root.message}</p> : null}
 
 						<Button type="submit" className="w-full" disabled={isSubmitting} data-testid="reset-password-submit-button">
 							{isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}

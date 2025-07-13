@@ -12,69 +12,108 @@ import type {
 	WizardStep,
 } from '@titan/shared';
 
+/**
+ * ASMR生成状态类型定义
+ */
 type ASMRState = {
-	// Form data for the wizard
+	/** 向导表单数据 */
 	formData: Partial<ASMRGenerationRequest>;
 
-	// Wizard state
+	/** 向导状态 */
+	/** 当前步骤编号 */
 	currentStep: number;
+	/** 最大步骤数 */
 	maxSteps: number;
+	/** 向导步骤配置 */
 	wizardSteps: WizardStep[];
 
-	// Jobs management
+	/** 任务管理 */
+	/** 所有生成任务列表 */
 	jobs: Job[];
+	/** 当前选中的任务ID */
 	currentJobId: string | undefined;
 
-	// UI state
+	/** UI状态 */
+	/** 是否正在提交 */
 	isSubmitting: boolean;
+	/** 错误信息 */
 	error: string | undefined;
 
-	// Cost estimation
+	/** 成本估算 */
 	estimatedCost:
 		| {
+			/** 语音合成成本 */
 			voiceCost: number;
+			/** 音景生成成本 */
 			soundscapeCost: number;
+			/** 总成本 */
 			totalCost: number;
+			/** 货币单位 */
 			currency: string;
 		}
 		| undefined;
 };
 
+/**
+ * ASMR操作方法类型定义
+ */
 type ASMRActions = {
-	// Form data actions
+	/** 表单数据操作 */
+	/** 设置文本内容 */
 	setText: (text: string) => void;
+	/** 设置语音参数 */
 	setVoiceSettings: (settings: Partial<VoiceOptions>) => void;
+	/** 设置音景配置 */
 	setSoundscapeConfig: (config: Partial<SoundscapeOptions>) => void;
+	/** 设置混音参数 */
 	setMixingSettings: (settings: Partial<MixingOptions>) => void;
+	/** 设置双耳效果参数 */
 	setBinauralSettings: (settings: Partial<BinauralSettings>) => void;
+	/** 设置质量要求 */
 	setQualityRequirements: (requirements: Partial<QualityRequirements>) => void;
 
-	// Wizard navigation
+	/** 向导导航 */
+	/** 下一步 */
 	nextStep: () => void;
+	/** 上一步 */
 	prevStep: () => void;
+	/** 跳转到指定步骤 */
 	goToStep: (step: number) => void;
+	/** 完成指定步骤 */
 	completeStep: (step: number) => void;
 
-	// Jobs management
+	/** 任务管理 */
+	/** 添加新任务 */
 	addJob: (job: Job) => void;
+	/** 更新任务信息 */
 	updateJob: (jobId: string, updates: Partial<Job>) => void;
+	/** 设置当前任务ID */
 	setCurrentJobId: (jobId: string | undefined) => void;
+	/** 删除任务 */
 	removeJob: (jobId: string) => void;
+	/** 清空所有任务 */
 	clearJobs: () => void;
 
-	// UI state management
+	/** UI状态管理 */
+	/** 设置提交状态 */
 	setSubmitting: (isSubmitting: boolean) => void;
+	/** 设置错误信息 */
 	setError: (error: string | undefined) => void;
 
-	// Cost estimation
+	/** 成本估算 */
+	/** 设置估算成本 */
 	setEstimatedCost: (cost: ASMRState['estimatedCost']) => void;
 
-	// Reset functions
+	/** 重置功能 */
+	/** 重置表单数据 */
 	resetForm: () => void;
+	/** 重置向导状态 */
 	resetWizard: () => void;
+	/** 完全重置 */
 	reset: () => void;
 };
 
+/** ASMR Store 完整类型 */
 type ASMRStore = ASMRState & ASMRActions;
 
 // Initial state

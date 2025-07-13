@@ -1,25 +1,18 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Patch, Post} from '@nestjs/common';
 import {ApiResponse, ApiTags, ApiOperation} from '@nestjs/swagger';
 import {Throttle} from '@nestjs/throttler';
-import {
-	CreateUserBodyDto,
-	ResetPasswordConfirmBodyDto,
-	UserDto,
-	ResetPasswordRequestBodyDto,
-	UpdateUserBodyDto,
-} from '@titan/shared';
+import {ResetPasswordConfirmBodyDto, UserDto, ResetPasswordRequestBodyDto, UpdateUserBodyDto} from '@titan/shared';
 import {ValidateHeader} from '../common/decorators/validate-header/validate-header.decorator';
 import {AcceptedLanguages} from '../email/types/accepted-languages.enum';
 import {Public} from '../auth/decorators/public.decorator';
 import {User} from '../auth/decorators/user.decorator';
 import type {ActiveUser} from '../auth/types/active-user.type';
-import {oneHour, oneMinute} from '../utils/time.util';
-import {ConfirmUserParamDto as ConfirmUserParameterDto} from './dto/confirm-user.param.dto';
+import {oneMinute} from '../utils/time.util';
 import {UsersService} from './users.service';
 
 /**
- * 用户控制器
- * 处理用户相关的 API 端点，包括创建、查询、更新、删除、确认和密码重置
+ * 用户控制器 - 单用户简化版
+ * 处理用户相关的 API 端点，包括查询、更新、删除和密码重置
  */
 @ApiTags('用户管理')
 @Controller('users')
@@ -46,59 +39,11 @@ export class UsersController {
 		return new UserDto(userEntity);
 	}
 
-	/**
-	 * 创建新用户
-	 * 接受邮箱、密码和用户名，创建新用户并发送确认邮件
-	 */
-	@Post()
-	@Public()
-	@Throttle({default: {ttl: oneHour, limit: 60}}) // 每小时每 IP 地址允许 60 次请求
-	@ApiOperation({
-		summary: '创建新用户',
-		description: '通过提供邮箱、密码和用户名创建新用户账户，系统将发送确认邮件',
-	})
-	@ApiResponse({
-		status: HttpStatus.CREATED,
-		description: '用户创建成功',
-		type: UserDto,
-	})
-	async createUser(
-		@Body() body: CreateUserBodyDto,
-		@ValidateHeader({headerName: 'Accept-Language', options: {expectedValue: AcceptedLanguages}})
-		language: AcceptedLanguages,
-	): Promise<UserDto> {
-		const {email, password, username} = body;
-		const userEntity = await this.usersService.createUser(email, password, username, language);
+	// 单用户模式：禁用用户注册功能
+	// 注册功能已移除以简化单用户身份验证
 
-		return new UserDto(userEntity);
-	}
-
-	/**
-	 * 确认用户注册
-	 * 使用邮件中的确认码来激活用户账户
-	 */
-	@Post('confirm/:confirmationCode')
-	@Public()
-	@Throttle({default: {ttl: oneMinute * 15, limit: 10}}) // 15 分钟内每 IP 地址允许 10 次请求
-	@ApiOperation({
-		summary: '确认用户注册',
-		description: '使用邮件中的确认码激活用户账户，完成注册流程',
-	})
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: '用户账户确认成功',
-		type: UserDto,
-	})
-	@ApiResponse({
-		status: HttpStatus.NOT_FOUND,
-		description: '无效的确认码',
-	})
-	async confirmUser(@Param() parameter: ConfirmUserParameterDto): Promise<UserDto> {
-		const {confirmationCode} = parameter;
-		const userEntity = await this.usersService.confirmUser(confirmationCode);
-
-		return new UserDto(userEntity);
-	}
+	// 单用户模式：禁用用户确认功能
+	// 确认功能已移除以简化单用户身份验证
 
 	/**
 	 * 删除当前用户
