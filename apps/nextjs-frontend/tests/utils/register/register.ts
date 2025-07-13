@@ -50,7 +50,7 @@ const verifyEmail = async (page: Page, emailAddress: string): Promise<void> => {
 	await page.waitForLoadState('networkidle');
 
 	// Additional check: wait for URL to contain 'confirm' to ensure we're on the right page
-	await page.waitForURL(url => url.pathname.includes('confirm'), {
+	await page.waitForURL((url) => url.pathname.includes('confirm'), {
 		timeout: 5000, // Short timeout since navigation should already be complete
 	});
 };

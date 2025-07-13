@@ -8,7 +8,7 @@ function Calendar({className, classNames, showOutsideDays = true, ...props}: Rea
 		<DayPicker
 			showOutsideDays={showOutsideDays}
 			className={cn('p-3', className)}
-			mode='single'
+			mode="single"
 			classNames={{
 				months: 'flex flex-col sm:flex-row gap-2',
 				month: 'flex flex-col gap-4',

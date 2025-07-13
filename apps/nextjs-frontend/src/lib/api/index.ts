@@ -1,9 +1,7 @@
 import {apiClient} from './client';
 
 // Re-export all API types for convenience
-export type {
-	AuthResponse, User, LoginRequest, RegisterRequest,
-} from './auth';
+export type {AuthResponse, User, LoginRequest, RegisterRequest} from './auth';
 
 export type {
 	Project,

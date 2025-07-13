@@ -129,10 +129,10 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 	};
 
 	const dialogFooter = (
-		<div className='flex justify-end gap-2'>
+		<div className="flex justify-end gap-2">
 			<Button
 				label={t('cancel', {defaultMessage: '取消'})}
-				severity='secondary'
+				severity="secondary"
 				disabled={isSubmitting}
 				onClick={handleCancel}
 			/>
@@ -160,44 +160,44 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 			visible={isVisible}
 			footer={dialogFooter}
 			style={{width: '600px'}}
-			className='p-fluid'
+			className="p-fluid"
 			onHide={handleCancel}
 		>
-			<form className='space-y-6' onSubmit={handleSubmit(handleFormSubmit)}>
+			<form className="space-y-6" onSubmit={handleSubmit(handleFormSubmit)}>
 				{/* 项目名称 */}
-				<div className='field'>
-					<label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-2'>
+				<div className="field">
+					<label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
 						{t('project-name', {defaultMessage: '项目名称'})}
-						<span className='text-red-500 ml-1'>*</span>
+						<span className="text-red-500 ml-1">*</span>
 					</label>
 					<Controller
-						name='name'
+						name="name"
 						control={control}
 						render={({field}) => (
 							<InputText
 								{...field}
 								autoFocus
-								id='name'
+								id="name"
 								placeholder={t('project-name-placeholder', {defaultMessage: '请输入项目名称'})}
 								className={errors.name ? 'p-invalid' : ''}
 							/>
 						)}
 					/>
-					{errors.name ? <small className='text-red-500 mt-1 block'>{getErrorMessage('name')}</small> : null}
+					{errors.name ? <small className="text-red-500 mt-1 block">{getErrorMessage('name')}</small> : null}
 				</div>
 
 				{/* 项目描述 */}
-				<div className='field'>
-					<label htmlFor='description' className='block text-sm font-medium text-gray-700 mb-2'>
+				<div className="field">
+					<label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
 						{t('project-description', {defaultMessage: '项目描述'})}
 					</label>
 					<Controller
-						name='description'
+						name="description"
 						control={control}
 						render={({field}) => (
 							<InputTextarea
 								{...field}
-								id='description'
+								id="description"
 								placeholder={t('project-description-placeholder', {defaultMessage: '请输入项目描述（可选）'})}
 								rows={4}
 								className={errors.description ? 'p-invalid' : ''}
@@ -205,63 +205,63 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 						)}
 					/>
 					{errors.description ? (
-						<small className='text-red-500 mt-1 block'>{getErrorMessage('description')}</small>
+						<small className="text-red-500 mt-1 block">{getErrorMessage('description')}</small>
 					) : null}
 				</div>
 
 				{/* 项目状态 */}
-				<div className='field'>
-					<label htmlFor='status' className='block text-sm font-medium text-gray-700 mb-2'>
+				<div className="field">
+					<label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
 						{t('project-status', {defaultMessage: '项目状态'})}
 					</label>
 					<Controller
-						name='status'
+						name="status"
 						control={control}
 						render={({field}) => (
 							<Dropdown
 								{...field}
-								id='status'
+								id="status"
 								options={statusOptions}
-								optionLabel='label'
-								optionValue='value'
+								optionLabel="label"
+								optionValue="value"
 								placeholder={t('select-status', {defaultMessage: '选择状态'})}
 								className={errors.status ? 'p-invalid' : ''}
 							/>
 						)}
 					/>
-					{errors.status ? <small className='text-red-500 mt-1 block'>{getErrorMessage('status')}</small> : null}
+					{errors.status ? <small className="text-red-500 mt-1 block">{getErrorMessage('status')}</small> : null}
 				</div>
 
 				{/* 项目优先级 */}
-				<div className='field'>
-					<label htmlFor='priority' className='block text-sm font-medium text-gray-700 mb-2'>
+				<div className="field">
+					<label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
 						{t('project-priority', {defaultMessage: '项目优先级'})}
 					</label>
 					<Controller
-						name='priority'
+						name="priority"
 						control={control}
 						render={({field}) => (
 							<Dropdown
 								{...field}
-								id='priority'
+								id="priority"
 								options={priorityOptions}
-								optionLabel='label'
-								optionValue='value'
+								optionLabel="label"
+								optionValue="value"
 								placeholder={t('select-priority', {defaultMessage: '选择优先级'})}
 								className={errors.priority ? 'p-invalid' : ''}
 							/>
 						)}
 					/>
-					{errors.priority ? <small className='text-red-500 mt-1 block'>{getErrorMessage('priority')}</small> : null}
+					{errors.priority ? <small className="text-red-500 mt-1 block">{getErrorMessage('priority')}</small> : null}
 				</div>
 
 				{/* 表单说明 */}
-				<div className='bg-blue-50 border border-blue-200 rounded-md p-4'>
-					<div className='flex items-start gap-2'>
-						<i className='pi pi-info-circle text-blue-600 mt-0.5'/>
-						<div className='text-sm text-blue-800'>
-							<p className='font-medium mb-1'>{t('form-tips-title', {defaultMessage: '创建提示'})}</p>
-							<ul className='space-y-1 text-sm'>
+				<div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+					<div className="flex items-start gap-2">
+						<i className="pi pi-info-circle text-blue-600 mt-0.5" />
+						<div className="text-sm text-blue-800">
+							<p className="font-medium mb-1">{t('form-tips-title', {defaultMessage: '创建提示'})}</p>
+							<ul className="space-y-1 text-sm">
 								<li>• {t('tip-name', {defaultMessage: '项目名称将作为主要标识符显示'})}</li>
 								<li>• {t('tip-description', {defaultMessage: '详细描述有助于团队成员理解项目目标'})}</li>
 								<li>• {t('tip-status', {defaultMessage: '草稿状态的项目可以稍后激活'})}</li>
@@ -273,24 +273,24 @@ export function ProjectForm({isVisible, onHide, onSubmit, project, mode = 'creat
 
 				{/* 如果是编辑模式，显示项目统计信息 */}
 				{mode === 'edit' && project ? (
-					<div className='bg-gray-50 border border-gray-200 rounded-md p-4'>
-						<h4 className='font-medium text-gray-900 mb-3'>{t('project-statistics', {defaultMessage: '项目统计'})}</h4>
-						<div className='grid grid-cols-2 gap-4 text-sm'>
+					<div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+						<h4 className="font-medium text-gray-900 mb-3">{t('project-statistics', {defaultMessage: '项目统计'})}</h4>
+						<div className="grid grid-cols-2 gap-4 text-sm">
 							<div>
-								<span className='text-gray-500'>{t('material-count', {defaultMessage: '素材数量'})}:</span>
-								<span className='ml-2 font-medium'>{project.materialCount}</span>
+								<span className="text-gray-500">{t('material-count', {defaultMessage: '素材数量'})}:</span>
+								<span className="ml-2 font-medium">{project.materialCount}</span>
 							</div>
 							<div>
-								<span className='text-gray-500'>{t('created-at', {defaultMessage: '创建时间'})}:</span>
-								<span className='ml-2 font-medium'>{project.createdAt}</span>
+								<span className="text-gray-500">{t('created-at', {defaultMessage: '创建时间'})}:</span>
+								<span className="ml-2 font-medium">{project.createdAt}</span>
 							</div>
 							<div>
-								<span className='text-gray-500'>{t('updated-at', {defaultMessage: '更新时间'})}:</span>
-								<span className='ml-2 font-medium'>{project.updatedAt}</span>
+								<span className="text-gray-500">{t('updated-at', {defaultMessage: '更新时间'})}:</span>
+								<span className="ml-2 font-medium">{project.updatedAt}</span>
 							</div>
 							<div>
-								<span className='text-gray-500'>{t('owner', {defaultMessage: '负责人'})}:</span>
-								<span className='ml-2 font-medium'>{project.owner.name}</span>
+								<span className="text-gray-500">{t('owner', {defaultMessage: '负责人'})}:</span>
+								<span className="ml-2 font-medium">{project.owner.name}</span>
 							</div>
 						</div>
 					</div>

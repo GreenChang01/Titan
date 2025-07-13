@@ -1,8 +1,6 @@
 'use client';
 
-import {
-	useQuery, useMutation, useQueryClient, type UseMutationOptions,
-} from '@tanstack/react-query';
+import {useQuery, useMutation, useQueryClient, type UseMutationOptions} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import type {AsmrGenerationRequest, Job, JobProgress} from '@titan/shared';
 import {
@@ -70,7 +68,7 @@ export function useAsmrJobProgress(
 						queryKey: queryKeys.asmr.job(jobId),
 						queryFn: async () => asmrApi.getJob(jobId),
 					})
-					.then(fullJob => {
+					.then((fullJob) => {
 						if (fullJob) {
 							// Now call the callback with the complete data
 							options.onJobComplete!(fullJob);
@@ -84,12 +82,12 @@ export function useAsmrJobProgress(
 
 								return {
 									...oldData,
-									jobs: oldData.jobs.map(j => (j.id === fullJob.id ? fullJob : j)),
+									jobs: oldData.jobs.map((j) => (j.id === fullJob.id ? fullJob : j)),
 								};
 							});
 						}
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.error('Failed to fetch complete job details:', error);
 						// Fallback: still call the callback but with limited data
 						const fallbackJob: Job = {

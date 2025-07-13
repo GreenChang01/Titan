@@ -38,15 +38,15 @@ export class ProjectController {
 		@User() user: UserEntity,
 		@Body() createDto: CreateProjectDto,
 	): Promise<{
-			id: string;
-			name: string;
-			description?: string;
-			color?: string;
-			isActive: boolean;
-			lastAccessedAt?: Date;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+		id: string;
+		name: string;
+		description?: string;
+		color?: string;
+		isActive: boolean;
+		lastAccessedAt?: Date;
+		createdAt: Date;
+		updatedAt: Date;
+	}> {
 		const project = await this.projectService.create(user, createDto.name, createDto.description, createDto.color);
 
 		return {
@@ -121,15 +121,15 @@ export class ProjectController {
 		@Param('id') id: string,
 		@User() user: UserEntity,
 	): Promise<{
-			id: string;
-			name: string;
-			description?: string;
-			color?: string;
-			isActive: boolean;
-			lastAccessedAt?: Date;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+		id: string;
+		name: string;
+		description?: string;
+		color?: string;
+		isActive: boolean;
+		lastAccessedAt?: Date;
+		createdAt: Date;
+		updatedAt: Date;
+	}> {
 		const project = await this.projectService.validateProjectOwnership(id, user);
 
 		// 更新最后访问时间
@@ -169,15 +169,15 @@ export class ProjectController {
 		@User() user: UserEntity,
 		@Body() updateDto: UpdateProjectDto,
 	): Promise<{
-			id: string;
-			name: string;
-			description?: string;
-			color?: string;
-			isActive: boolean;
-			lastAccessedAt?: Date;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+		id: string;
+		name: string;
+		description?: string;
+		color?: string;
+		isActive: boolean;
+		lastAccessedAt?: Date;
+		createdAt: Date;
+		updatedAt: Date;
+	}> {
 		const project = await this.projectService.validateProjectOwnership(id, user);
 
 		const updatedProject = await this.projectService.update(
@@ -245,20 +245,20 @@ export class ProjectController {
 		@User() user: UserEntity,
 		@Body() addMaterialDto: AddMaterialDto,
 	): Promise<{
-			id: string;
-			aliyunFileId: string;
-			fileName: string;
-			filePath: string;
-			fileType?: string;
-			fileSize?: number;
-			thumbnailUrl?: string;
-			fileCreatedAt?: Date;
-			fileUpdatedAt?: Date;
-			description?: string;
-			metadata?: Record<string, any>;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+		id: string;
+		aliyunFileId: string;
+		fileName: string;
+		filePath: string;
+		fileType?: string;
+		fileSize?: number;
+		thumbnailUrl?: string;
+		fileCreatedAt?: Date;
+		fileUpdatedAt?: Date;
+		description?: string;
+		metadata?: Record<string, any>;
+		createdAt: Date;
+		updatedAt: Date;
+	}> {
 		const project = await this.projectService.validateProjectOwnership(projectId, user);
 
 		const material = await this.projectService.addMaterial(project, addMaterialDto);
@@ -328,22 +328,22 @@ export class ProjectController {
 		@Param('id') projectId: string,
 		@User() user: UserEntity,
 	): Promise<
-			Array<{
-				id: string;
-				aliyunFileId: string;
-				fileName: string;
-				filePath: string;
-				fileType?: string;
-				fileSize?: number;
-				thumbnailUrl?: string;
-				fileCreatedAt?: Date;
-				fileUpdatedAt?: Date;
-				description?: string;
-				metadata?: Record<string, any>;
-				createdAt: Date;
-				updatedAt: Date;
-			}>
-		> {
+		Array<{
+			id: string;
+			aliyunFileId: string;
+			fileName: string;
+			filePath: string;
+			fileType?: string;
+			fileSize?: number;
+			thumbnailUrl?: string;
+			fileCreatedAt?: Date;
+			fileUpdatedAt?: Date;
+			description?: string;
+			metadata?: Record<string, any>;
+			createdAt: Date;
+			updatedAt: Date;
+		}>
+	> {
 		const project = await this.projectService.validateProjectOwnership(projectId, user);
 		const materials = await this.projectService.findProjectMaterials(project);
 

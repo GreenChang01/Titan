@@ -8,7 +8,7 @@ export function FloatLabelInputText({label, className, ...inputTextProps}: Float
 
 	return (
 		<FloatLabel>
-			<InputText id={label} {...(inputTextProps as InputTextProps)} className={mergedClassName}/>
+			<InputText id={label} {...(inputTextProps as InputTextProps)} className={mergedClassName} />
 			<label htmlFor={label}>{label}</label>
 		</FloatLabel>
 	);

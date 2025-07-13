@@ -5,13 +5,9 @@ import {Mic, Volume2, Settings} from 'lucide-react';
 import {useASMRStore} from '@/store/asmr/asmr.store';
 import {Button} from '@/components/ui/button';
 import {Label} from '@/components/ui/label';
-import {
-	Card, CardContent, CardDescription, CardHeader, CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
-import {
-	Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {Slider} from '@/components/ui/slider';
 
 export function Step2Voice(): JSX.Element {
@@ -58,19 +54,19 @@ export function Step2Voice(): JSX.Element {
 	];
 
 	return (
-		<div className='space-y-6'>
+		<div className="space-y-6">
 			{/* 语音选择 */}
-			<div className='space-y-4'>
-				<div className='space-y-2'>
-					<Label className='text-base font-medium flex items-center gap-2'>
-						<Mic className='h-4 w-4'/>
+			<div className="space-y-4">
+				<div className="space-y-2">
+					<Label className="text-base font-medium flex items-center gap-2">
+						<Mic className="h-4 w-4" />
 						选择AI语音
 					</Label>
-					<p className='text-sm text-muted-foreground'>选择最适合您内容的语音风格。每种语音都经过ASMR优化调校。</p>
+					<p className="text-sm text-muted-foreground">选择最适合您内容的语音风格。每种语音都经过ASMR优化调校。</p>
 				</div>
 
-				<div className='grid gap-4'>
-					{voicePresets.map(voice => (
+				<div className="grid gap-4">
+					{voicePresets.map((voice) => (
 						<Card
 							key={voice.id}
 							className={`cursor-pointer transition-colors ${
@@ -80,17 +76,17 @@ export function Step2Voice(): JSX.Element {
 								handleVoiceChange('voiceId', voice.id);
 							}}
 						>
-							<CardContent className='p-4'>
-								<div className='flex items-center justify-between'>
-									<div className='space-y-1'>
-										<div className='flex items-center gap-2'>
-											<h4 className='font-medium'>{voice.name}</h4>
-											<Badge variant='secondary'>{voice.category}</Badge>
-											<Badge variant='outline'>{voice.ageGroup}</Badge>
+							<CardContent className="p-4">
+								<div className="flex items-center justify-between">
+									<div className="space-y-1">
+										<div className="flex items-center gap-2">
+											<h4 className="font-medium">{voice.name}</h4>
+											<Badge variant="secondary">{voice.category}</Badge>
+											<Badge variant="outline">{voice.ageGroup}</Badge>
 										</div>
-										<p className='text-sm text-muted-foreground'>{voice.description}</p>
+										<p className="text-sm text-muted-foreground">{voice.description}</p>
 									</div>
-									<Button variant='outline' size='sm'>
+									<Button variant="outline" size="sm">
 										试听
 									</Button>
 								</div>
@@ -104,18 +100,18 @@ export function Step2Voice(): JSX.Element {
 			{formData.voiceSettings?.voiceId ? (
 				<Card>
 					<CardHeader>
-						<CardTitle className='text-lg flex items-center gap-2'>
-							<Settings className='h-5 w-5'/>
+						<CardTitle className="text-lg flex items-center gap-2">
+							<Settings className="h-5 w-5" />
 							高级语音设置
 						</CardTitle>
 						<CardDescription>调整语音参数以获得最佳ASMR效果（可选）</CardDescription>
 					</CardHeader>
-					<CardContent className='space-y-6'>
+					<CardContent className="space-y-6">
 						{/* 稳定性 */}
-						<div className='space-y-3'>
-							<div className='flex items-center justify-between'>
+						<div className="space-y-3">
+							<div className="flex items-center justify-between">
 								<Label>语音稳定性</Label>
-								<span className='text-sm text-muted-foreground'>
+								<span className="text-sm text-muted-foreground">
 									{Math.round((formData.voiceSettings?.stability || 0.85) * 100)}%
 								</span>
 							</div>
@@ -124,19 +120,19 @@ export function Step2Voice(): JSX.Element {
 								max={1}
 								min={0}
 								step={0.05}
-								className='w-full'
+								className="w-full"
 								onValueChange={([value]) => {
 									handleVoiceChange('stability', value);
 								}}
 							/>
-							<p className='text-xs text-muted-foreground'>更高的稳定性产生更一致的语音，适合ASMR内容</p>
+							<p className="text-xs text-muted-foreground">更高的稳定性产生更一致的语音，适合ASMR内容</p>
 						</div>
 
 						{/* 相似度 */}
-						<div className='space-y-3'>
-							<div className='flex items-center justify-between'>
+						<div className="space-y-3">
+							<div className="flex items-center justify-between">
 								<Label>语音相似度</Label>
-								<span className='text-sm text-muted-foreground'>
+								<span className="text-sm text-muted-foreground">
 									{Math.round((formData.voiceSettings?.similarity || 0.9) * 100)}%
 								</span>
 							</div>
@@ -145,19 +141,19 @@ export function Step2Voice(): JSX.Element {
 								max={1}
 								min={0}
 								step={0.05}
-								className='w-full'
+								className="w-full"
 								onValueChange={([value]) => {
 									handleVoiceChange('similarity', value);
 								}}
 							/>
-							<p className='text-xs text-muted-foreground'>保持语音特征的一致性</p>
+							<p className="text-xs text-muted-foreground">保持语音特征的一致性</p>
 						</div>
 
 						{/* 风格强度 */}
-						<div className='space-y-3'>
-							<div className='flex items-center justify-between'>
+						<div className="space-y-3">
+							<div className="flex items-center justify-between">
 								<Label>风格强度</Label>
-								<span className='text-sm text-muted-foreground'>
+								<span className="text-sm text-muted-foreground">
 									{Math.round((formData.voiceSettings?.style || 0.1) * 100)}%
 								</span>
 							</div>
@@ -166,26 +162,26 @@ export function Step2Voice(): JSX.Element {
 								max={1}
 								min={0}
 								step={0.05}
-								className='w-full'
+								className="w-full"
 								onValueChange={([value]) => {
 									handleVoiceChange('style', value);
 								}}
 							/>
-							<p className='text-xs text-muted-foreground'>较低的风格强度产生更自然的语音效果</p>
+							<p className="text-xs text-muted-foreground">较低的风格强度产生更自然的语音效果</p>
 						</div>
 					</CardContent>
 				</Card>
 			) : null}
 
 			{/* 中老年人优化提示 */}
-			<Card className='bg-green-50 border-green-200'>
-				<CardContent className='pt-6'>
-					<div className='space-y-2'>
-						<h4 className='font-medium text-green-900 flex items-center gap-2'>
-							<Volume2 className='h-4 w-4'/>
+			<Card className="bg-green-50 border-green-200">
+				<CardContent className="pt-6">
+					<div className="space-y-2">
+						<h4 className="font-medium text-green-900 flex items-center gap-2">
+							<Volume2 className="h-4 w-4" />
 							中老年人友好优化
 						</h4>
-						<p className='text-sm text-green-800'>
+						<p className="text-sm text-green-800">
 							当前设置已针对中老年听众进行优化：高稳定性、清晰发音、适中语速。 这些参数有助于提高听力理解度和放松效果。
 						</p>
 					</div>

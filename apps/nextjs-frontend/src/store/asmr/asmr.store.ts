@@ -42,15 +42,15 @@ type ASMRState = {
 	/** 成本估算 */
 	estimatedCost:
 		| {
-			/** 语音合成成本 */
-			voiceCost: number;
-			/** 音景生成成本 */
-			soundscapeCost: number;
-			/** 总成本 */
-			totalCost: number;
-			/** 货币单位 */
-			currency: string;
-		}
+				/** 语音合成成本 */
+				voiceCost: number;
+				/** 音景生成成本 */
+				soundscapeCost: number;
+				/** 总成本 */
+				totalCost: number;
+				/** 货币单位 */
+				currency: string;
+		  }
 		| undefined;
 };
 
@@ -204,242 +204,244 @@ const initialState: ASMRState = {
 	estimatedCost: null,
 };
 
-export const useASMRStore = create<ASMRStore>()(devtools(
-	(set, get) => ({
-		...initialState,
+export const useASMRStore = create<ASMRStore>()(
+	devtools(
+		(set, get) => ({
+			...initialState,
 
-		// Form data actions
-		setText(text: string) {
-			set(
-				state => ({
-					formData: {...state.formData, text},
-					error: null,
-				}),
-				false,
-				'setText',
-			);
-		},
-
-		setVoiceSettings(settings: Partial<VoiceOptions>) {
-			set(
-				state => ({
-					formData: {
-						...state.formData,
-						voiceSettings: {...state.formData.voiceSettings, ...settings},
-					},
-					error: null,
-				}),
-				false,
-				'setVoiceSettings',
-			);
-		},
-
-		setSoundscapeConfig(config: Partial<SoundscapeOptions>) {
-			set(
-				state => ({
-					formData: {
-						...state.formData,
-						soundscapeConfig: {...state.formData.soundscapeConfig, ...config},
-					},
-					error: null,
-				}),
-				false,
-				'setSoundscapeConfig',
-			);
-		},
-
-		setMixingSettings(settings: Partial<MixingOptions>) {
-			set(
-				state => ({
-					formData: {
-						...state.formData,
-						mixingSettings: {...state.formData.mixingSettings, ...settings},
-					},
-					error: null,
-				}),
-				false,
-				'setMixingSettings',
-			);
-		},
-
-		setBinauralSettings(settings: Partial<BinauralSettings>) {
-			set(
-				state => ({
-					formData: {
-						...state.formData,
-						binauralSettings: {...state.formData.binauralSettings, ...settings},
-					},
-					error: null,
-				}),
-				false,
-				'setBinauralSettings',
-			);
-		},
-
-		setQualityRequirements(requirements: Partial<QualityRequirements>) {
-			set(
-				state => ({
-					formData: {
-						...state.formData,
-						qualityRequirements: {...state.formData.qualityRequirements, ...requirements},
-					},
-					error: null,
-				}),
-				false,
-				'setQualityRequirements',
-			);
-		},
-
-		// Wizard navigation
-		nextStep() {
-			const state = get();
-			if (state.currentStep < state.maxSteps) {
+			// Form data actions
+			setText(text: string) {
 				set(
-					state => ({
-						currentStep: state.currentStep + 1,
-						wizardSteps: state.wizardSteps.map(step => ({
-							...step,
-							isActive: step.id === state.currentStep + 1,
-						})),
+					(state) => ({
+						formData: {...state.formData, text},
+						error: null,
 					}),
 					false,
-					'nextStep',
+					'setText',
 				);
-			}
-		},
+			},
 
-		prevStep() {
-			const state = get();
-			if (state.currentStep > 1) {
+			setVoiceSettings(settings: Partial<VoiceOptions>) {
 				set(
-					state => ({
-						currentStep: state.currentStep - 1,
-						wizardSteps: state.wizardSteps.map(step => ({
-							...step,
-							isActive: step.id === state.currentStep - 1,
-						})),
+					(state) => ({
+						formData: {
+							...state.formData,
+							voiceSettings: {...state.formData.voiceSettings, ...settings},
+						},
+						error: null,
 					}),
 					false,
-					'prevStep',
+					'setVoiceSettings',
 				);
-			}
-		},
+			},
 
-		goToStep(step: number) {
-			const state = get();
-			if (step >= 1 && step <= state.maxSteps) {
+			setSoundscapeConfig(config: Partial<SoundscapeOptions>) {
 				set(
-					state => ({
-						currentStep: step,
-						wizardSteps: state.wizardSteps.map(wizardStep => ({
+					(state) => ({
+						formData: {
+							...state.formData,
+							soundscapeConfig: {...state.formData.soundscapeConfig, ...config},
+						},
+						error: null,
+					}),
+					false,
+					'setSoundscapeConfig',
+				);
+			},
+
+			setMixingSettings(settings: Partial<MixingOptions>) {
+				set(
+					(state) => ({
+						formData: {
+							...state.formData,
+							mixingSettings: {...state.formData.mixingSettings, ...settings},
+						},
+						error: null,
+					}),
+					false,
+					'setMixingSettings',
+				);
+			},
+
+			setBinauralSettings(settings: Partial<BinauralSettings>) {
+				set(
+					(state) => ({
+						formData: {
+							...state.formData,
+							binauralSettings: {...state.formData.binauralSettings, ...settings},
+						},
+						error: null,
+					}),
+					false,
+					'setBinauralSettings',
+				);
+			},
+
+			setQualityRequirements(requirements: Partial<QualityRequirements>) {
+				set(
+					(state) => ({
+						formData: {
+							...state.formData,
+							qualityRequirements: {...state.formData.qualityRequirements, ...requirements},
+						},
+						error: null,
+					}),
+					false,
+					'setQualityRequirements',
+				);
+			},
+
+			// Wizard navigation
+			nextStep() {
+				const state = get();
+				if (state.currentStep < state.maxSteps) {
+					set(
+						(state) => ({
+							currentStep: state.currentStep + 1,
+							wizardSteps: state.wizardSteps.map((step) => ({
+								...step,
+								isActive: step.id === state.currentStep + 1,
+							})),
+						}),
+						false,
+						'nextStep',
+					);
+				}
+			},
+
+			prevStep() {
+				const state = get();
+				if (state.currentStep > 1) {
+					set(
+						(state) => ({
+							currentStep: state.currentStep - 1,
+							wizardSteps: state.wizardSteps.map((step) => ({
+								...step,
+								isActive: step.id === state.currentStep - 1,
+							})),
+						}),
+						false,
+						'prevStep',
+					);
+				}
+			},
+
+			goToStep(step: number) {
+				const state = get();
+				if (step >= 1 && step <= state.maxSteps) {
+					set(
+						(state) => ({
+							currentStep: step,
+							wizardSteps: state.wizardSteps.map((wizardStep) => ({
+								...wizardStep,
+								isActive: wizardStep.id === step,
+							})),
+						}),
+						false,
+						'goToStep',
+					);
+				}
+			},
+
+			completeStep(step: number) {
+				set(
+					(state) => ({
+						wizardSteps: state.wizardSteps.map((wizardStep) => ({
 							...wizardStep,
-							isActive: wizardStep.id === step,
+							isCompleted: wizardStep.id === step ? true : wizardStep.isCompleted,
 						})),
 					}),
 					false,
-					'goToStep',
+					'completeStep',
 				);
-			}
-		},
+			},
 
-		completeStep(step: number) {
-			set(
-				state => ({
-					wizardSteps: state.wizardSteps.map(wizardStep => ({
-						...wizardStep,
-						isCompleted: wizardStep.id === step ? true : wizardStep.isCompleted,
-					})),
-				}),
-				false,
-				'completeStep',
-			);
-		},
+			// Jobs management
+			addJob(job: Job) {
+				set(
+					(state) => ({
+						jobs: [job, ...state.jobs],
+						currentJobId: job.id,
+					}),
+					false,
+					'addJob',
+				);
+			},
 
-		// Jobs management
-		addJob(job: Job) {
-			set(
-				state => ({
-					jobs: [job, ...state.jobs],
-					currentJobId: job.id,
-				}),
-				false,
-				'addJob',
-			);
-		},
+			updateJob(jobId: string, updates: Partial<Job>) {
+				set(
+					(state) => ({
+						jobs: state.jobs.map((job) => (job.id === jobId ? {...job, ...updates} : job)),
+					}),
+					false,
+					'updateJob',
+				);
+			},
 
-		updateJob(jobId: string, updates: Partial<Job>) {
-			set(
-				state => ({
-					jobs: state.jobs.map(job => (job.id === jobId ? {...job, ...updates} : job)),
-				}),
-				false,
-				'updateJob',
-			);
-		},
+			setCurrentJobId(jobId: string | undefined) {
+				set({currentJobId: jobId}, false, 'setCurrentJobId');
+			},
 
-		setCurrentJobId(jobId: string | undefined) {
-			set({currentJobId: jobId}, false, 'setCurrentJobId');
-		},
+			removeJob(jobId: string) {
+				set(
+					(state) => ({
+						jobs: state.jobs.filter((job) => job.id !== jobId),
+						currentJobId: state.currentJobId === jobId ? null : state.currentJobId,
+					}),
+					false,
+					'removeJob',
+				);
+			},
 
-		removeJob(jobId: string) {
-			set(
-				state => ({
-					jobs: state.jobs.filter(job => job.id !== jobId),
-					currentJobId: state.currentJobId === jobId ? null : state.currentJobId,
-				}),
-				false,
-				'removeJob',
-			);
-		},
+			clearJobs() {
+				set(
+					{
+						jobs: [],
+						currentJobId: null,
+					},
+					false,
+					'clearJobs',
+				);
+			},
 
-		clearJobs() {
-			set(
-				{
-					jobs: [],
-					currentJobId: null,
-				},
-				false,
-				'clearJobs',
-			);
-		},
+			// UI state management
+			setSubmitting(isSubmitting: boolean) {
+				set({isSubmitting}, false, 'setSubmitting');
+			},
 
-		// UI state management
-		setSubmitting(isSubmitting: boolean) {
-			set({isSubmitting}, false, 'setSubmitting');
-		},
+			setError(error: string | undefined) {
+				set({error}, false, 'setError');
+			},
 
-		setError(error: string | undefined) {
-			set({error}, false, 'setError');
-		},
+			// Cost estimation
+			setEstimatedCost(cost: ASMRState['estimatedCost']) {
+				set({estimatedCost: cost}, false, 'setEstimatedCost');
+			},
 
-		// Cost estimation
-		setEstimatedCost(cost: ASMRState['estimatedCost']) {
-			set({estimatedCost: cost}, false, 'setEstimatedCost');
-		},
+			// Reset functions
+			resetForm() {
+				set({formData: initialState.formData}, false, 'resetForm');
+			},
 
-		// Reset functions
-		resetForm() {
-			set({formData: initialState.formData}, false, 'resetForm');
-		},
+			resetWizard() {
+				set(
+					{
+						currentStep: 1,
+						wizardSteps: initialState.wizardSteps,
+						error: null,
+						isSubmitting: false,
+					},
+					false,
+					'resetWizard',
+				);
+			},
 
-		resetWizard() {
-			set(
-				{
-					currentStep: 1,
-					wizardSteps: initialState.wizardSteps,
-					error: null,
-					isSubmitting: false,
-				},
-				false,
-				'resetWizard',
-			);
+			reset() {
+				set(initialState, false, 'reset');
+			},
+		}),
+		{
+			name: 'asmr-store', // Name for devtools
 		},
-
-		reset() {
-			set(initialState, false, 'reset');
-		},
-	}),
-	{
-		name: 'asmr-store', // Name for devtools
-	},
-));
+	),
+);

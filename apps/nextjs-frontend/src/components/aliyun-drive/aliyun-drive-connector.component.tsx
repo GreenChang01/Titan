@@ -52,7 +52,7 @@ export function AliyunDriveConnector({
 			onConfigUpdate?.(data);
 
 			// 模拟保存配置
-			await new Promise<void>(resolve => {
+			await new Promise<void>((resolve) => {
 				setTimeout(resolve, 1000);
 			});
 
@@ -84,15 +84,15 @@ export function AliyunDriveConnector({
 	const getStatusMessage = (): JSX.Element | undefined => {
 		switch (connectionStatus) {
 			case 'connected': {
-				return <Message severity='success' text={t('connection-success')}/>;
+				return <Message severity="success" text={t('connection-success')} />;
 			}
 
 			case 'connecting': {
-				return <Message severity='info' text={t('connection-connecting')}/>;
+				return <Message severity="info" text={t('connection-connecting')} />;
 			}
 
 			case 'error': {
-				return <Message severity='error' text={t('connection-error')}/>;
+				return <Message severity="error" text={t('connection-error')} />;
 			}
 
 			case 'disconnected':
@@ -122,47 +122,47 @@ export function AliyunDriveConnector({
 	return (
 		<Card
 			title={
-				<div className='flex items-center gap-2'>
-					<i className={getStatusIcon()}/>
+				<div className="flex items-center gap-2">
+					<i className={getStatusIcon()} />
 					<span>{t('title', {defaultMessage: '阿里云盘配置'})}</span>
 				</div>
 			}
-			className='mb-4'
+			className="mb-4"
 		>
-			<div className='space-y-4'>
+			<div className="space-y-4">
 				{getStatusMessage()}
 
-				<form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
-					<div className='field'>
-						<label htmlFor='refreshToken' className='block text-sm font-medium text-gray-700 mb-1'>
+				<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+					<div className="field">
+						<label htmlFor="refreshToken" className="block text-sm font-medium text-gray-700 mb-1">
 							{t('refresh-token-label', {defaultMessage: 'Refresh Token'})}
 						</label>
 						<InputText
-							id='refreshToken'
+							id="refreshToken"
 							{...register('refreshToken')}
 							className={`w-full ${errors.refreshToken ? 'p-invalid' : ''}`}
 							placeholder={t('refresh-token-placeholder', {defaultMessage: '请输入阿里云盘 Refresh Token'})}
 							disabled={isSubmitting || connectionStatus === 'connecting'}
 						/>
 						{errors.refreshToken?.message ? (
-							<small className='text-red-500 mt-1 block'>{errors.refreshToken.message}</small>
+							<small className="text-red-500 mt-1 block">{errors.refreshToken.message}</small>
 						) : null}
-						<small className='text-gray-500 mt-1 block'>
+						<small className="text-gray-500 mt-1 block">
 							{t('refresh-token-help', {defaultMessage: '可从阿里云盘开发者工具中获取 Refresh Token'})}
 						</small>
 					</div>
 
-					<div className='flex gap-2'>
+					<div className="flex gap-2">
 						<Button
-							type='button'
+							type="button"
 							label={t('test-connection', {defaultMessage: '测试连接'})}
-							icon='pi pi-wifi'
-							severity='secondary'
+							icon="pi pi-wifi"
+							severity="secondary"
 							disabled={isSubmitting || connectionStatus === 'connecting' || isTestingConnection}
 							onClick={handleTestConnection}
 						/>
 						<Button
-							type='submit'
+							type="submit"
 							label={t('save-config', {defaultMessage: '保存配置'})}
 							icon={isSubmitting || connectionStatus === 'connecting' ? 'pi pi-spinner pi-spin' : 'pi pi-save'}
 							disabled={isSubmitting || connectionStatus === 'connecting'}
@@ -171,9 +171,9 @@ export function AliyunDriveConnector({
 				</form>
 
 				{isTestingConnection ? (
-					<div className='flex items-center gap-2 text-blue-600'>
-						<ProgressSpinner style={{width: '20px', height: '20px'}} strokeWidth='4'/>
-						<span className='text-sm'>{t('testing-connection', {defaultMessage: '正在测试连接...'})}</span>
+					<div className="flex items-center gap-2 text-blue-600">
+						<ProgressSpinner style={{width: '20px', height: '20px'}} strokeWidth="4" />
+						<span className="text-sm">{t('testing-connection', {defaultMessage: '正在测试连接...'})}</span>
 					</div>
 				) : null}
 			</div>

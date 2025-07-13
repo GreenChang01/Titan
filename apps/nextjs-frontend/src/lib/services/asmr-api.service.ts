@@ -1,6 +1,4 @@
-import type {
-	ASMRGenerationRequest, Job, JobProgress, ASMRPreset,
-} from '@titan/shared';
+import type {ASMRGenerationRequest, Job, JobProgress, ASMRPreset} from '@titan/shared';
 
 // Import mock service for development
 import {mockASMRApiService} from './asmr-api.mock';

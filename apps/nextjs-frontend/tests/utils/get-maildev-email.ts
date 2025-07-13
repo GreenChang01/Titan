@@ -22,7 +22,7 @@ export const getMaildevEmail = async (
 		const emails = (await mailDevResponse.json()) as MailDevEmail[];
 
 		// Filter emails by recipient
-		const foundEmail = emails.find(email => {
+		const foundEmail = emails.find((email) => {
 			const subjectMatch = subject ? email.headers.subject === subject : true;
 
 			return email.headers.to === emailAddress && subjectMatch;
@@ -33,7 +33,7 @@ export const getMaildevEmail = async (
 		}
 
 		if (attempts < maxAttempts - 1) {
-			await new Promise<void>(resolve => {
+			await new Promise<void>((resolve) => {
 				setTimeout(() => {
 					resolve();
 				}, delay);

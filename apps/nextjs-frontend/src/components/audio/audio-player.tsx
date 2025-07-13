@@ -1,11 +1,7 @@
 'use client';
 
-import {
-	useState, useRef, useEffect, type JSX,
-} from 'react';
-import {
-	Play, Pause, Volume2, VolumeX, Download,
-} from 'lucide-react';
+import {useState, useRef, useEffect, type JSX} from 'react';
+import {Play, Pause, Volume2, VolumeX, Download} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent} from '@/components/ui/card';
 import {Slider} from '@/components/ui/slider';
@@ -102,7 +98,7 @@ export function AudioPlayer({
 				.then(() => {
 					setIsPlaying(true);
 				})
-				.catch(error_ => {
+				.catch((error_) => {
 					setError('播放失败');
 					console.error('Play failed:', error_);
 				});
@@ -169,9 +165,9 @@ export function AudioPlayer({
 	if (error) {
 		return (
 			<Card className={cn('w-full', className)}>
-				<CardContent className='p-4'>
-					<div className='flex items-center justify-center text-destructive'>
-						<span className='text-sm'>{error}</span>
+				<CardContent className="p-4">
+					<div className="flex items-center justify-center text-destructive">
+						<span className="text-sm">{error}</span>
 					</div>
 				</CardContent>
 			</Card>
@@ -180,63 +176,63 @@ export function AudioPlayer({
 
 	return (
 		<Card className={cn('w-full', className)}>
-			<CardContent className='p-4'>
-				<div className='space-y-4'>
+			<CardContent className="p-4">
+				<div className="space-y-4">
 					{/* Title */}
-					{title ? <div className='text-sm font-medium text-foreground'>{title}</div> : null}
+					{title ? <div className="text-sm font-medium text-foreground">{title}</div> : null}
 
 					{/* Audio Element */}
-					<audio ref={audioRef} src={src} preload='metadata'/>
+					<audio ref={audioRef} src={src} preload="metadata" />
 
 					{/* Controls */}
-					<div className='flex items-center space-x-4'>
+					<div className="flex items-center space-x-4">
 						{/* Play/Pause Button */}
-						<Button disabled={isLoading} size='sm' className='h-10 w-10 p-0' onClick={togglePlayPause}>
+						<Button disabled={isLoading} size="sm" className="h-10 w-10 p-0" onClick={togglePlayPause}>
 							{isLoading ? (
-								<div className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent'/>
+								<div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
 							) : isPlaying ? (
-								<Pause className='h-4 w-4'/>
+								<Pause className="h-4 w-4" />
 							) : (
-								<Play className='h-4 w-4 ml-0.5'/>
+								<Play className="h-4 w-4 ml-0.5" />
 							)}
 						</Button>
 
 						{/* Progress Bar */}
-						<div className='flex-1 space-y-1'>
+						<div className="flex-1 space-y-1">
 							<Slider
 								value={[currentTime]}
 								max={duration || 100}
 								min={0}
 								step={1}
-								className='w-full'
+								className="w-full"
 								disabled={isLoading || !duration}
 								onValueChange={handleSeek}
 							/>
-							<div className='flex justify-between text-xs text-muted-foreground'>
+							<div className="flex justify-between text-xs text-muted-foreground">
 								<span>{formatTime(currentTime)}</span>
 								<span>{formatTime(duration)}</span>
 							</div>
 						</div>
 
 						{/* Volume Control */}
-						<div className='flex items-center space-x-2'>
-							<Button variant='ghost' size='sm' className='h-8 w-8 p-0' onClick={toggleMute}>
-								{isMuted || volume === 0 ? <VolumeX className='h-4 w-4'/> : <Volume2 className='h-4 w-4'/>}
+						<div className="flex items-center space-x-2">
+							<Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={toggleMute}>
+								{isMuted || volume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
 							</Button>
 							<Slider
 								value={[isMuted ? 0 : volume]}
 								max={1}
 								min={0}
 								step={0.1}
-								className='w-20'
+								className="w-20"
 								onValueChange={handleVolumeChange}
 							/>
 						</div>
 
 						{/* Download Button */}
 						{showDownload ? (
-							<Button variant='ghost' size='sm' className='h-8 w-8 p-0' title='下载音频' onClick={handleDownload}>
-								<Download className='h-4 w-4'/>
+							<Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="下载音频" onClick={handleDownload}>
+								<Download className="h-4 w-4" />
 							</Button>
 						) : null}
 					</div>

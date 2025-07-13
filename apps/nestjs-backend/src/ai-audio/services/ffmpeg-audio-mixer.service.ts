@@ -304,10 +304,10 @@ export class FfmpegAudioMixer implements IAudioMixer, OnModuleInit {
 		// EQ设置
 		if (options.eqSettings) {
 			const eq = options.eqSettings;
-			const eqFilter
-				= `equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:`
-					+ `equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:`
-					+ `equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
+			const eqFilter =
+				`equalizer=f=100:width_type=o:width=2:g=${eq.lowFreq}:` +
+				`equalizer=f=1000:width_type=o:width=2:g=${eq.midFreq}:` +
+				`equalizer=f=10000:width_type=o:width=2:g=${eq.highFreq}`;
 			filters.push(`${finalFilter}${eqFilter}[eqed]`);
 			finalFilter = '[eqed]';
 		}

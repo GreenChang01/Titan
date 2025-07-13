@@ -11,7 +11,7 @@ import {useAuthApi} from '@/hooks/use-auth-api/use-auth-api.hook.tsx';
 import {Link, useRouter} from '@/i18n/navigation.ts';
 
 export function Header(): JSX.Element {
-	const user = useUserStore(s => s.user);
+	const user = useUserStore((s) => s.user);
 
 	const t = useTranslations('Component-Header');
 
@@ -95,17 +95,17 @@ export function Header(): JSX.Element {
 	);
 
 	const signedInItem: JSX.Element = (
-		<div className='flex gap-2'>
-			<Menu ref={endMenuRef} popup model={endMenuItems} id='end_menu'/>
+		<div className="flex gap-2">
+			<Menu ref={endMenuRef} popup model={endMenuItems} id="end_menu" />
 			<Button
 				outlined
 				aria-haspopup
-				size='small'
-				icon='pi pi-user'
-				className='rounded-full border-2 border-slate-300 text-2xl'
-				aria-controls='end_menu'
-				data-testid='header-user-menu-button'
-				onClick={event => {
+				size="small"
+				icon="pi pi-user"
+				className="rounded-full border-2 border-slate-300 text-2xl"
+				aria-controls="end_menu"
+				data-testid="header-user-menu-button"
+				onClick={(event) => {
 					if (endMenuRef?.current) {
 						endMenuRef.current.toggle(event);
 					}
@@ -115,19 +115,19 @@ export function Header(): JSX.Element {
 	);
 
 	const notSignedInItem: JSX.Element = (
-		<div className='flex gap-2'>
-			<Link href='/login'>
-				<Button outlined label={t('login-button-label')} size='small' data-testid='header-login-button'/>
+		<div className="flex gap-2">
+			<Link href="/login">
+				<Button outlined label={t('login-button-label')} size="small" data-testid="header-login-button" />
 			</Link>
-			<Link href='/register'>
-				<Button label={t('register-button-label')} size='small'/>
+			<Link href="/register">
+				<Button label={t('register-button-label')} size="small" />
 			</Link>
 		</div>
 	);
 
 	return (
 		<header>
-			<Menubar model={items} end={user ? signedInItem : notSignedInItem}/>
+			<Menubar model={items} end={user ? signedInItem : notSignedInItem} />
 		</header>
 	);
 }

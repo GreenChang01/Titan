@@ -36,7 +36,7 @@ export default async function Layout({
 
 	return (
 		<html suppressHydrationWarning lang={locale}>
-			<body suppressHydrationWarning className='min-h-screen bg-background text-foreground'>
+			<body suppressHydrationWarning className="min-h-screen bg-background text-foreground">
 				<NextIntlClientProvider>
 					<ZodErrorProvider>
 						<ToastProvider>

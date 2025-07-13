@@ -1,8 +1,6 @@
 'use client';
 
-import {
-	createContext, type JSX, type ReactNode, useCallback, useRef,
-} from 'react';
+import {createContext, type JSX, type ReactNode, useCallback, useRef} from 'react';
 import {Toast, type ToastMessage} from 'primereact/toast';
 
 export type ShowToastFunction = (options: ToastMessage) => void;
@@ -23,7 +21,7 @@ export function ToastProvider({children}: {readonly children: ReactNode}): JSX.E
 
 	return (
 		<ToastContext value={showToast}>
-			<Toast ref={toastRef}/>
+			<Toast ref={toastRef} />
 			{children}
 		</ToastContext>
 	);

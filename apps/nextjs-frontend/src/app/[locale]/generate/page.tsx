@@ -10,43 +10,41 @@ import {Step5Review} from './_components/step5-review.tsx';
 import {useASMRStore} from '@/store/asmr/asmr.store';
 import {Header} from '@/components/layout/header';
 import {Main} from '@/components/layout/main';
-import {
-	Card, CardContent, CardDescription, CardHeader, CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Progress} from '@/components/ui/progress';
 
 export default function ASMRGenerationPage(): JSX.Element {
-	const {currentStep, maxSteps, wizardSteps, isSubmitting, error, formData, nextStep, prevStep, goToStep}
-		= useASMRStore();
+	const {currentStep, maxSteps, wizardSteps, isSubmitting, error, formData, nextStep, prevStep, goToStep} =
+		useASMRStore();
 
-	const currentStepData = wizardSteps.find(step => step.id === currentStep);
+	const currentStepData = wizardSteps.find((step) => step.id === currentStep);
 	const progress = ((currentStep - 1) / (maxSteps - 1)) * 100;
 
 	const renderStepContent = (): JSX.Element => {
 		switch (currentStep) {
 			case 1: {
-				return <Step1Content/>;
+				return <Step1Content />;
 			}
 
 			case 2: {
-				return <Step2Voice/>;
+				return <Step2Voice />;
 			}
 
 			case 3: {
-				return <Step3Soundscape/>;
+				return <Step3Soundscape />;
 			}
 
 			case 4: {
-				return <Step4Advanced/>;
+				return <Step4Advanced />;
 			}
 
 			case 5: {
-				return <Step5Review/>;
+				return <Step5Review />;
 			}
 
 			default: {
-				return <Step1Content/>;
+				return <Step1Content />;
 			}
 		}
 	};
@@ -113,27 +111,27 @@ export default function ASMRGenerationPage(): JSX.Element {
 	return (
 		<>
 			<Header>
-				<h1 className='text-lg font-medium flex items-center gap-2'>
-					<Zap className='h-5 w-5 text-primary'/>
+				<h1 className="text-lg font-medium flex items-center gap-2">
+					<Zap className="h-5 w-5 text-primary" />
 					ASMR音频生成
 				</h1>
 			</Header>
 
 			<Main>
-				<div className='max-w-4xl mx-auto space-y-6'>
+				<div className="max-w-4xl mx-auto space-y-6">
 					{/* Progress Indicator */}
 					<Card>
-						<CardContent className='pt-6'>
-							<div className='space-y-4'>
-								<div className='flex justify-between text-sm'>
+						<CardContent className="pt-6">
+							<div className="space-y-4">
+								<div className="flex justify-between text-sm">
 									<span>进度</span>
 									<span>{Math.round(progress)}%</span>
 								</div>
-								<Progress value={progress} className='w-full'/>
+								<Progress value={progress} className="w-full" />
 
 								{/* Step Indicators */}
-								<div className='flex justify-between'>
-									{wizardSteps.map(step => (
+								<div className="flex justify-between">
+									{wizardSteps.map((step) => (
 										<button
 											key={step.id}
 											className={`flex flex-col items-center space-y-1 text-xs transition-colors ${
@@ -159,7 +157,7 @@ export default function ASMRGenerationPage(): JSX.Element {
 											>
 												{step.isCompleted ? '✓' : step.id}
 											</div>
-											<span className='hidden sm:block'>{step.title}</span>
+											<span className="hidden sm:block">{step.title}</span>
 										</button>
 									))}
 								</div>
@@ -169,9 +167,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 
 					{/* Error Display */}
 					{error ? (
-						<Card className='border-destructive'>
-							<CardContent className='pt-6'>
-								<div className='text-sm text-destructive'>
+						<Card className="border-destructive">
+							<CardContent className="pt-6">
+								<div className="text-sm text-destructive">
 									<strong>错误:</strong> {error}
 								</div>
 							</CardContent>
@@ -187,16 +185,16 @@ export default function ASMRGenerationPage(): JSX.Element {
 						<CardContent>
 							{renderStepContent()}
 							{/* Navigation */}
-							<div className='flex justify-between items-center mt-6'>
+							<div className="flex justify-between items-center mt-6">
 								<div>
 									{canGoPrevious ? (
 										<Button
-											variant='outline'
+											variant="outline"
 											disabled={isSubmitting}
-											className='flex items-center gap-2'
+											className="flex items-center gap-2"
 											onClick={prevStep}
 										>
-											<ChevronLeft className='h-4 w-4'/>
+											<ChevronLeft className="h-4 w-4" />
 											上一步
 										</Button>
 									) : null}
@@ -205,12 +203,12 @@ export default function ASMRGenerationPage(): JSX.Element {
 									{canGoNext ? (
 										<Button
 											disabled={isSubmitting || !isCurrentStepValid()}
-											size='lg'
-											className='min-w-[120px] flex items-center gap-2'
+											size="lg"
+											className="min-w-[120px] flex items-center gap-2"
 											onClick={nextStep}
 										>
 											{getNextButtonText()}
-											<ChevronRight className='h-4 w-4'/>
+											<ChevronRight className="h-4 w-4" />
 										</Button>
 									) : null}
 								</div>
