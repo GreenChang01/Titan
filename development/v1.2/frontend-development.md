@@ -1,1071 +1,387 @@
-# Titan v1.2 前端开发指南
-
-## 概述
-
-Titan v1.2 前端开发基于Next.js 15 + TypeScript + React 19，实现智能提示管理和ASMR素材管理功能，重点优化Step1内容创作和Step3音景选择体验。
-
-## 核心功能架构
-
-### 1. 智能提示管理系统
-
-#### 1.1 提示管理界面
-
-```typescript
-// app/[locale]/prompts/page.tsx - 提示库主页面
-interface PromptLibraryProps {
-  prompts: AIPrompt[];
-  categories: PromptCategory[];
-  onCreatePrompt: (prompt: CreatePromptDto) => void;
-  onEditPrompt: (promptId: string, updates: UpdatePromptDto) => void;
-  onDeletePrompt: (promptId: string) => void;
-  onOptimizePrompt: (promptId: string, criteria: OptimizationCriteria[]) => void;
-}
-
-// 组件结构
-const PromptLibrary = () => {
-  return (
-    <div className="flex h-full">
-      <PromptFilterPanel className="w-64" />
-      <PromptGrid className="flex-1" />
-      <PromptDetailPanel className="w-80" />
-    </div>
-  );
-};
-```
-
-#### 1.2 提示编辑器组件
-
-```typescript
-// components/prompts/prompt-editor.tsx
-interface PromptEditorProps {
-  prompt?: AIPrompt;
-  mode: 'create' | 'edit';
-  onSave: (prompt: AIPrompt) => void;
-  onCancel: () => void;
-}
-
-const PromptEditor: React.FC<PromptEditorProps> = ({ prompt, mode, onSave, onCancel }) => {
-  const [formData, setFormData] = useState<PromptFormData>({
-    name: '',
-    content: '',
-    category: '',
-    tags: [],
-    variables: [],
-    examples: [],
-    aiModel: 'openai',
-    temperature: 0.7,
-    maxTokens: 1000,
-  });
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Tabs defaultValue="basic">
-        <TabsList>
-          <TabsTrigger value="basic">基本信息</TabsTrigger>
-          <TabsTrigger value="variables">变量定义</TabsTrigger>
-          <TabsTrigger value="examples">使用示例</TabsTrigger>
-          <TabsTrigger value="settings">AI设置</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="basic">
-          <PromptBasicInfo formData={formData} onChange={setFormData} />
-        </TabsContent>
-
-        <TabsContent value="variables">
-          <VariableEditor variables={formData.variables} onChange={handleVariablesChange} />
-        </TabsContent>
-
-        <TabsContent value="examples">
-          <ExampleEditor examples={formData.examples} onChange={handleExamplesChange} />
-        </TabsContent>
-
-        <TabsContent value="settings">
-          <AISettings settings={formData} onChange={setFormData} />
-        </TabsContent>
-      </Tabs>
-    </Form>
-  );
-};
-```
-
-#### 1.3 AI提示生成器
-
-```typescript
-// components/prompts/ai-prompt-generator.tsx
-interface AIPromptGeneratorProps {
-  onPromptGenerated: (prompt: GeneratedPrompt) => void;
-  context?: string;
-}
-
-const AIPromptGenerator: React.FC<AIPromptGeneratorProps> = ({ onPromptGenerated, context }) => {
-  const [prompt, setPrompt] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const generatePrompt = async () => {
-    setIsGenerating(true);
-    try {
-      const response = await aiApi.generatePrompt({
-        context,
-        requirements: prompt,
-        tone: 'asmr-friendly',
-        targetAudience: 'middle-aged',
-      });
-      onPromptGenerated(response);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>AI智能提示生成</CardTitle>
-        <CardDescription>让AI帮您创建最适合ASMR内容的提示</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="描述您希望生成的ASMR内容类型..."
-          rows={4}
-        />
-        <Button onClick={generatePrompt} disabled={!prompt.trim() || isGenerating}>
-          {isGenerating ? '生成中...' : '生成提示'}
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-```
-
-### 2. ASMR素材管理系统
-
-#### 2.1 素材浏览器
-
-```typescript
-// components/assets/asset-browser.tsx
-interface AssetBrowserProps {
-  assets: ASMRAsset[];
-  onAssetSelect: (asset: ASMRAsset) => void;
-  onAssetUpload: (files: File[]) => void;
-  selectedAssets?: ASMRAsset[];
-  viewMode: 'grid' | 'list';
-}
-
-const AssetBrowser: React.FC<AssetBrowserProps> = ({
-  assets,
-  onAssetSelect,
-  onAssetUpload,
-  selectedAssets = [],
-  viewMode,
-}) => {
-  const [filters, setFilters] = useState<AssetFilters>({
-    type: undefined,
-    category: undefined,
-    tags: [],
-    searchTerm: '',
-    projectId: undefined,
-  });
-
-  return (
-    <div className="flex h-full">
-      <AssetFilterPanel
-        filters={filters}
-        onFiltersChange={setFilters}
-        className="w-64 border-r"
-      />
-
-      <div className="flex-1 flex flex-col">
-        <AssetToolbar
-          onUpload={onAssetUpload}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          selectedCount={selectedAssets.length}
-        />
-
-        <div className="flex-1 overflow-auto">
-          {viewMode === 'grid' ? (
-            <AssetGrid
-              assets={filteredAssets}
-              onAssetSelect={onAssetSelect}
-              selectedAssets={selectedAssets}
-            />
-          ) : (
-            <AssetList
-              assets={filteredAssets}
-              onAssetSelect={onAssetSelect}
-              selectedAssets={selectedAssets}
-            />
-          )}
-        </div>
-      </div>
-
-      <AssetDetailPanel
-        asset={selectedAssets[0]}
-        className="w-80 border-l"
-      />
-    </div>
-  );
-};
-```
-
-#### 2.2 WebDAV集成文件管理器
-
-```typescript
-// components/assets/webdav-file-manager.tsx
-interface WebDAVFileManagerProps {
-  config: WebDAVConfig;
-  onFileSelect: (file: WebDAVFile) => void;
-  onConfigUpdate: (config: WebDAVConfig) => void;
-}
-
-const WebDAVFileManager: React.FC<WebDAVFileManagerProps> = ({
-  config,
-  onFileSelect,
-  onConfigUpdate,
-}) => {
-  const [files, setFiles] = useState<WebDAVFile[]>([]);
-  const [currentPath, setCurrentPath] = useState('/');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadFiles = async (path: string) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await webdavApi.listFiles({
-        config,
-        path,
-        includeMetadata: true,
-      });
-
-      setFiles(response.files);
-      setCurrentPath(path);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col h-full">
-      <WebDAVToolbar
-        config={config}
-        currentPath={currentPath}
-        onPathChange={loadFiles}
-        onConfigUpdate={onConfigUpdate}
-      />
-
-      <div className="flex-1 overflow-auto">
-        {isLoading ? (
-          <FileListSkeleton />
-        ) : error ? (
-          <ErrorState error={error} onRetry={() => loadFiles(currentPath)} />
-        ) : (
-          <FileList
-            files={files}
-            onFileSelect={onFileSelect}
-            onNavigate={loadFiles}
-          />
-        )}
-      </div>
-    </div>
-  );
-};
-```
-
-#### 2.3 素材智能分类
-
-```typescript
-// components/assets/auto-categorization.tsx
-interface AutoCategorizationProps {
-  asset: ASMRAsset;
-  onCategoryUpdate: (category: string, confidence: number) => void;
-}
-
-const AutoCategorization: React.FC<AutoCategorizationProps> = ({
-  asset,
-  onCategoryUpdate,
-}) => {
-  const [suggestions, setSuggestions] = useState<CategorySuggestion[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-  const analyzeAsset = async () => {
-    setIsAnalyzing(true);
-    try {
-      const response = await aiApi.categorizeAsset({
-        filename: asset.name,
-        metadata: asset.metadata,
-        contentAnalysis: true,
-      });
-
-      setSuggestions(response.suggestions);
-      if (response.suggestions.length > 0) {
-        onCategoryUpdate(
-          response.suggestions[0].category,
-          response.suggestions[0].confidence
-        );
-      }
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  useEffect(() => {
-    analyzeAsset();
-  }, [asset.id]);
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <Label>智能分类</Label>
-        {isAnalyzing && <Loader2 className="h-4 w-4 animate-spin" />}
-      </div>
-
-      {suggestions.map((suggestion, index) => (
-        <div
-          key={index}
-          className="flex items-center justify-between p-2 rounded-md bg-muted"
-        >
-          <span className="text-sm font-medium">{suggestion.category}</span>
-          <Badge variant="outline">{Math.round(suggestion.confidence * 100)}%</Badge>
-        </div>
-      ))}
-    </div>
-  );
-};
-```
-
-### 3. Step1 内容创作增强
-
-#### 3.1 智能提示选择器
-
-```typescript
-// components/generate/step1-enhanced.tsx
-interface Step1EnhancedProps {
-  text: string;
-  onTextChange: (text: string) => void;
-  onPromptSelect: (prompt: AIPrompt) => void;
-  selectedPrompt?: AIPrompt;
-}
-
-const Step1Enhanced: React.FC<Step1EnhancedProps> = ({
-  text,
-  onTextChange,
-  onPromptSelect,
-  selectedPrompt,
-}) => {
-  const [showPromptLibrary, setShowPromptLibrary] = useState(false);
-  const [showGenerator, setShowGenerator] = useState(false);
-  const [templates, setTemplates] = useState<ASMRContentTemplate[]>([]);
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <Label>内容创作</Label>
-        <p className="text-sm text-muted-foreground">
-          使用AI提示或模板快速生成适合中老年听众的ASMR内容
-        </p>
-      </div>
-
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={() => setShowPromptLibrary(true)}
-          className="flex items-center gap-2"
-        >
-          <BookOpen className="h-4 w-4" />
-          提示库
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => setShowGenerator(true)}
-          className="flex items-center gap-2"
-        >
-          <Sparkles className="h-4 w-4" />
-          AI生成
-        </Button>
-      </div>
-
-      {selectedPrompt && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">{selectedPrompt.name}</CardTitle>
-            <CardDescription>{selectedPrompt.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <VariableInput
-              variables={selectedPrompt.variables}
-              onValuesChange={handleVariableChange}
-            />
-          </CardContent>
-        </Card>
-      )}
-
-      <div>
-        <Label>最终文本内容</Label>
-        <Textarea
-          value={text}
-          onChange={(e) => onTextChange(e.target.value)}
-          placeholder="输入您的ASMR内容文本，或使用上面的工具生成..."
-          rows={8}
-          className="font-mono"
-        />
-        <div className="flex justify-between items-center mt-2">
-          <span className="text-sm text-muted-foreground">
-            {text.length} 字符
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={optimizeContent}
-            disabled={!text.trim()}
-          >
-            <Wand2 className="h-4 w-4 mr-1" />
-            优化文本
-          </Button>
-        </div>
-      </div>
-
-      <PromptLibraryModal
-        open={showPromptLibrary}
-        onOpenChange={setShowPromptLibrary}
-        onPromptSelect={handlePromptSelect}
-      />
-
-      <AIGeneratorModal
-        open={showGenerator}
-        onOpenChange={setShowGenerator}
-        onGenerated={handleGeneratedContent}
-      />
-    </div>
-  );
-};
-```
-
-### 4. Step3 音景选择增强
-
-#### 4.1 素材集成音景选择器
-
-```typescript
-// components/generate/step3-enhanced.tsx
-interface Step3EnhancedProps {
-  soundscape: SoundscapeOptions;
-  onSoundscapeChange: (soundscape: SoundscapeOptions) => void;
-  projectAssets: ASMRAsset[];
-}
-
-const Step3Enhanced: React.FC<Step3EnhancedProps> = ({
-  soundscape,
-  onSoundscapeChange,
-  projectAssets,
-}) => {
-  const [mode, setMode] = useState<'preset' | 'custom' | 'asset'>('preset');
-  const [selectedAsset, setSelectedAsset] = useState<ASMRAsset | null>(null);
-
-  const audioAssets = projectAssets.filter(asset => asset.type === 'audio');
-
-  return (
-    <div className="space-y-6">
-      <div>
-        <Label>音景选择</Label>
-        <p className="text-sm text-muted-foreground">
-          选择预设音景、自定义生成，或使用项目中的音频素材
-        </p>
-      </div>
-
-      <Tabs value={mode} onValueChange={(value) => setMode(value as any)}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="preset">预设音景</TabsTrigger>
-          <TabsTrigger value="custom">自定义生成</TabsTrigger>
-          <TabsTrigger value="asset">项目素材</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="preset">
-          <PresetSoundscapeSelector
-            selected={soundscape}
-            onChange={onSoundscapeChange}
-          />
-        </TabsContent>
-
-        <TabsContent value="custom">
-          <CustomSoundscapeGenerator
-            config={soundscape}
-            onChange={onSoundscapeChange}
-          />
-        </TabsContent>
-
-        <TabsContent value="asset">
-          <AssetSoundscapeSelector
-            assets={audioAssets}
-            selectedAsset={selectedAsset}
-            onAssetSelect={(asset) => {
-              setSelectedAsset(asset);
-              onSoundscapeChange({
-                ...soundscape,
-                prompt: asset.name,
-                duration: asset.metadata.duration || 300,
-                source: 'asset',
-                assetId: asset.id,
-              });
-            }}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-};
-```
-
-### 5. API Demo验证页面
-
-#### 5.1 智能提示API Demo
-
-```typescript
-// app/[locale]/demo/prompts/page.tsx
-const PromptAPIDemo: React.FC = () => {
-  const [testPrompt, setTestPrompt] = useState('');
-  const [variables, setVariables] = useState<Record<string, any>>({});
-  const [result, setResult] = useState<string>('');
-  const [isTesting, setIsTesting] = useState(false);
-
-  const testPromptAPI = async () => {
-    setIsTesting(true);
-    try {
-      const response = await api.prompts.test({
-        prompt: testPrompt,
-        variables,
-        aiModel: 'openai',
-      });
-      setResult(response.generatedContent);
-    } finally {
-      setIsTesting(false);
-    }
-  };
-
-  return (
-    <div className="container mx-auto py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>智能提示API测试</CardTitle>
-          <CardDescription>
-            测试提示生成API的完整功能，包括变量替换和AI响应
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          <div>
-            <Label>提示模板</Label>
-            <Textarea
-              value={testPrompt}
-              onChange={(e) => setTestPrompt(e.target.value)}
-              placeholder="输入提示模板，使用{{变量名}}格式..."
-              rows={4}
-            />
-          </div>
-
-          <VariableInput
-            prompt={testPrompt}
-            variables={variables}
-            onChange={setVariables}
-          />
-
-          <Button onClick={testPromptAPI} disabled={!testPrompt.trim()}>
-            {isTesting ? '测试中...' : '测试提示'}
-          </Button>
-
-          {result && (
-            <div>
-              <Label>生成结果</Label>
-              <div className="mt-2 p-4 bg-muted rounded-md">
-                <pre className="whitespace-pre-wrap">{result}</pre>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-```
-
-#### 5.2 ASMR素材API Demo
-
-```typescript
-// app/[locale]/demo/assets/page.tsx
-const AssetAPIDemo: React.FC = () => {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadedAsset, setUploadedAsset] = useState<ASMRAsset | null>(null);
-
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', 'audio');
-    formData.append('category', '自然环境');
-    formData.append('tags', JSON.stringify(['雨声', '白噪音']));
-
-    try {
-      const response = await api.assets.upload(formData, {
-        onProgress: (progress) => setUploadProgress(progress),
-      });
-      setUploadedAsset(response.asset);
-    } catch (error) {
-      toast.error('上传失败：' + error.message);
-    }
-  };
-
-  return (
-    <div className="container mx-auto py-8 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>ASMR素材API测试</CardTitle>
-          <CardDescription>
-            测试素材上传、分类、搜索等API功能
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <FileUpload
-            onFileSelect={handleUpload}
-            accept={['audio/*', 'video/*']}
-            maxSize={50 * 1024 * 1024}
-          />
-
-          {uploadProgress > 0 && (
-            <Progress value={uploadProgress} className="mt-4" />
-          )}
-
-          {uploadedAsset && (
-            <div className="mt-4 space-y-2">
-              <h4 className="font-medium">上传成功</h4>
-              <p className="text-sm">文件名: {uploadedAsset.name}</p>
-              <p className="text-sm">类型: {uploadedAsset.type}</p>
-              <p className="text-sm">大小: {formatFileSize(uploadedAsset.fileSize)}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <SearchDemo />
-    </div>
-  );
-};
-```
-
-### 6. React 19 + Next.js 15优化
-
-#### 6.1 服务端组件集成
-
-```typescript
-// app/[locale]/generate/step1-server.tsx
-import { Suspense } from 'react';
-
-export default async function Step1Server() {
-  const prompts = await getPrompts();
-  const templates = await getContentTemplates();
-
-  return (
-    <Suspense fallback={<Step1Skeleton />}>
-      <Step1Client prompts={prompts} templates={templates} />
-    </Suspense>
-  );
-}
-```
-
-#### 6.2 流式渲染优化
-
-```typescript
-// components/streaming/prompt-stream.tsx
-import { use } from 'react';
-
-interface PromptStreamProps {
-  promptPromise: Promise<AIPrompt[]>;
-}
-
-export function PromptStream({ promptPromise }: PromptStreamProps) {
-  const prompts = use(promptPromise);
-
-  return (
-    <div className="grid gap-4">
-      {prompts.map((prompt) => (
-        <PromptCard key={prompt.id} prompt={prompt} />
-      ))}
-    </div>
-  );
-}
-```
-
-#### 6.3 客户端组件优化
-
-```typescript
-// components/optimized/asset-grid.tsx
-'use client';
-
-import { useMemo, useCallback } from 'react';
-import { FixedSizeGrid } from 'react-window';
-
-interface OptimizedAssetGridProps {
-  assets: ASMRAsset[];
-  onAssetSelect: (asset: ASMRAsset) => void;
-  selectedAssets: ASMRAsset[];
-}
-
-export function OptimizedAssetGrid({
-  assets,
-  onAssetSelect,
-  selectedAssets,
-}: OptimizedAssetGridProps) {
-  const isSelected = useCallback(
-    (asset: ASMRAsset) => selectedAssets.some(a => a.id === asset.id),
-    [selectedAssets]
-  );
-
-  const renderAsset = useCallback(
-    ({ index, style }) => {
-      const asset = assets[index];
-      return (
-        <div style={style}>
-          <AssetCard
-            asset={asset}
-            selected={isSelected(asset)}
-            onClick={() => onAssetSelect(asset)}
-          />
-        </div>
-      );
-    },
-    [assets, isSelected, onAssetSelect]
-  );
-
-  return (
-    <FixedSizeGrid
-      columnCount={4}
-      columnWidth={200}
-      height={600}
-      rowCount={Math.ceil(assets.length / 4)}
-      rowHeight={250}
-      width={800}
-    >
-      {renderAsset}
-    </FixedSizeGrid>
-  );
-}
-```
-
-### 7. 状态管理升级
-
-#### 7.1 Zustand v4集成
-
-```typescript
-// store/prompts.store.ts
-interface PromptsStore {
-	prompts: AIPrompt[];
-	categories: PromptCategory[];
-	selectedPrompt?: AIPrompt;
-	filters: PromptFilters;
-
-	// Actions
-	loadPrompts: () => Promise<void>;
-	createPrompt: (prompt: CreatePromptDto) => Promise<void>;
-	updatePrompt: (id: string, updates: UpdatePromptDto) => Promise<void>;
-	deletePrompt: (id: string) => Promise<void>;
-	optimizePrompt: (id: string, criteria: OptimizationCriteria[]) => Promise<void>;
-
-	// Selectors
-	filteredPrompts: () => AIPrompt[];
-	promptsByCategory: (categoryId: string) => AIPrompt[];
-	topPrompts: (limit: number) => AIPrompt[];
-}
-
-const usePromptsStore = create<PromptsStore>()(
-	devtools(
-		subscribeWithSelector((set, get) => ({
-			prompts: [],
-			categories: [],
-			filters: {
-				category: undefined,
-				tags: [],
-				searchTerm: '',
-			},
-
-			loadPrompts: async () => {
-				const prompts = await api.prompts.list();
-				set({prompts});
-			},
-
-			createPrompt: async (prompt) => {
-				const newPrompt = await api.prompts.create(prompt);
-				set((state) => ({
-					prompts: [...state.prompts, newPrompt],
-				}));
-			},
-
-			filteredPrompts: () => {
-				const {prompts, filters} = get();
-				return prompts.filter((prompt) => {
-					if (filters.category && prompt.category !== filters.category) return false;
-					if (filters.tags.length > 0 && !filters.tags.some((tag) => prompt.tags.includes(tag))) return false;
-					if (filters.searchTerm && !prompt.name.toLowerCase().includes(filters.searchTerm.toLowerCase())) return false;
-					return true;
-				});
-			},
-		})),
-	),
-);
-```
-
-#### 7.2 React Query集成
-
-```typescript
-// hooks/use-prompts.ts
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-
-export function usePrompts(filters?: PromptFilters) {
-	return useQuery({
-		queryKey: ['prompts', filters],
-		queryFn: () => api.prompts.list(filters),
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		gcTime: 10 * 60 * 1000, // 10 minutes
-	});
-}
-
-export function useCreatePrompt() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: api.prompts.create,
-		onSuccess: () => {
-			queryClient.invalidateQueries({queryKey: ['prompts']});
-		},
-	});
-}
-
-export function usePromptOptimization() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: ({promptId, criteria}: {promptId: string; criteria: OptimizationCriteria[]}) =>
-			api.prompts.optimize(promptId, criteria),
-		onSuccess: () => {
-			queryClient.invalidateQueries({queryKey: ['prompts']});
-		},
-	});
-}
-```
-
-### 8. 性能优化策略
-
-#### 8.1 图片懒加载
-
-```typescript
-// components/lazy-image.tsx
-import { useInView } from 'react-intersection-observer';
-
-interface LazyImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  placeholder?: string;
-}
-
-export function LazyImage({ src, alt, className, placeholder }: LazyImageProps) {
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  return (
-    <div ref={ref} className={className}>
-      {inView ? (
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover"
-          placeholder={placeholder ? 'blur' : undefined}
-          blurDataURL={placeholder}
-        />
-      ) : (
-        <div className="w-full h-full bg-muted animate-pulse" />
-      )}
-    </div>
-  );
-}
-```
-
-#### 8.2 虚拟化列表
-
-```typescript
-// components/virtualized-list.tsx
-import { VariableSizeList } from 'react-window';
-
-interface VirtualizedListProps<T> {
-  items: T[];
-  renderItem: (item: T, index: number) => React.ReactNode;
-  itemHeight: (index: number) => number;
-  height: number;
-}
-
-export function VirtualizedList<T>({
-  items,
-  renderItem,
-  itemHeight,
-  height,
-}: VirtualizedListProps<T>) {
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => (
-    <div style={style}>
-      {renderItem(items[index], index)}
-    </div>
-  );
-
-  return (
-    <VariableSizeList
-      height={height}
-      itemCount={items.length}
-      itemSize={itemHeight}
-      width="100%"
-    >
-      {Row}
-    </VariableSizeList>
-  );
-}
-```
-
-### 9. 测试策略
-
-#### 9.1 组件测试
-
-```typescript
-// __tests__/components/prompt-editor.test.tsx
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { PromptEditor } from '@/components/prompts/prompt-editor';
-
-describe('PromptEditor', () => {
-  it('should create new prompt', async () => {
-    render(
-      <PromptEditor
-        mode="create"
-        onSave={jest.fn()}
-        onCancel={jest.fn()}
-      />
-    );
-
-    const nameInput = screen.getByLabelText('名称');
-    fireEvent.change(nameInput, { target: { value: '测试提示' } });
-
-    const contentInput = screen.getByLabelText('内容');
-    fireEvent.change(contentInput, { target: { value: '这是一个测试提示' } });
-
-    const saveButton = screen.getByText('保存');
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(screen.getByText('提示创建成功')).toBeInTheDocument();
-    });
-  });
-});
-```
-
-#### 9.2 E2E测试
-
-```typescript
-// e2e/prompt-management.spec.ts
-import {test, expect} from '@playwright/test';
-
-test.describe('智能提示管理', () => {
-	test('完整提示管理流程', async ({page}) => {
-		await page.goto('/prompts');
-
-		// 创建新提示
-		await page.click('button:has-text("创建提示")');
-		await page.fill('[name="name"]', '睡前故事提示');
-		await page.fill('[name="content"]', '生成一个关于{{主题}}的睡前故事');
-		await page.click('button:has-text("保存")');
-
-		// 验证提示创建
-		await expect(page.locator('text=睡前故事提示')).toBeVisible();
-
-		// 测试提示使用
-		await page.goto('/generate');
-		await page.click('button:has-text("使用提示")');
-		await page.click('text=睡前故事提示');
-		await page.fill('[placeholder="主题"]', '森林');
-		await expect(page.locator('text=生成一个关于森林的睡前故事')).toBeVisible();
-	});
-});
-```
-
-### 10. 部署配置
-
-#### 10.1 Next.js配置优化
-
-```typescript
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-	experimental: {
-		serverActions: true,
-		optimizeCss: true,
-		optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-	},
-	images: {
-		domains: ['cdn.example.com', 'titan-assets.com'],
-		formats: ['image/webp', 'image/avif'],
-	},
-	env: {
-		CUSTOM_KEY: 'my-value',
-	},
-	webpack: (config, {isServer}) => {
-		if (!isServer) {
-			config.resolve.fallback = {
-				...config.resolve.fallback,
-				fs: false,
-			};
-		}
-		return config;
-	},
-};
-
-module.exports = nextConfig;
-```
-
-### 11. 开发检查清单
-
-#### 11.1 功能完整性检查
-
-- [ ] 智能提示创建/编辑/删除
-- [ ] 提示变量动态渲染
-- [ ] AI提示生成和优化
-- [ ] ASMR素材上传和管理
-- [ ] WebDAV文件集成
-- [ ] 素材智能分类
-- [ ] Step1内容创作增强
-- [ ] Step3音景选择增强
-- [ ] API Demo验证页面
-- [ ] 响应式设计适配
-
-#### 11.2 性能优化检查
-
-- [ ] 虚拟化列表实现
-- [ ] 图片懒加载
-- [ ] 代码分割
-- [ ] 缓存策略配置
-- [ ] 防抖/节流处理
-
-#### 11.3 测试覆盖率
-
-- [ ] 单元测试 > 80%
-- [ ] 集成测试 > 70%
-- [ ] E2E测试关键路径
-- [ ] 性能测试通过
-
-#### 11.4 部署准备
-
-- [ ] 环境变量配置
-- [ ] CDN配置
-- [ ] 监控集成
-- [ ] 错误追踪配置
+# Titan v1.2 前端开发清单
+
+基于Next.js 15 + TypeScript + React 19，实现智能提示管理和ASMR素材管理功能。
+
+## 📋 项目概览
+
+- **项目代号**: Titan v1.2 - AI提示管理与ASMR素材优化
+- **技术栈**: Next.js 15 + React 19 + TypeScript + shadcn/ui + Tailwind CSS
+- **核心功能**: 智能提示管理 + ASMR素材管理 + Step1内容创作增强 + Step3音景选择优化
+- **开发状态**: 基础框架完成，AI集成和素材管理待实现
+
+---
+
+## 🎨 前端开发清单
+
+### Phase 1: 智能提示管理系统 ❌
+
+- [ ] **提示库主界面**
+  - [ ] `app/[locale]/prompts/page.tsx` - 提示管理主页面
+    - **文件路径**: `apps/nextjs-frontend/src/app/[locale]/prompts/page.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 三栏布局 - 过滤面板 + 提示网格 + 详情面板
+    - **验收标准**: 响应式布局，提示分类展示，搜索过滤功能
+  - [ ] 提示过滤和搜索组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/prompts/prompt-filter-panel.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 分类过滤 + 标签过滤 + 关键词搜索
+    - **验收标准**: 实时过滤，多条件组合搜索
+
+- [ ] **提示编辑器组件**
+  - [ ] 创建/编辑提示表单
+    - **文件路径**: `apps/nextjs-frontend/src/components/prompts/prompt-editor.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 多Tab表单 - 基本信息/变量定义/使用示例/AI设置
+    - **验收标准**: React Hook Form + Zod验证，变量动态管理
+  - [ ] 变量编辑器子组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/prompts/variable-editor.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 动态变量添加/删除，类型选择，默认值设置
+    - **验收标准**: 变量预览，格式验证
+
+- [ ] **AI提示生成器**
+  - [ ] AI智能生成组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/prompts/ai-prompt-generator.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 描述输入 + AI生成 + 结果展示
+    - **验收标准**: 支持多种生成模式，结果可编辑
+
+### Phase 2: ASMR素材管理系统 ❌
+
+- [ ] **素材浏览器**
+  - [ ] 素材管理主界面
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/asset-browser.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 过滤面板 + 网格/列表视图 + 详情面板
+    - **验收标准**: 多种视图模式，素材选择和管理
+  - [ ] 素材网格/列表组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/asset-grid.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 虚拟化列表，多选支持，拖拽操作
+    - **验收标准**: 大量素材渲染流畅，交互响应迅速
+
+- [ ] **AI图片生成器**
+  - [ ] AI图片生成主组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/ai-image-generator.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 提示词输入 + Pollinations.AI调用 + 结果展示
+    - **验收标准**: 支持中英文提示词，随机种子，无水印选项
+  - [ ] AI图片管理器
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/ai-image-manager.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 生成历史 + 参数管理 + 重新生成
+    - **验收标准**: AI生成图片与普通图片分类管理
+  - [ ] 图片提示词预设库
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/image-prompt-presets.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 预设模板 + 分类管理 + 快速应用
+    - **验收标准**: 常用提示词模板，支持自定义保存
+
+- [ ] **WebDAV文件管理器增强**
+  - [ ] WebDAV文件管理器组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/webdav-file-manager.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 目录导航 + 文件列表 + 批量操作
+    - **验收标准**: 完整的文件管理功能，错误处理
+
+- [ ] **素材智能分类**
+  - [ ] 自动分类组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/assets/auto-categorization.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: AI分析文件内容，推荐分类，置信度显示
+    - **验收标准**: 准确的分类建议，用户可接受或修改
+
+### Phase 3: Step1内容创作增强 ❌
+
+- [ ] **智能提示选择器**
+  - [ ] Step1增强组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/generate/step1-enhanced.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 提示库集成 + AI生成 + 变量填充 + 文本优化
+    - **验收标准**: 无缝集成提示系统，变量动态渲染
+  - [ ] 提示库模态框
+    - **文件路径**: `apps/nextjs-frontend/src/components/generate/prompt-library-modal.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 提示浏览 + 搜索 + 选择 + 预览
+    - **验收标准**: 快速提示选择，变量预填充
+
+### Phase 4: Step3音景选择增强 ❌
+
+- [ ] **素材集成音景选择器**
+  - [ ] Step3增强组件
+    - **文件路径**: `apps/nextjs-frontend/src/components/generate/step3-enhanced.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 预设音景 + 自定义生成 + 项目素材选择
+    - **验收标准**: 三种音景来源无缝切换
+  - [ ] 素材音景选择器
+    - **文件路径**: `apps/nextjs-frontend/src/components/generate/asset-soundscape-selector.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 音频素材浏览 + 预览 + 选择
+    - **验收标准**: 音频预览，时长显示，音质信息
+
+### Phase 5: API集成层 ❌
+
+- [ ] **智能提示API服务**
+  - [ ] 提示管理API客户端
+    - **文件路径**: `apps/nextjs-frontend/src/lib/api/prompts.ts`
+    - **实现状态**: ❌ 待开始
+    - **API端点映射**:
+      - `GET /prompts` - 获取提示列表
+      - `POST /prompts` - 创建提示
+      - `PUT /prompts/:id` - 更新提示
+      - `DELETE /prompts/:id` - 删除提示
+      - `POST /prompts/generate` - AI生成提示
+      - `POST /prompts/:id/optimize` - 优化提示
+    - **验收标准**: 完整的提示CRUD操作，AI生成集成
+
+- [ ] **ASMR素材API服务**
+  - [ ] 素材管理API客户端
+    - **文件路径**: `apps/nextjs-frontend/src/lib/api/assets.ts`
+    - **实现状态**: ❌ 待开始
+    - **API端点映射**:
+      - `GET /assets` - 获取素材列表
+      - `POST /assets/upload` - 上传素材
+      - `PUT /assets/:id` - 更新素材信息
+      - `DELETE /assets/:id` - 删除素材
+      - `POST /assets/:id/categorize` - AI分类
+      - `GET /assets/search` - 搜索素材
+    - **验收标准**: 完整的素材管理，AI分类集成
+
+- [ ] **AI图片生成API服务**
+  - [ ] AI图片生成API客户端
+    - **文件路径**: `apps/nextjs-frontend/src/lib/api/ai-images.ts`
+    - **实现状态**: ❌ 待开始
+    - **API端点映射**:
+      - `POST /ai/generate-image` - 生成图片
+      - `GET /ai/generated-images` - 获取生成历史
+      - `POST /ai/save-generated-image` - 保存生成图片到素材库
+      - `DELETE /ai/generated-images/:id` - 删除生成记录
+      - `GET /ai/image-presets` - 获取预设提示词
+      - `POST /ai/image-presets` - 保存预设提示词
+    - **验收标准**: 完整的AI图片生成和管理功能
+
+- [ ] **AI服务API集成**
+  - [ ] AI服务API客户端
+    - **文件路径**: `apps/nextjs-frontend/src/lib/api/ai.ts`
+    - **实现状态**: ❌ 待开始
+    - **API端点映射**:
+      - `POST /ai/generate-prompt` - 生成提示
+      - `POST /ai/optimize-prompt` - 优化提示
+      - `POST /ai/categorize-asset` - 分类素材
+      - `POST /ai/analyze-content` - 内容分析
+      - `POST /ai/generate-image-pollinations` - Pollinations.AI图片生成
+    - **验收标准**: 统一的AI服务调用接口，支持多种AI功能
+
+### Phase 6: React 19优化和性能 ❌
+
+- [ ] **服务端组件集成**
+  - [ ] 提示页面服务端组件
+    - **文件路径**: `apps/nextjs-frontend/src/app/[locale]/prompts/step1-server.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 服务端数据预取，流式渲染
+    - **验收标准**: 首屏渲染优化，SEO友好
+
+- [ ] **客户端组件优化**
+  - [ ] 虚拟化素材网格
+    - **文件路径**: `apps/nextjs-frontend/src/components/optimized/asset-grid.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: react-window虚拟化，内存优化
+    - **验收标准**: 大量素材列表渲染流畅
+
+- [ ] **状态管理升级**
+  - [ ] Zustand v4提示状态
+    - **文件路径**: `apps/nextjs-frontend/src/store/prompts.store.ts`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 提示状态管理，选择器优化
+    - **验收标准**: 响应式状态更新，性能优化
+
+### Phase 7: Demo验证页面 ❌
+
+- [ ] **API Demo页面**
+  - [ ] 智能提示API Demo
+    - **文件路径**: `apps/nextjs-frontend/src/app/[locale]/demo/prompts/page.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 提示测试，变量替换，AI响应展示
+    - **验收标准**: 完整的API功能验证
+  - [ ] ASMR素材API Demo
+    - **文件路径**: `apps/nextjs-frontend/src/app/[locale]/demo/assets/page.tsx`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 素材上传，分类，搜索测试
+    - **验收标准**: 所有素材功能可验证
+
+---
+
+## 📦 React Query集成
+
+### Phase 1: 查询Hooks ❌
+
+- [ ] **提示相关Hooks**
+  - [ ] 提示查询Hooks
+    - **文件路径**: `apps/nextjs-frontend/src/hooks/use-prompts.ts`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: useQuery, useMutation, 缓存策略
+    - **验收标准**: 自动缓存，乐观更新，错误重试
+
+- [ ] **素材相关Hooks**
+  - [ ] 素材查询Hooks
+    - **文件路径**: `apps/nextjs-frontend/src/hooks/use-assets.ts`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 分页查询，无限滚动，文件上传进度
+    - **验收标准**: 流畅的大数据列表体验
+
+- [ ] **AI图片生成Hooks**
+  - [ ] AI图片生成Hooks
+    - **文件路径**: `apps/nextjs-frontend/src/hooks/use-ai-images.ts`
+    - **实现状态**: ❌ 待开始
+    - **技术实现**: 图片生成状态管理，历史记录，预设管理
+    - **验收标准**: 完整的AI图片生成状态管理和缓存策略
+
+---
+
+## 🎯 开发优先级
+
+### 高优先级 (P0) - 核心功能
+
+1. ❌ **智能提示管理系统** - 核心新功能
+2. ❌ **AI图片生成功能** - 核心新功能
+3. ❌ **提示API集成** - 数据支持
+4. ❌ **Step1内容创作增强** - 用户体验提升
+5. ❌ **素材管理优化** - 现有功能增强
+
+### 中优先级 (P1) - 体验优化
+
+1. ❌ Step3音景选择增强
+2. ❌ 素材智能分类
+3. ❌ React 19性能优化
+4. ❌ Demo验证页面
+
+### 低优先级 (P2) - 高级功能
+
+1. ❌ AI服务深度集成
+2. ❌ 高级素材搜索
+3. ❌ 批量操作优化
+4. ❌ 键盘快捷键支持
+
+---
+
+## 🚀 里程碑计划
+
+### Milestone 1: 智能提示系统 ❌
+
+**时间**: Week 8
+**状态**: 待开始
+**阻塞项**: 后端AI服务API
+
+- ❌ 提示库界面开发
+- ❌ 提示编辑器组件
+- ❌ AI生成功能集成
+- ❌ 基础API集成
+
+### Milestone 2: 素材管理增强 ❌
+
+**时间**: Week 9
+**状态**: 待开始
+**依赖**: Milestone 1完成
+
+- ❌ 素材浏览器优化
+- ❌ 智能分类功能
+- ❌ WebDAV管理增强
+- ❌ 批量操作支持
+
+### Milestone 3: 生成流程优化 ❌
+
+**时间**: Week 10
+**状态**: 待开始
+**依赖**: Milestone 2完成
+
+- ❌ Step1内容创作增强
+- ❌ Step3音景选择优化
+- ❌ 提示系统集成
+- ❌ 素材选择优化
+
+### Milestone 4: 性能和体验 ❌
+
+**时间**: Week 11
+**状态**: 待开始
+**依赖**: Milestone 3完成
+
+- ❌ React 19优化
+- ❌ 虚拟化列表
+- ❌ 缓存策略优化
+- ❌ 用户体验打磨
+
+---
+
+## 📝 技术债务和风险评估
+
+### 技术债务
+
+1. **AI服务集成复杂度** - 多个AI提供商集成，错误处理复杂
+2. **大数据列表性能** - 素材列表可能包含大量数据
+3. **实时预览功能** - 音频/视频预览的性能挑战
+4. **状态同步复杂性** - 提示和素材状态的一致性维护
+
+### 风险评估
+
+**高风险**:
+- AI服务调用延迟影响用户体验
+- 大文件素材的前端处理性能
+- 复杂的提示变量解析逻辑
+
+**中风险**:
+- React 19新特性的兼容性
+- 虚拟化列表的滚动性能
+- WebDAV文件操作的错误处理
+
+**低风险**:
+- 提示模板的格式标准化
+- 素材分类算法的准确性
+- UI组件的响应式适配
+
+### 应对策略
+
+1. **渐进式开发**: 先实现核心功能，再优化性能
+2. **缓存策略**: 积极使用React Query缓存减少API调用
+3. **错误边界**: 完善的错误处理和用户反馈
+4. **性能监控**: 实时监控关键指标
+
+---
+
+## 📊 质量标准
+
+### 代码质量
+- TypeScript严格模式，无类型错误
+- React 19新特性正确使用
+- 组件测试覆盖率 > 75%
+- XO (ESLint) 规则100%通过
+
+### 用户体验
+- AI响应时间 < 5s
+- 素材列表渲染 < 1s
+- 操作响应时间 < 300ms
+- 文件上传进度实时显示
+
+### 性能标准
+- 大素材列表流畅滚动
+- 内存使用合理增长
+- AI服务调用优化
+- 缓存策略有效
+
+---
+
+## 🔗 依赖关系
+
+### 外部依赖
+- **后端AI服务API**: 智能提示和分类功能
+- **素材管理API增强**: 支持智能分类和搜索
+- **共享类型包更新**: 新的AI相关类型定义
+
+### 内部依赖
+- **AI服务集成** → 智能功能
+- **React Query配置** → 数据缓存和同步
+- **素材管理基础** → 增强功能开发
+- **提示系统** → Step1和Step3增强
+
+---
+
+_本清单基于Titan v1.2前端开发需求编写，专注于AI提示管理和ASMR素材管理的深度集成，使用React 19和Next.js 15的最新特性。_

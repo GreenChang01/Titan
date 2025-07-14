@@ -259,4 +259,209 @@ export class AssetService {
 		// For now, implementing a simpler version
 		return this.assetRepository.find({userId});
 	}
+
+	/**
+	 * ASMR专用功能 - 获取ASMR相关素材
+	 * @param userId 用户ID
+	 * @param category ASMR分类(可选)
+	 * @returns ASMR素材列表
+	 */
+	async getASMRAssets(userId: string, category?: string): Promise<Asset[]> {
+		const asmrTypes = [
+			AssetType.ASMR_NATURAL_SOUND,
+			AssetType.ASMR_WHITE_NOISE,
+			AssetType.ASMR_AMBIENT_SOUND,
+			AssetType.ASMR_VOICE_SAMPLE,
+		];
+
+		const where: any = {
+			userId,
+			assetType: {$in: asmrTypes},
+		};
+
+		// 如果指定了分类，则通过标签过滤
+		if (category) {
+			where.tags = {$contains: [category]};
+		}
+
+		return this.assetRepository.find(where, {
+			orderBy: {createdAt: 'DESC'},
+		});
+	}
+
+	/**
+	 * ASMR专用功能 - 按情绪分类获取素材
+	 * @param userId 用户ID
+	 * @param mood 情绪类型(relaxing, energizing, sleeping等)
+	 * @returns 符合情绪的素材列表
+	 */
+	async getASMRAssetsByMood(userId: string, mood: string): Promise<Asset[]> {
+		const asmrTypes = [
+			AssetType.ASMR_NATURAL_SOUND,
+			AssetType.ASMR_WHITE_NOISE,
+			AssetType.ASMR_AMBIENT_SOUND,
+			AssetType.ASMR_VOICE_SAMPLE,
+		];
+
+		return this.assetRepository.find({
+			userId,
+			assetType: {$in: asmrTypes},
+			tags: {$contains: [mood]},
+		}, {
+			orderBy: {createdAt: 'DESC'},
+		});
+	}
+
+	/**
+	 * ASMR专用功能 - 创建AI生成的ASMR素材
+	 * @param userId 用户ID
+	 * @param assetData 素材数据
+	 * @returns 创建的素材
+	 */
+	async createAIGeneratedAsset(userId: string, assetData: {
+		name: string;
+		type: AssetType;
+		url: string;
+		metadata?: Record<string, any>;
+		tags?: string[];
+		description?: string;
+	}): Promise<Asset> {
+		try {
+			const asset = new Asset({
+				userId,
+				fileName: assetData.name,
+				originalName: assetData.name,
+				filePath: assetData.url,
+				fileSize: 0, // AI生成的资源没有本地文件大小
+				mimeType: this.getMimeTypeFromAssetType(assetData.type),
+				assetType: assetData.type,
+				uploadSource: UploadSource.AI_GENERATED,
+			});
+
+			// 设置可选属性
+			if (assetData.metadata) {
+				asset.metadata = assetData.metadata;
+			}
+
+			if (assetData.tags) {
+				asset.tags = assetData.tags;
+			}
+
+			if (assetData.description) {
+				asset.description = assetData.description;
+			}
+
+			// 设置URL而不是本地路径
+			asset.url = assetData.url;
+
+			await this.em.persistAndFlush(asset);
+
+			this.logger.log(`AI生成素材创建成功: ${asset.id} for user: ${userId}`);
+			return asset;
+		} catch (error) {
+			this.logger.error(`创建AI生成素材失败: ${error.message}`, error.stack);
+			throw error;
+		}
+	}
+
+	/**
+	 * ASMR专用功能 - 获取素材统计信息
+	 * @param userId 用户ID
+	 * @returns 统计信息
+	 */
+	async getASMRAssetStats(userId: string): Promise<{
+		totalCount: number;
+		byType: Record<string, number>;
+		byMood: Record<string, number>;
+		recentUploads: number;
+	}> {
+		try {
+			const asmrTypes = [
+				AssetType.ASMR_NATURAL_SOUND,
+				AssetType.ASMR_WHITE_NOISE,
+				AssetType.ASMR_AMBIENT_SOUND,
+				AssetType.ASMR_VOICE_SAMPLE,
+			];
+
+			// 总数统计
+			const totalCount = await this.assetRepository.count({
+				userId,
+				assetType: {$in: asmrTypes},
+			});
+
+			// 按类型统计
+			const byTypeResult = await this.em.getConnection().execute(
+				`SELECT asset_type, COUNT(*) as count 
+				 FROM asset 
+				 WHERE user_id = ? AND asset_type IN (?, ?, ?, ?) 
+				 GROUP BY asset_type`,
+				[userId, ...asmrTypes],
+			);
+
+			const byType: Record<string, number> = {};
+			for (const row of byTypeResult) {
+				byType[row.asset_type] = Number.parseInt(row.count, 10);
+			}
+
+			// 按情绪统计 - 通过标签统计
+			const byMoodResult = await this.em.getConnection().execute(
+				`SELECT UNNEST(tags) as mood, COUNT(*) as count 
+				 FROM asset 
+				 WHERE user_id = ? AND asset_type IN (?, ?, ?, ?) AND tags IS NOT NULL
+				 GROUP BY mood 
+				 ORDER BY count DESC 
+				 LIMIT 10`,
+				[userId, ...asmrTypes],
+			);
+
+			const byMood: Record<string, number> = {};
+			for (const row of byMoodResult) {
+				byMood[row.mood] = Number.parseInt(row.count, 10);
+			}
+
+			// 最近7天上传数量
+			const sevenDaysAgo = new Date();
+			sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+			const recentUploads = await this.assetRepository.count({
+				userId,
+				assetType: {$in: asmrTypes},
+				createdAt: {$gte: sevenDaysAgo},
+			});
+
+			return {
+				totalCount,
+				byType,
+				byMood,
+				recentUploads,
+			};
+		} catch (error) {
+			this.logger.error(`获取ASMR素材统计失败: ${error.message}`, error.stack);
+			throw error;
+		}
+	}
+
+	/**
+	 * 根据素材类型获取MIME类型
+	 * @param assetType 素材类型
+	 * @returns MIME类型
+	 */
+	private getMimeTypeFromAssetType(assetType: AssetType): string {
+		switch (assetType) {
+			case AssetType.ASMR_NATURAL_SOUND:
+			case AssetType.ASMR_WHITE_NOISE:
+			case AssetType.ASMR_AMBIENT_SOUND:
+			case AssetType.ASMR_VOICE_SAMPLE: {
+				return 'audio/mpeg';
+			}
+
+			case AssetType.AI_GENERATED_IMAGE: {
+				return 'image/png';
+			}
+
+			default: {
+				return 'application/octet-stream';
+			}
+		}
+	}
 }

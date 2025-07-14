@@ -106,6 +106,21 @@
 - 音频格式自动转换和质量优化
 - 批量上传和进度监控
 
+**AI图片生成系统 (AI Image Generation)**
+
+- 基于Pollinations.AI的免费图片生成服务
+- 支持中英文提示词，自动URL编码处理
+- 随机种子生成，确保每次生成不同图片
+- 无水印图片生成选项 (nologo=true)
+- 生成历史记录和重新生成功能
+- AI生成图片与普通上传图片分类管理
+- 生成参数保存：提示词、种子、生成时间
+- 支持批量生成和预设提示词模板
+- **ASMR场景预设模板**: 自然风景、温馨环境、抽象艺术等分类
+- **简单易用界面**: 文本描述输入 + 一键生成 + 结果预览
+- **项目集成**: 生成的图片自动关联到当前项目
+- **智能分类**: AI生成图片在素材管理中有专门标识和分类
+
 **素材分类与管理 (Classification & Management)**
 
 - 智能分类系统：自然音、白噪音、环境音、人声素材
@@ -134,6 +149,7 @@
 ```
 🎵 ASMR素材管理
    ├─ 📁 素材库     (分类浏览)
+   ├─ 🖼️ AI图片生成 (AI图片创作)
    ├─ ⬆️ 上传中心   (批量上传)
    ├─ 🔍 智能搜索   (多维筛选)
    ├─ ⭐ 我的收藏   (常用素材)
@@ -206,6 +222,8 @@
 | ASMR素材管理页面   | `src/app/[locale]/materials/page.tsx`                        | 5天        | 现有Asset API  |
 | 素材浏览器组件     | `src/components/materials/material-browser.tsx`              | 4天        | 音频预览       |
 | 素材上传组件       | `src/components/materials/material-uploader.tsx`             | 3天        | WebDAV集成     |
+| AI图片生成器组件   | `src/components/materials/ai-image-generator.tsx`            | 3天        | Pollinations API |
+| AI图片管理器组件   | `src/components/materials/ai-image-manager.tsx`              | 2天        | 素材管理API    |
 | Step1增强          | `src/app/[locale]/generate/_components/step1-content.tsx`    | 2天        | 提示词API      |
 | Step3增强          | `src/app/[locale]/generate/_components/step3-soundscape.tsx` | 2天        | 素材API        |
 | API Demo页面       | `src/app/[locale]/demo/api-demo.tsx`                         | 2天        | 后端API        |
@@ -217,6 +235,7 @@
 | 智能提示词API   | 4天        | 集成AI服务，提示词生成和优化    |
 | 提示词管理API   | 3天        | CRUD操作，分类标签管理          |
 | 素材管理API扩展 | 3天        | 基于现有Asset系统的ASMR专用功能 |
+| AI图片生成API   | 2天        | Pollinations.AI集成和图片管理   |
 | 文件上传处理    | 2天        | 音频文件处理和格式转换          |
 | 搜索和推荐      | 3天        | 智能搜索和推荐算法              |
 | API Demo接口    | 1天        | 演示用API端点                   |
@@ -269,6 +288,18 @@ ALTER TABLE asset ADD COLUMN audio_format VARCHAR(10);
 ALTER TABLE asset ADD COLUMN audio_quality VARCHAR(20);
 ALTER TABLE asset ADD COLUMN waveform_data TEXT;
 ALTER TABLE asset ADD COLUMN usage_count INTEGER DEFAULT 0;
+
+-- AI生成图片元数据表
+CREATE TABLE ai_generated_image (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    asset_id UUID NOT NULL,
+    prompt TEXT NOT NULL,
+    seed INTEGER NOT NULL,
+    generation_url TEXT NOT NULL,
+    pollinations_params JSON,
+    generated_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (asset_id) REFERENCES asset(id) ON DELETE CASCADE
+);
 ```
 
 #### 枚举类型扩展
@@ -288,6 +319,8 @@ export enum AssetType {
 	ASMR_WHITE_NOISE = 'asmr_white_noise',
 	ASMR_AMBIENT_SOUND = 'asmr_ambient_sound',
 	ASMR_VOICE_SAMPLE = 'asmr_voice_sample',
+	// 新增AI生成图片类型
+	AI_GENERATED_IMAGE = 'ai_generated_image',
 }
 
 // 新增提示词分类枚举

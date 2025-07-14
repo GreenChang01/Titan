@@ -123,11 +123,11 @@ export class ContentJobService {
 		userId: string,
 		options: JobQueryOptions,
 	): Promise<{
-		data: ContentJob[];
-		total: number;
-		page: number;
-		limit: number;
-	}> {
+			data: ContentJob[];
+			total: number;
+			page: number;
+			limit: number;
+		}> {
 		const {status, projectId, page = 1, limit = 20} = options;
 		const offset = (page - 1) * limit;
 

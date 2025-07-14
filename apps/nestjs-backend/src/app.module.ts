@@ -22,6 +22,8 @@ import {HealthModule} from './health/health.module';
 import {ProjectModule} from './project/project.module';
 import {TemplateModule} from './template/template.module';
 import {UsersModule} from './users/users.module';
+import {AIModule} from './ai/ai.module';
+import {PromptsModule} from './prompts/prompts.module';
 
 /**
  * 应用程序主模块
@@ -74,6 +76,8 @@ import {UsersModule} from './users/users.module';
 		TemplateModule, // 内容模板模块
 		ContentJobModule, // 内容生产任务模块
 		AIAudioModule, // AI音频处理模块
+		AIModule, // AI图片生成模块
+		PromptsModule, // AI提示词管理模块
 	],
 	providers: [
 		CryptoService, // 加密服务

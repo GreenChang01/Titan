@@ -11,6 +11,7 @@ type AssetConstructor = {
 	mimeType: string;
 	assetType: AssetType;
 	uploadSource: UploadSource;
+	name?: string; // 可选的name字段
 };
 
 @Entity()
@@ -52,6 +53,12 @@ export class Asset extends BaseEntity {
 
 	@Property({nullable: true})
 	thumbnailPath?: string;
+
+	/**
+	 * 资源URL - 用于AI生成的资源或外部链接
+	 */
+	@Property({nullable: true})
+	url?: string;
 
 	constructor({
 		userId,

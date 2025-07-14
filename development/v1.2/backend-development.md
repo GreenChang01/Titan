@@ -34,6 +34,10 @@
     - **实现状态**: ❌ 待实现
     - **新增字段**: audio_duration, audio_format, audio_quality, waveform_data, is_asmr_optimized
     - **验收标准**: 专业音频元数据存储
+  - [ ] `ai_generated_image` 表创建 - AI生成图片元数据
+    - **实现状态**: ❌ 待实现
+    - **核心字段**: id, asset_id, prompt, seed, generation_url, pollinations_params
+    - **验收标准**: AI生成图片完整元数据存储
   - [ ] 数据库索引优化
     - **实现状态**: ❌ 待实现
     - **索引设计**: 用户ID、分类、标签、使用频率复合索引
@@ -46,8 +50,8 @@
     - **验收标准**: 完整分类体系
   - [ ] `AssetType` 扩展 - ASMR素材类型
     - **实现状态**: ❌ 待实现
-    - **新增值**: ASMR_NATURAL_SOUND, ASMR_WHITE_NOISE, ASMR_AMBIENT_SOUND, ASMR_VOICE_SAMPLE
-    - **验收标准**: 专业素材分类
+    - **新增值**: ASMR_NATURAL_SOUND, ASMR_WHITE_NOISE, ASMR_AMBIENT_SOUND, ASMR_VOICE_SAMPLE, AI_GENERATED_IMAGE
+    - **验收标准**: 专业素材分类，支持AI生成图片类型
 
 ### Phase 2: AI服务集成模块 ❌
 
@@ -62,6 +66,20 @@
     - **集成服务**: OpenAI GPT-4, Claude 3.5 Sonnet
     - **验收标准**: 多AI引擎支持，成本优化
 
+- [ ] **AI图片生成服务 (AIImageGenerationService)**
+  - [ ] Pollinations.AI集成
+    - **文件路径**: `apps/nestjs-backend/src/ai/services/ai-image-generation.service.ts`
+    - **实现状态**: ❌ 待实现
+    - **核心方法**: generateImage(), generateImageWithSeed(), saveGeneratedImage(), getGenerationHistory()
+    - **验收标准**: 快速稳定的AI图片生成服务
+  - [ ] 图片生成参数管理
+    - **实现状态**: ❌ 待实现
+    - **功能**: 提示词URL编码、随机种子生成、无水印选项、批量生成
+    - **验收标准**: 完整的图片生成参数控制
+  - [ ] 生成历史和预设管理
+    - **实现状态**: ❌ 待实现
+    - **功能**: 生成记录保存、预设提示词管理、重新生成功能
+    - **验收标准**: 用户友好的历史记录和预设系统
 - [ ] **音频分析服务 (AudioAnalysisService)**
   - [ ] 音频质量分析
     - **文件路径**: `apps/nestjs-backend/src/assets/services/audio-analysis.service.ts`
@@ -99,11 +117,11 @@
     - **实现状态**: ❌ 待实现
     - **核心功能**: ASMR素材上传、分析、分类、搜索
     - **验收标准**: 专业素材管理功能
-  - [ ] 批量操作服务
-    - **文件路径**: `apps/nestjs-backend/src/assets/services/batch-asset.service.ts`
+  - [ ] AI图片生成API
+    - **文件路径**: `apps/nestjs-backend/src/ai/controllers/ai-image.controller.ts`
     - **实现状态**: ❌ 待实现
-    - **核心功能**: 批量上传、批量分析、批量标签更新
-    - **验收标准**: 高效批量处理能力
+    - **包含端点**: POST /ai/generate-image, GET /ai/generated-images, POST /ai/save-generated-image, DELETE /ai/generated-images/:id
+    - **验收标准**: 完整的AI图片生成API实现
 
 ### Phase 4: 生成流程集成增强 ❌
 
@@ -127,8 +145,8 @@
   - [ ] 快速验证接口
     - **文件路径**: `apps/nestjs-backend/src/demo/demo.controller.ts`
     - **实现状态**: ❌ 待实现
-    - **包含端点**: POST /demo/prompt-generation, POST /demo/prompt-optimization, GET /demo/asset-catalog
-    - **验收标准**: 独立验证各功能模块
+    - **包含端点**: POST /demo/prompt-generation, POST /demo/prompt-optimization, GET /demo/asset-catalog, POST /demo/ai-image-generation
+    - **验收标准**: 独立验证各功能模块，包括AI图片生成
   - [ ] 集成测试端点
     - **文件路径**: `apps/nestjs-backend/src/demo/integration-demo.controller.ts`
     - **实现状态**: ❌ 待实现
@@ -169,11 +187,11 @@
     - **实现状态**: ❌ 待实现
     - **包含类型**: Prompt, PromptTag, PromptCategory, PromptSearchFilters
     - **验收标准**: 前后端类型一致性
-  - [ ] 音频分析类型
-    - **文件路径**: `packages/titan-shared/src/types/audio-analysis.ts`
+  - [ ] AI图片生成相关类型
+    - **文件路径**: `packages/titan-shared/src/types/ai-image-generation.ts`
     - **实现状态**: ❌ 待实现
-    - **包含类型**: AudioQualityReport, WaveformData, ASMRTrigger
-    - **验收标准**: 完整音频处理类型定义
+    - **包含类型**: AIImageGenerationRequest, AIImageGenerationResponse, ImageGenerationHistory, ImagePromptPreset
+    - **验收标准**: 前后端AI图片生成类型一致性
 
 ---
 
@@ -216,6 +234,7 @@
 | ---------------- | -------------------------- | ---------- | ------ |
 | **数据库设计**   | 新表结构 + 索引            | 1天        | P0     |
 | **AI服务集成**   | OpenAI/Claude + 提示词生成 | 3天        | P0     |
+| **AI图片生成**   | Pollinations.AI集成        | 2天        | P0     |
 | **提示词管理**   | CRUD + 搜索 + 标签         | 2天        | P0     |
 | **素材管理扩展** | 音频分析 + WebDAV          | 3天        | P0     |
 | **生成流程集成** | Step1/Step3增强            | 2天        | P0     |
@@ -223,7 +242,7 @@
 | **安全优化**     | 限流 + 验证                | 1天        | P1     |
 | **性能优化**     | 缓存 + 查询优化            | 1天        | P1     |
 
-**总计**: **14天** (P0功能: 11天, P1功能: 3天)
+**总计**: **16天** (P0功能: 13天, P1功能: 3天)
 
 ---
 
@@ -233,9 +252,10 @@
 
 1. **数据库架构** - 新表和扩展字段
 2. **AI提示词生成** - OpenAI/Claude集成
-3. **提示词管理系统** - 完整的CRUD和搜索
-4. **素材管理增强** - 音频分析和分类
-5. **生成流程集成** - Step1和Step3功能增强
+3. **AI图片生成** - Pollinations.AI集成
+4. **提示词管理系统** - 完整的CRUD和搜索
+5. **素材管理增强** - 音频分析和分类
+6. **生成流程集成** - Step1和Step3功能增强
 
 ### 🟡 P1 - 增强功能 (建议完成)
 

@@ -32,4 +32,5 @@ export enum ScheduleStatus {
 export enum UploadSource {
 	LOCAL = 'local',
 	ALIYUN_DRIVE = 'aliyun_drive',
+	AI_GENERATED = 'ai_generated',
 }

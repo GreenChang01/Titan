@@ -4,6 +4,7 @@ import {MulterModule} from '@nestjs/platform-express';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {ConfigKey} from '../config/config-key.enum';
 import {AssetController} from './asset.controller';
+import {ASMRAssetController} from './controllers/asmr-asset.controller';
 import {AssetService} from './asset.service';
 import {ThumbnailService} from './services/thumbnail.service';
 import {MetadataExtractorService} from './services/metadata-extractor.service';
@@ -45,7 +46,7 @@ import {ProjectAsset} from './entities/project-asset.entity';
 			inject: [ConfigService],
 		}),
 	],
-	controllers: [AssetController],
+	controllers: [AssetController, ASMRAssetController],
 	providers: [AssetService, ThumbnailService, MetadataExtractorService],
 	exports: [AssetService],
 })

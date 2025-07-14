@@ -70,17 +70,17 @@ export class AliyunDriveController {
 		@User() user: UserEntity,
 		@Body() createDto: CreateAliyunDriveConfigDto,
 	): Promise<{
-		id: string;
-		webdavUrl: string;
-		username: string;
-		displayName?: string;
-		timeout: number;
-		basePath?: string;
-		isActive: boolean;
-		lastSyncAt?: Date;
-		createdAt: Date;
-		updatedAt: Date;
-	}> {
+			id: string;
+			webdavUrl: string;
+			username: string;
+			displayName?: string;
+			timeout: number;
+			basePath?: string;
+			isActive: boolean;
+			lastSyncAt?: Date;
+			createdAt: Date;
+			updatedAt: Date;
+		}> {
 		const config = await this.aliyunDriveService.createConfig(user, createDto);
 
 		return {
@@ -148,17 +148,17 @@ export class AliyunDriveController {
 		@User() user: UserEntity,
 		@Body() updateDto: UpdateAliyunDriveConfigDto,
 	): Promise<{
-		id: string;
-		webdavUrl: string;
-		username: string;
-		displayName?: string;
-		timeout: number;
-		basePath?: string;
-		isActive: boolean;
-		lastSyncAt?: Date;
-		createdAt: Date;
-		updatedAt: Date;
-	}> {
+			id: string;
+			webdavUrl: string;
+			username: string;
+			displayName?: string;
+			timeout: number;
+			basePath?: string;
+			isActive: boolean;
+			lastSyncAt?: Date;
+			createdAt: Date;
+			updatedAt: Date;
+		}> {
 		const config = await this.aliyunDriveService.findByUser(user);
 
 		if (!config || config.id !== id) {
@@ -397,9 +397,9 @@ export class AliyunDriveController {
 		@Param('id') id: string,
 		@User() user: UserEntity,
 	): Promise<{
-		message: string;
-		lastSyncAt?: Date;
-	}> {
+			message: string;
+			lastSyncAt?: Date;
+		}> {
 		const config = await this.aliyunDriveService.findByUser(user);
 
 		if (!config || config.id !== id) {

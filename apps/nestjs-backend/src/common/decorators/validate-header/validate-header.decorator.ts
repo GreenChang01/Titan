@@ -29,9 +29,9 @@ export const ValidateHeader = createParamDecorator(
 		const isValid = validateHeaderValue(headerValue, expectedValue, caseSensitive);
 
 		if (!isValid) {
-			const message =
-				invalidValueMessage ??
-				`Invalid value for header '${headerName}'. Expected: ${formatExpectedValue(expectedValue)}`;
+			const message
+				= invalidValueMessage
+					?? `Invalid value for header '${headerName}'. Expected: ${formatExpectedValue(expectedValue)}`;
 			throw new NotAcceptableException(message);
 		}
 
