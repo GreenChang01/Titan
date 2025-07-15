@@ -24,8 +24,8 @@ export function useAuthApi(): {
 	logout: (parameters?: AuthHookParams) => Promise<void>;
 	state: Record<string, MutationState>;
 } {
-	const loadUser = useUserStore((state) => state.loadUser);
-	const clearUser = useUserStore((state) => state.clearUser);
+	const loadUser = useUserStore(state => state.loadUser);
+	const clearUser = useUserStore(state => state.clearUser);
 
 	const useCreateMutation = <ParametersType, ReturnType = void>(
 		mutationFn: (args: ParametersType) => Promise<ReturnType>,
@@ -116,17 +116,15 @@ export function useAuthApi(): {
 			clearUser();
 		},
 
-		state: Object.fromEntries(
-			Object.entries(mutations).map(([key, mutation]) => [
-				key,
-				{
-					isPending: mutation.isPending,
-					isError: mutation.isError,
-					isSuccess: mutation.isSuccess,
-					isIdle: mutation.isIdle,
-					error: mutation.error,
-				},
-			]),
-		) as Record<string, MutationState>,
+		state: Object.fromEntries(Object.entries(mutations).map(([key, mutation]) => [
+			key,
+			{
+				isPending: mutation.isPending,
+				isError: mutation.isError,
+				isSuccess: mutation.isSuccess,
+				isIdle: mutation.isIdle,
+				error: mutation.error,
+			},
+		])) as Record<string, MutationState>,
 	};
 }

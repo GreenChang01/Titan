@@ -6,7 +6,7 @@ import {AssetType, UploadSource} from '../../common/enums';
 import {v4 as uuidv4} from 'uuid';
 import {GenerateImageDto} from '../dto/generate-image.dto';
 
-export interface AIImageGenerationResult {
+export type AIImageGenerationResult = {
 	id: string;
 	imageUrl: string;
 	prompt: string;
@@ -14,7 +14,7 @@ export interface AIImageGenerationResult {
 	asset?: Asset;
 	status: 'pending' | 'completed' | 'failed';
 	error?: string;
-}
+};
 
 @Injectable()
 export class AIImageService {
@@ -33,15 +33,15 @@ export class AIImageService {
 	 */
 	async generateImage(dto: GenerateImageDto, userId: string): Promise<AIImageGenerationResult> {
 		const {prompt, seed, width = 1024, height = 1024, saveToAsset = true} = dto;
-		const finalSeed = seed || Math.floor(Math.random() * 10000) + 1;
-		
+		const finalSeed = seed || Math.floor(Math.random() * 10_000) + 1;
+
 		try {
 			// 构建Pollinations.AI的URL
 			const encodedPrompt = encodeURIComponent(prompt);
 			const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?seed=${finalSeed}&width=${width}&height=${height}&nologo=true`;
-			
+
 			this.logger.log(`开始生成AI图片: ${prompt} (种子: ${finalSeed})`);
-			
+
 			// 验证图片是否能够生成（简单的HTTP HEAD请求）
 			const response = await fetch(imageUrl, {method: 'HEAD'});
 			if (!response.ok) {
@@ -72,14 +72,16 @@ export class AIImageService {
 			this.logger.log(`AI图片生成成功: ${imageUrl}`);
 			return result;
 		} catch (error) {
-			this.logger.error(`AI图片生成失败: ${error.message}`, error.stack);
+			const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+			const errorStack = error instanceof Error ? error.stack : undefined;
+			this.logger.error(`AI图片生成失败: ${errorMessage}`, errorStack);
 			return {
 				id: uuidv4(),
 				imageUrl: '',
 				prompt,
 				seed: finalSeed,
 				status: 'failed',
-				error: error.message,
+				error: errorMessage,
 			};
 		}
 	}
@@ -103,7 +105,7 @@ export class AIImageService {
 		height: number,
 	): Promise<Asset> {
 		const fileName = `ai_image_${Date.now()}_${seed}.jpg`;
-		const originalName = `AI Generated: ${prompt.substring(0, 50)}...`;
+		const originalName = `AI Generated: ${prompt.slice(0, 50)}...`;
 
 		const asset = new Asset({
 			userId,
@@ -135,7 +137,7 @@ export class AIImageService {
 
 		await this.entityManager.persistAndFlush(asset);
 		this.logger.log(`AI生成图片已保存到Asset系统: ${asset.id}`);
-		
+
 		return asset;
 	}
 
@@ -145,46 +147,25 @@ export class AIImageService {
 	 * @returns 标签数组
 	 */
 	private extractTagsFromPrompt(prompt: string): string[] {
-		const tags: string[] = [];
 		const lowerPrompt = prompt.toLowerCase();
 
-		// 自然场景标签
-		if (lowerPrompt.includes('forest') || lowerPrompt.includes('tree') || lowerPrompt.includes('森林')) {
-			tags.push('森林');
-		}
-		if (lowerPrompt.includes('ocean') || lowerPrompt.includes('sea') || lowerPrompt.includes('海洋')) {
-			tags.push('海洋');
-		}
-		if (lowerPrompt.includes('mountain') || lowerPrompt.includes('山')) {
-			tags.push('山景');
-		}
-		if (lowerPrompt.includes('sunset') || lowerPrompt.includes('sunrise') || lowerPrompt.includes('日落')) {
-			tags.push('日落');
-		}
+		// 标签映射表
+		const tagMappings = [
+			{keywords: ['forest', 'tree', '森林'], tag: '森林'},
+			{keywords: ['ocean', 'sea', '海洋'], tag: '海洋'},
+			{keywords: ['mountain', '山'], tag: '山景'},
+			{keywords: ['sunset', 'sunrise', '日落'], tag: '日落'},
+			{keywords: ['peaceful', 'calm', '宁静'], tag: '宁静'},
+			{keywords: ['warm', 'cozy', '温暖'], tag: '温暖'},
+			{keywords: ['relaxing', 'soothing', '放松'], tag: '放松'},
+			{keywords: ['asmr', 'whisper', '耳语'], tag: 'ASMR'},
+			{keywords: ['meditation', '冥想'], tag: '冥想'},
+			{keywords: ['sleep', 'bedtime', '睡眠'], tag: '睡眠'},
+		];
 
-		// 情感标签
-		if (lowerPrompt.includes('peaceful') || lowerPrompt.includes('calm') || lowerPrompt.includes('宁静')) {
-			tags.push('宁静');
-		}
-		if (lowerPrompt.includes('warm') || lowerPrompt.includes('cozy') || lowerPrompt.includes('温暖')) {
-			tags.push('温暖');
-		}
-		if (lowerPrompt.includes('relaxing') || lowerPrompt.includes('soothing') || lowerPrompt.includes('放松')) {
-			tags.push('放松');
-		}
-
-		// ASMR场景标签
-		if (lowerPrompt.includes('asmr') || lowerPrompt.includes('whisper') || lowerPrompt.includes('耳语')) {
-			tags.push('ASMR');
-		}
-		if (lowerPrompt.includes('meditation') || lowerPrompt.includes('冥想')) {
-			tags.push('冥想');
-		}
-		if (lowerPrompt.includes('sleep') || lowerPrompt.includes('bedtime') || lowerPrompt.includes('睡眠')) {
-			tags.push('睡眠');
-		}
-
-		return tags;
+		return tagMappings
+			.filter(mapping => mapping.keywords.some(keyword => lowerPrompt.includes(keyword)))
+			.map(mapping => mapping.tag);
 	}
 
 	/**
@@ -257,14 +238,14 @@ export class AIImageService {
 		baseOptions: Partial<GenerateImageDto> = {},
 	): Promise<AIImageGenerationResult[]> {
 		const results: AIImageGenerationResult[] = [];
-		
+
 		for (const prompt of prompts) {
 			const result = await this.generateImage(
 				{...baseOptions, prompt},
 				userId,
 			);
 			results.push(result);
-			
+
 			// 简单的延迟，避免过快请求
 			await new Promise(resolve => setTimeout(resolve, 1000));
 		}
@@ -284,7 +265,7 @@ export class AIImageService {
 		userId: string,
 		options: Partial<GenerateImageDto> = {},
 	): Promise<AIImageGenerationResult> {
-		const newSeed = Math.floor(Math.random() * 10000) + 1;
+		const newSeed = Math.floor(Math.random() * 10_000) + 1;
 		return this.generateImage(
 			{...options, prompt: originalPrompt, seed: newSeed},
 			userId,

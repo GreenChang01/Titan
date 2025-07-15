@@ -6,7 +6,7 @@ import {type ProjectMaterial} from '../../src/project-material/entities/project-
 import {type AliyunDriveConfig} from '../../src/aliyun-drive/entities/aliyun-drive-config.entity';
 
 // Collection 的 mock 实现
-type MockCollection<T extends Record<string, unknown> = any> = Partial<Collection<T>> & {
+type MockCollection<T = any> = Partial<Collection<T>> & {
 	getItems: () => T[];
 	isInitialized: () => boolean;
 	add: jest.Mock;
@@ -15,7 +15,7 @@ type MockCollection<T extends Record<string, unknown> = any> = Partial<Collectio
 };
 
 // 创建 Collection mock 的辅助函数
-export function createMockCollection<T extends Record<string, unknown> = any>(items: T[] = []): MockCollection<T> {
+export function createMockCollection<T = any>(items: T[] = []): MockCollection<T> {
 	return {
 		getItems: () => items,
 		isInitialized: () => true,

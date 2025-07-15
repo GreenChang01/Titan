@@ -23,47 +23,47 @@ import {IsString, IsOptional, IsNumber, IsUUID, IsDateString, IsBoolean} from 'c
  * ```
  */
 export class AliyunDriveConfigDto {
-	/** 配置唯一标识符，UUID格式 */
-	@IsUUID()
-	id: string;
+  /** 配置唯一标识符，UUID格式 */
+  @IsUUID()
+  id: string;
 
-	/** WebDAV服务器地址，通常为阿里云盘官方WebDAV端点 */
-	@IsString()
-	webdavUrl: string;
+  /** WebDAV服务器地址，通常为阿里云盘官方WebDAV端点 */
+  @IsString()
+  webdavUrl: string;
 
-	/** 阿里云盘用户名，通常为邮箱地址 */
-	@IsString()
-	username: string;
+  /** 阿里云盘用户名，通常为邮箱地址 */
+  @IsString()
+  username: string;
 
-	/** 配置显示名称，用于用户界面展示，可选 */
-	@IsOptional()
-	@IsString()
-	displayName?: string;
+  /** 配置显示名称，用于用户界面展示，可选 */
+  @IsOptional()
+  @IsString()
+  displayName?: string;
 
-	/** WebDAV连接超时时间，单位毫秒，建议30000ms */
-	@IsNumber()
-	timeout: number;
+  /** WebDAV连接超时时间，单位毫秒，建议30000ms */
+  @IsNumber()
+  timeout: number;
 
-	/** WebDAV根路径，指定访问的起始目录 */
-	@IsString()
-	basePath: string;
+  /** WebDAV根路径，指定访问的起始目录 */
+  @IsString()
+  basePath: string;
 
-	/** 最后同步时间，ISO字符串格式，可选 */
-	@IsOptional()
-	@IsDateString()
-	lastSyncAt?: string;
+  /** 最后同步时间，ISO字符串格式，可选 */
+  @IsOptional()
+  @IsDateString()
+  lastSyncAt?: string;
 
-	/** 配置是否处于激活状态 */
-	@IsBoolean()
-	isActive: boolean;
+  /** 配置是否处于激活状态 */
+  @IsBoolean()
+  isActive: boolean;
 
-	/** 配置创建时间，ISO字符串格式 */
-	@IsDateString()
-	createdAt: string;
+  /** 配置创建时间，ISO字符串格式 */
+  @IsDateString()
+  createdAt: string;
 
-	/** 配置最后更新时间，ISO字符串格式 */
-	@IsDateString()
-	updatedAt: string;
+  /** 配置最后更新时间，ISO字符串格式 */
+  @IsDateString()
+  updatedAt: string;
 }
 
 /**
@@ -85,32 +85,32 @@ export class AliyunDriveConfigDto {
  * ```
  */
 export class CreateAliyunDriveConfigDto {
-	/** WebDAV服务器地址，必须为有效的URL */
-	@IsString()
-	webdavUrl: string;
+  /** WebDAV服务器地址，必须为有效的URL */
+  @IsString()
+  webdavUrl: string;
 
-	/** 阿里云盘用户名，通常为注册邮箱 */
-	@IsString()
-	username: string;
+  /** 阿里云盘用户名，通常为注册邮箱 */
+  @IsString()
+  username: string;
 
-	/** 阿里云盘密码，将在后端加密存储 */
-	@IsString()
-	password: string;
+  /** 阿里云盘密码，将在后端加密存储 */
+  @IsString()
+  password: string;
 
-	/** 配置显示名称，用于用户界面展示，可选 */
-	@IsOptional()
-	@IsString()
-	displayName?: string;
+  /** 配置显示名称，用于用户界面展示，可选 */
+  @IsOptional()
+  @IsString()
+  displayName?: string;
 
-	/** WebDAV连接超时时间，单位毫秒，可选，默认30000ms */
-	@IsOptional()
-	@IsNumber()
-	timeout?: number;
+  /** WebDAV连接超时时间，单位毫秒，可选，默认30000ms */
+  @IsOptional()
+  @IsNumber()
+  timeout?: number;
 
-	/** WebDAV根路径，指定访问的起始目录，可选，默认为根目录 */
-	@IsOptional()
-	@IsString()
-	basePath?: string;
+  /** WebDAV根路径，指定访问的起始目录，可选，默认为根目录 */
+  @IsOptional()
+  @IsString()
+  basePath?: string;
 }
 
 /**
@@ -129,35 +129,35 @@ export class CreateAliyunDriveConfigDto {
  * ```
  */
 export class UpdateAliyunDriveConfigDto {
-	/** WebDAV服务器地址，可选更新 */
-	@IsOptional()
-	@IsString()
-	webdavUrl?: string;
+  /** WebDAV服务器地址，可选更新 */
+  @IsOptional()
+  @IsString()
+  webdavUrl?: string;
 
-	/** 阿里云盘用户名，可选更新 */
-	@IsOptional()
-	@IsString()
-	username?: string;
+  /** 阿里云盘用户名，可选更新 */
+  @IsOptional()
+  @IsString()
+  username?: string;
 
-	/** 阿里云盘密码，可选更新，将重新加密存储 */
-	@IsOptional()
-	@IsString()
-	password?: string;
+  /** 阿里云盘密码，可选更新，将重新加密存储 */
+  @IsOptional()
+  @IsString()
+  password?: string;
 
-	/** 配置显示名称，可选更新 */
-	@IsOptional()
-	@IsString()
-	displayName?: string;
+  /** 配置显示名称，可选更新 */
+  @IsOptional()
+  @IsString()
+  displayName?: string;
 
-	/** WebDAV连接超时时间，可选更新 */
-	@IsOptional()
-	@IsNumber()
-	timeout?: number;
+  /** WebDAV连接超时时间，可选更新 */
+  @IsOptional()
+  @IsNumber()
+  timeout?: number;
 
-	/** WebDAV根路径，可选更新 */
-	@IsOptional()
-	@IsString()
-	basePath?: string;
+  /** WebDAV根路径，可选更新 */
+  @IsOptional()
+  @IsString()
+  basePath?: string;
 }
 
 /**
@@ -179,32 +179,32 @@ export class UpdateAliyunDriveConfigDto {
  * ```
  */
 export class WebDavFileDto {
-	/** 文件或目录名称 */
-	@IsString()
-	name: string;
+  /** 文件或目录名称 */
+  @IsString()
+  name: string;
 
-	/** 文件或目录的完整路径 */
-	@IsString()
-	path: string;
+  /** 文件或目录的完整路径 */
+  @IsString()
+  path: string;
 
-	/** 是否为目录 */
-	@IsBoolean()
-	isDirectory: boolean;
+  /** 是否为目录 */
+  @IsBoolean()
+  isDirectory: boolean;
 
-	/** 文件大小，字节数，目录时为空 */
-	@IsOptional()
-	@IsNumber()
-	size?: number;
+  /** 文件大小，字节数，目录时为空 */
+  @IsOptional()
+  @IsNumber()
+  size?: number;
 
-	/** 文件MIME类型，目录时为空 */
-	@IsOptional()
-	@IsString()
-	contentType?: string;
+  /** 文件MIME类型，目录时为空 */
+  @IsOptional()
+  @IsString()
+  contentType?: string;
 
-	/** 文件最后修改时间，ISO字符串格式，可选 */
-	@IsOptional()
-	@IsDateString()
-	lastModified?: string;
+  /** 文件最后修改时间，ISO字符串格式，可选 */
+  @IsOptional()
+  @IsDateString()
+  lastModified?: string;
 }
 
 /**
@@ -220,10 +220,10 @@ export class WebDavFileDto {
  * ```
  */
 export class ListFilesDto {
-	/** 要列出文件的目录路径，可选，默认为根目录 */
-	@IsOptional()
-	@IsString()
-	path?: string;
+  /** 要列出文件的目录路径，可选，默认为根目录 */
+  @IsOptional()
+  @IsString()
+  path?: string;
 }
 
 /**
@@ -241,14 +241,14 @@ export class ListFilesDto {
  * ```
  */
 export class ListFilesResponseDto {
-	/** 当前列出的目录路径 */
-	@IsString()
-	path: string;
+  /** 当前列出的目录路径 */
+  @IsString()
+  path: string;
 
-	/** 文件和目录总数 */
-	@IsNumber()
-	total: number;
+  /** 文件和目录总数 */
+  @IsNumber()
+  total: number;
 
-	/** 文件和目录列表 */
-	files: WebDavFileDto[];
+  /** 文件和目录列表 */
+  files: WebDavFileDto[];
 }

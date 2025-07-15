@@ -31,7 +31,7 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 	const [offset, setOffset] = React.useState(0);
 	const t = useTranslations('Component-Header');
 	const router = useRouter();
-	const user = useUserStore((state) => state.user);
+	const user = useUserStore(state => state.user);
 	const {logout} = useAuthApi();
 
 	// 条件性地使用 sidebar，只在有提供者时使用
@@ -82,50 +82,50 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 		>
 			{hasSidebar ? (
 				<>
-					<SidebarTrigger variant="outline" className="scale-125 sm:scale-100" />
-					<Separator orientation="vertical" className="h-6" />
+					<SidebarTrigger variant='outline' className='scale-125 sm:scale-100'/>
+					<Separator orientation='vertical' className='h-6'/>
 				</>
 			) : null}
 
 			{/* Page title and navigation */}
-			<div className="flex-1 flex items-center gap-4">{children}</div>
+			<div className='flex-1 flex items-center gap-4'>{children}</div>
 
 			{/* Right side - User Menu */}
-			<div className="flex items-center gap-3">
+			<div className='flex items-center gap-3'>
 				{/* User Menu */}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-							<Avatar className="h-8 w-8">
-								<AvatarFallback className="bg-primary text-primary-foreground">
+						<Button variant='ghost' className='relative h-8 w-8 rounded-full'>
+							<Avatar className='h-8 w-8'>
+								<AvatarFallback className='bg-primary text-primary-foreground'>
 									{userName.charAt(0).toUpperCase()}
 								</AvatarFallback>
 							</Avatar>
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent forceMount className="w-56" align="end">
-						<DropdownMenuLabel className="font-normal">
-							<div className="flex flex-col space-y-1">
-								<p className="text-sm font-medium leading-none">{userName}</p>
-								<p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
+					<DropdownMenuContent forceMount className='w-56' align='end'>
+						<DropdownMenuLabel className='font-normal'>
+							<div className='flex flex-col space-y-1'>
+								<p className='text-sm font-medium leading-none'>{userName}</p>
+								<p className='text-xs leading-none text-muted-foreground'>{userEmail}</p>
 							</div>
 						</DropdownMenuLabel>
-						<DropdownMenuSeparator />
+						<DropdownMenuSeparator/>
 						<DropdownMenuItem asChild>
-							<Link href="/profile">
-								<Settings className="mr-2 h-4 w-4" />
+							<Link href='/profile'>
+								<Settings className='mr-2 h-4 w-4'/>
 								<span>{t('profile-button-label')}</span>
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<Link href="/settings">
-								<Settings className="mr-2 h-4 w-4" />
+							<Link href='/settings'>
+								<Settings className='mr-2 h-4 w-4'/>
 								<span>{t('settings')}</span>
 							</Link>
 						</DropdownMenuItem>
-						<DropdownMenuSeparator />
+						<DropdownMenuSeparator/>
 						<DropdownMenuItem onClick={handleLogout}>
-							<Settings className="mr-2 h-4 w-4" />
+							<Settings className='mr-2 h-4 w-4'/>
 							<span>{t('logout-button-label')}</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>

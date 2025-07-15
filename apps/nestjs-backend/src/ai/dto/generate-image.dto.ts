@@ -10,18 +10,18 @@ export class GenerateImageDto {
 	})
 	@IsString()
 	@Length(1, 500)
-	prompt: string;
+	prompt!: string;
 
 	@ApiPropertyOptional({
 		description: '随机种子，用于生成一致的图片',
 		example: 1234,
 		minimum: 1,
-		maximum: 10000,
+		maximum: 10_000,
 	})
 	@IsOptional()
 	@IsNumber()
 	@Min(1)
-	@Max(10000)
+	@Max(10_000)
 	seed?: number;
 
 	@ApiPropertyOptional({
@@ -78,7 +78,7 @@ export class BatchGenerateImageDto {
 	})
 	@IsString({each: true})
 	@Length(1, 500, {each: true})
-	prompts: string[];
+	prompts!: string[];
 
 	@ApiPropertyOptional({
 		description: '图片宽度',
@@ -128,7 +128,7 @@ export class RegenerateImageDto {
 	})
 	@IsString()
 	@Length(1, 500)
-	originalPrompt: string;
+	originalPrompt!: string;
 
 	@ApiPropertyOptional({
 		description: '图片宽度',

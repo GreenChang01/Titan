@@ -284,6 +284,7 @@ export class AssetService {
 			where.tags = {$contains: [category]};
 		}
 
+		// eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
 		return this.assetRepository.find(where, {
 			orderBy: {createdAt: 'DESC'},
 		});
@@ -456,12 +457,162 @@ export class AssetService {
 			}
 
 			case AssetType.AI_GENERATED_IMAGE: {
-				return 'image/png';
+				return 'image/jpeg';
 			}
 
 			default: {
 				return 'application/octet-stream';
 			}
 		}
+	}
+
+	/**
+	 * AI生成图片专用功能 - 获取AI生成的图片素材
+	 * @param userId 用户ID
+	 * @param page 页码
+	 * @param pageSize 每页大小
+	 * @returns AI生成图片的分页列表
+	 */
+	async getAIGeneratedImages(userId: string, page = 1, pageSize = 20): Promise<PaginatedResult<Asset>> {
+		const qb = this.em.createQueryBuilder(Asset, 'asset');
+
+		qb.where({
+			userId,
+			assetType: AssetType.AI_GENERATED_IMAGE,
+			uploadSource: UploadSource.AI_GENERATED,
+		});
+
+		qb.orderBy({createdAt: 'DESC'});
+
+		const offset = (page - 1) * pageSize;
+		qb.limit(pageSize).offset(offset);
+
+		const [data, total] = await qb.getResultAndCount();
+
+		return {
+			data,
+			total,
+			page,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		};
+	}
+
+	/**
+	 * AI生成图片专用功能 - 按提示词搜索AI生成的图片
+	 * @param userId 用户ID
+	 * @param prompt 提示词关键字
+	 * @param page 页码
+	 * @param pageSize 每页大小
+	 * @returns 匹配的AI生成图片列表
+	 */
+	async searchAIGeneratedImagesByPrompt(
+		userId: string,
+		prompt: string,
+		page = 1,
+		pageSize = 20,
+	): Promise<PaginatedResult<Asset>> {
+		const qb = this.em.createQueryBuilder(Asset, 'asset');
+
+		qb.where({
+			userId,
+			assetType: AssetType.AI_GENERATED_IMAGE,
+			uploadSource: UploadSource.AI_GENERATED,
+		});
+
+		// 在描述和元数据中搜索提示词
+		qb.andWhere({
+			$or: [
+				{description: {$ilike: `%${prompt}%`}},
+				{originalName: {$ilike: `%${prompt}%`}},
+				{'metadata.prompt': {$ilike: `%${prompt}%`}},
+			],
+		});
+
+		qb.orderBy({createdAt: 'DESC'});
+
+		const offset = (page - 1) * pageSize;
+		qb.limit(pageSize).offset(offset);
+
+		const [data, total] = await qb.getResultAndCount();
+
+		return {
+			data,
+			total,
+			page,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		};
+	}
+
+	/**
+	 * AI生成图片专用功能 - 获取AI生成图片的统计信息
+	 * @param userId 用户ID
+	 * @returns AI生成图片的统计信息
+	 */
+	async getAIGeneratedImageStats(userId: string): Promise<{
+		totalCount: number;
+		todayCount: number;
+		weekCount: number;
+		monthCount: number;
+		topTags: Array<{tag: string; count: number}>;
+	}> {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		const weekAgo = new Date(today);
+		weekAgo.setDate(weekAgo.getDate() - 7);
+
+		const monthAgo = new Date(today);
+		monthAgo.setMonth(monthAgo.getMonth() - 1);
+
+		const baseQuery = {
+			userId,
+			assetType: AssetType.AI_GENERATED_IMAGE,
+			uploadSource: UploadSource.AI_GENERATED,
+		};
+
+		const [totalCount, todayCount, weekCount, monthCount] = await Promise.all([
+			this.assetRepository.count(baseQuery),
+			this.assetRepository.count({
+				...baseQuery,
+				createdAt: {$gte: today},
+			}),
+			this.assetRepository.count({
+				...baseQuery,
+				createdAt: {$gte: weekAgo},
+			}),
+			this.assetRepository.count({
+				...baseQuery,
+				createdAt: {$gte: monthAgo},
+			}),
+		]);
+
+		// 获取最常用的标签
+		// eslint-disable-next-line unicorn/no-array-method-this-argument
+		const assets = await this.assetRepository.find(baseQuery, {
+			fields: ['tags'],
+			limit: 1000,
+		});
+
+		const tagCounts = new Map<string, number>();
+		for (const asset of assets) {
+			for (const tag of asset.tags) {
+				tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+			}
+		}
+
+		const topTags = [...tagCounts.entries()]
+			.sort((a, b) => b[1] - a[1])
+			.slice(0, 10)
+			.map(([tag, count]) => ({tag, count}));
+
+		return {
+			totalCount,
+			todayCount,
+			weekCount,
+			monthCount,
+			topTags,
+		};
 	}
 }

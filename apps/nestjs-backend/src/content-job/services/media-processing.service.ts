@@ -229,7 +229,7 @@ export class MediaProcessingService {
 				})
 				.on('error', (error) => {
 					this.logger.error('ASMR video generation failed:', error.message);
-					reject(error);
+					reject(new Error(`ASMR video generation failed: ${error.message}`));
 				})
 				.run();
 		});
@@ -295,7 +295,7 @@ export class MediaProcessingService {
 				})
 				.on('error', (error) => {
 					this.logger.error('Dynamic background video generation failed:', error.message);
-					reject(error);
+					reject(new Error(`Dynamic background video generation failed: ${error.message}`));
 				})
 				.run();
 		});
@@ -395,7 +395,7 @@ export class MediaProcessingService {
 				})
 				.on('error', (error) => {
 					this.logger.error('Audio combination failed:', error.message);
-					reject(error);
+					reject(new Error(`Audio combination failed: ${error.message}`));
 				})
 				.run();
 		});

@@ -4,26 +4,30 @@ import React, {useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {
+	Card, CardContent, CardDescription, CardHeader, CardTitle,
+} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {Loader2, Wand2, Image, Download, RefreshCw} from 'lucide-react';
+import {
+	Tabs, TabsContent, TabsList, TabsTrigger,
+} from '@/components/ui/tabs';
+import {
+	Loader2, Wand2, Image, Download, RefreshCw,
+} from 'lucide-react';
 import {useGenerateAIImage} from '@/hooks/use-ai-images';
 
-interface AIImageGeneratorProps {
-	onGenerated?: (imageUrl: string, prompt: string) => void;
-	projectId?: string;
-}
+type AIImageGeneratorProps = {
+	readonly onGenerated?: (imageUrl: string, prompt: string) => void;
+	readonly projectId?: string;
+};
 
-interface ASMRTemplate {
+type ASMRTemplate = {
 	title: string;
 	description: string;
 	templates: string[];
-}
+};
 
-interface ASMRTemplates {
-	[key: string]: ASMRTemplate;
-}
+type ASMRTemplates = Record<string, ASMRTemplate>;
 
 // ASMR场景预设模板
 const ASMR_TEMPLATES: ASMRTemplates = {
@@ -86,9 +90,9 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 		url: string;
 		prompt: string;
 		seed: number;
-	} | null>(null);
+	} | undefined>(null);
 	const [selectedCategory, setSelectedCategory] = useState<string>('nature');
-	
+
 	const generateMutation = useGenerateAIImage();
 
 	const handleGenerate = async () => {
@@ -107,15 +111,15 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 				private: false,
 				nofeed: false,
 			});
-			
+
 			const imageData = {
 				url: result.imageUrl,
 				prompt,
-				seed: Math.floor(Math.random() * 1000000), // Generate a random seed for display
+				seed: Math.floor(Math.random() * 1_000_000), // Generate a random seed for display
 			};
-			
+
 			setGeneratedImage(imageData);
-			
+
 			if (onGenerated) {
 				onGenerated(imageData.url, imageData.prompt);
 			}
@@ -125,8 +129,10 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 	};
 
 	const handleRegenerate = async () => {
-		if (!generatedImage) return;
-		
+		if (!generatedImage) {
+			return;
+		}
+
 		try {
 			const result = await generateMutation.mutateAsync({
 				prompt: generatedImage.prompt,
@@ -138,15 +144,15 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 				private: false,
 				nofeed: false,
 			});
-			
+
 			const imageData = {
 				url: result.imageUrl,
 				prompt: generatedImage.prompt,
-				seed: Math.floor(Math.random() * 1000000), // Generate a new random seed
+				seed: Math.floor(Math.random() * 1_000_000), // Generate a new random seed
 			};
-			
+
 			setGeneratedImage(imageData);
-			
+
 			if (onGenerated) {
 				onGenerated(imageData.url, imageData.prompt);
 			}
@@ -164,49 +170,51 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 			const link = document.createElement('a');
 			link.href = generatedImage.url;
 			link.download = `ai-generated-${generatedImage.seed}.jpg`;
-			document.body.appendChild(link);
+			document.body.append(link);
 			link.click();
-			document.body.removeChild(link);
+			link.remove();
 		}
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className='space-y-6'>
 			<Card>
 				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
-						<Wand2 className="w-5 h-5" />
+					<CardTitle className='flex items-center gap-2'>
+						<Wand2 className='w-5 h-5'/>
 						AI图片生成器
 					</CardTitle>
 					<CardDescription>
 						使用AI技术生成ASMR场景相关的图片素材
 					</CardDescription>
 				</CardHeader>
-				<CardContent className="space-y-4">
+				<CardContent className='space-y-4'>
 					<Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-						<TabsList className="grid w-full grid-cols-4">
+						<TabsList className='grid w-full grid-cols-4'>
 							{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
 								<TabsTrigger key={key} value={key}>
 									{template.title}
 								</TabsTrigger>
 							))}
 						</TabsList>
-						
+
 						{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
-							<TabsContent key={key} value={key} className="space-y-3">
-								<p className="text-sm text-muted-foreground">
+							<TabsContent key={key} value={key} className='space-y-3'>
+								<p className='text-sm text-muted-foreground'>
 									{template.description}
 								</p>
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+								<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
 									{template.templates.map((templateText, index) => (
 										<Button
 											key={index}
-											variant="outline"
-											size="sm"
-											className="text-left justify-start h-auto p-3"
-											onClick={() => handleTemplateSelect(templateText)}
+											variant='outline'
+											size='sm'
+											className='text-left justify-start h-auto p-3'
+											onClick={() => {
+												handleTemplateSelect(templateText);
+											}}
 										>
-											<span className="text-xs">{templateText}</span>
+											<span className='text-xs'>{templateText}</span>
 										</Button>
 									))}
 								</div>
@@ -214,30 +222,32 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 						))}
 					</Tabs>
 
-					<div className="space-y-2">
-						<label className="text-sm font-medium">图片描述</label>
+					<div className='space-y-2'>
+						<label className='text-sm font-medium'>图片描述</label>
 						<Textarea
-							placeholder="描述你想要生成的图片内容，例如：宁静的森林小溪，阳光透过树叶洒下..."
+							placeholder='描述你想要生成的图片内容，例如：宁静的森林小溪，阳光透过树叶洒下...'
 							value={prompt}
-							onChange={(e) => setPrompt(e.target.value)}
 							rows={3}
-							className="resize-none"
+							className='resize-none'
+							onChange={e => {
+								setPrompt(e.target.value);
+							}}
 						/>
 					</div>
 
 					<Button
-						onClick={handleGenerate}
 						disabled={generateMutation.isPending || !prompt.trim()}
-						className="w-full"
+						className='w-full'
+						onClick={handleGenerate}
 					>
 						{generateMutation.isPending ? (
 							<>
-								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
+								<Loader2 className='w-4 h-4 mr-2 animate-spin'/>
 								生成中...
 							</>
 						) : (
 							<>
-								<Image className="w-4 h-4 mr-2" />
+								<Image className='w-4 h-4 mr-2'/>
 								生成图片
 							</>
 						)}
@@ -245,64 +255,61 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 				</CardContent>
 			</Card>
 
-			{generatedImage && (
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center justify-between">
-							<span>生成结果</span>
-							<div className="flex gap-2">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={handleRegenerate}
-									disabled={generateMutation.isPending}
-								>
-									<RefreshCw className="w-4 h-4 mr-1" />
-									重新生成
-								</Button>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={handleDownload}
-								>
-									<Download className="w-4 h-4 mr-1" />
-									下载
-								</Button>
+			{generatedImage ? <Card>
+				<CardHeader>
+					<CardTitle className='flex items-center justify-between'>
+						<span>生成结果</span>
+						<div className='flex gap-2'>
+							<Button
+								variant='outline'
+								size='sm'
+								disabled={generateMutation.isPending}
+								onClick={handleRegenerate}
+							>
+								<RefreshCw className='w-4 h-4 mr-1'/>
+								重新生成
+							</Button>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={handleDownload}
+							>
+								<Download className='w-4 h-4 mr-1'/>
+								下载
+							</Button>
+						</div>
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className='space-y-4'>
+						<div className='relative'>
+							<img
+								src={generatedImage.url}
+								alt={generatedImage.prompt}
+								className='w-full max-w-md mx-auto rounded-lg shadow-lg'
+								onError={e => {
+									console.error('图片加载失败');
+								}}
+							/>
+						</div>
+
+						<div className='space-y-2'>
+							<div className='flex items-center gap-2'>
+								<Badge variant='secondary'>提示词</Badge>
+								<span className='text-sm text-muted-foreground'>
+									{generatedImage.prompt}
+								</span>
 							</div>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-4">
-							<div className="relative">
-								<img
-									src={generatedImage.url}
-									alt={generatedImage.prompt}
-									className="w-full max-w-md mx-auto rounded-lg shadow-lg"
-									onError={(e) => {
-										console.error('图片加载失败');
-										toast.error('图片加载失败');
-									}}
-								/>
-							</div>
-							
-							<div className="space-y-2">
-								<div className="flex items-center gap-2">
-									<Badge variant="secondary">提示词</Badge>
-									<span className="text-sm text-muted-foreground">
-										{generatedImage.prompt}
-									</span>
-								</div>
-								<div className="flex items-center gap-2">
-									<Badge variant="outline">种子</Badge>
-									<span className="text-sm text-muted-foreground">
-										{generatedImage.seed}
-									</span>
-								</div>
+							<div className='flex items-center gap-2'>
+								<Badge variant='outline'>种子</Badge>
+								<span className='text-sm text-muted-foreground'>
+									{generatedImage.seed}
+								</span>
 							</div>
 						</div>
-					</CardContent>
-				</Card>
-			)}
+					</div>
+				</CardContent>
+                     </Card> : null}
 		</div>
 	);
 };

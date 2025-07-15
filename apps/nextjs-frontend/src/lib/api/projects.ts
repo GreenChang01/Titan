@@ -170,11 +170,11 @@ export const projectsApi = {
 			limit?: number;
 		},
 	): Promise<{
-		activities: ProjectActivity[];
-		total: number;
-		page: number;
-		limit: number;
-	}> {
+			activities: ProjectActivity[];
+			total: number;
+			page: number;
+			limit: number;
+		}> {
 		const queryParameters: Record<string, string> = {};
 
 		if (parameters?.page) {

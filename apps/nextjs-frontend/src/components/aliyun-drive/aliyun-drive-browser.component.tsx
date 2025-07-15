@@ -1,6 +1,8 @@
 'use client';
 
-import {useState, useEffect, useCallback, type JSX} from 'react';
+import {
+	useState, useEffect, useCallback, type JSX,
+} from 'react';
 import {Dialog} from 'primereact/dialog';
 import {Button} from 'primereact/button';
 import {DataTable} from 'primereact/datatable';
@@ -86,7 +88,7 @@ export function AliyunDriveBrowser({
 		setLoading(true);
 		try {
 			// 模拟API调用
-			await new Promise<void>((resolve) => {
+			await new Promise<void>(resolve => {
 				setTimeout(resolve, 1000);
 			});
 			setFiles(mockFiles);
@@ -115,15 +117,15 @@ export function AliyunDriveBrowser({
 			return;
 		}
 
-		const isSelected = selectedFiles.some((f) => f.id === file.id);
+		const isSelected = selectedFiles.some(f => f.id === file.id);
 		if (isSelected) {
-			setSelectedFiles((previous) => previous.filter((f) => f.id !== file.id));
+			setSelectedFiles(previous => previous.filter(f => f.id !== file.id));
 		} else {
 			if (maxSelections && selectedFiles.length >= maxSelections) {
 				return;
 			}
 
-			setSelectedFiles((previous) => [...previous, file]);
+			setSelectedFiles(previous => [...previous, file]);
 		}
 	};
 
@@ -194,13 +196,13 @@ export function AliyunDriveBrowser({
 		}
 	};
 
-	const fileIconTemplate = (file: FileItem): JSX.Element => <i className={`${getFileIcon(file)} text-xl`} />;
+	const fileIconTemplate = (file: FileItem): JSX.Element => <i className={`${getFileIcon(file)} text-xl`}/>;
 
 	const fileNameTemplate = (file: FileItem): JSX.Element => (
-		<div className="flex items-center gap-2">
+		<div className='flex items-center gap-2'>
 			{hasMultiSelect && file.type === 'file' ? (
 				<Checkbox
-					checked={selectedFiles.some((f) => f.id === file.id)}
+					checked={selectedFiles.some(f => f.id === file.id)}
 					onChange={() => {
 						handleFileSelect(file);
 					}}
@@ -222,12 +224,12 @@ export function AliyunDriveBrowser({
 	const fileSizeTemplate = (file: FileItem): string => formatFileSize(file.size);
 
 	const actionTemplate = (file: FileItem): JSX.Element => (
-		<div className="flex gap-1">
+		<div className='flex gap-1'>
 			{file.type === 'file' && (
 				<Button
-					icon="pi pi-plus"
-					size="small"
-					severity="secondary"
+					icon='pi pi-plus'
+					size='small'
+					severity='secondary'
 					tooltip={t('select-file', {defaultMessage: '选择文件'})}
 					onClick={() => {
 						handleFileSelect(file);
@@ -236,9 +238,9 @@ export function AliyunDriveBrowser({
 			)}
 			{file.type === 'folder' && (
 				<Button
-					icon="pi pi-folder-open"
-					size="small"
-					severity="info"
+					icon='pi pi-folder-open'
+					size='small'
+					severity='info'
 					tooltip={t('open-folder', {defaultMessage: '打开文件夹'})}
 					onClick={() => {
 						handleFileSelect(file);
@@ -266,18 +268,18 @@ export function AliyunDriveBrowser({
 		},
 	};
 
-	const filteredFiles = files.filter((file) => file.name.toLowerCase().includes(searchTerm.toLowerCase()));
+	const filteredFiles = files.filter(file => file.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 	const dialogFooter = (
-		<div className="flex justify-between items-center">
-			<span className="text-sm text-gray-600">
+		<div className='flex justify-between items-center'>
+			<span className='text-sm text-gray-600'>
 				{t('selected-count', {
 					count: selectedFiles.length,
 					defaultMessage: `已选择 ${selectedFiles.length} 个文件`,
 				})}
 			</span>
-			<div className="flex gap-2">
-				<Button label={t('cancel', {defaultMessage: '取消'})} severity="secondary" onClick={onHide} />
+			<div className='flex gap-2'>
+				<Button label={t('cancel', {defaultMessage: '取消'})} severity='secondary' onClick={onHide}/>
 				<Button
 					label={t('confirm-selection', {defaultMessage: '确认选择'})}
 					disabled={selectedFiles.length === 0}
@@ -296,42 +298,42 @@ export function AliyunDriveBrowser({
 			footer={dialogFooter}
 			onHide={onHide}
 		>
-			<div className="space-y-4">
+			<div className='space-y-4'>
 				{/* 导航面包屑 */}
-				<BreadCrumb model={breadcrumbItems} home={breadcrumbHome} />
+				<BreadCrumb model={breadcrumbItems} home={breadcrumbHome}/>
 
 				{/* 搜索框 */}
-				<div className="flex items-center gap-2">
-					<span className="p-input-icon-left w-full">
-						<i className="pi pi-search" />
+				<div className='flex items-center gap-2'>
+					<span className='p-input-icon-left w-full'>
+						<i className='pi pi-search'/>
 						<InputText
 							value={searchTerm}
 							placeholder={t('search-files', {defaultMessage: '搜索文件...'})}
-							className="w-full"
-							onChange={(e) => {
+							className='w-full'
+							onChange={e => {
 								setSearchTerm(e.target.value);
 							}}
 						/>
 					</span>
 					<Button
-						icon="pi pi-refresh"
-						severity="secondary"
+						icon='pi pi-refresh'
+						severity='secondary'
 						tooltip={t('refresh', {defaultMessage: '刷新'})}
 						onClick={loadFiles}
 					/>
 				</div>
 
 				{/* 文件列表 */}
-				<div className="border rounded-lg">
+				<div className='border rounded-lg'>
 					{loading ? (
-						<div className="flex justify-center items-center py-8">
-							<ProgressSpinner />
-							<span className="ml-2">{t('loading', {defaultMessage: '加载中...'})}</span>
+						<div className='flex justify-center items-center py-8'>
+							<ProgressSpinner/>
+							<span className='ml-2'>{t('loading', {defaultMessage: '加载中...'})}</span>
 						</div>
 					) : (
 						<DataTable
-							className="border-0"
-							dataKey="id"
+							className='border-0'
+							dataKey='id'
 							emptyMessage={t('no-files', {defaultMessage: '暂无文件'})}
 							selection={selectedFiles}
 							selectionMode={hasMultiSelect ? 'checkbox' : null}
@@ -340,41 +342,41 @@ export function AliyunDriveBrowser({
 								setSelectedFiles(e.value);
 							}}
 						>
-							<Column header="" body={fileIconTemplate} style={{width: '3rem'}} />
+							<Column header='' body={fileIconTemplate} style={{width: '3rem'}}/>
 							<Column
 								sortable
-								field="name"
+								field='name'
 								header={t('file-name', {defaultMessage: '文件名'})}
 								body={fileNameTemplate}
 							/>
 							<Column
 								sortable
-								field="size"
+								field='size'
 								header={t('file-size', {defaultMessage: '大小'})}
 								body={fileSizeTemplate}
 								style={{width: '8rem'}}
 							/>
 							<Column
 								sortable
-								field="modifiedAt"
+								field='modifiedAt'
 								header={t('modified-date', {defaultMessage: '修改时间'})}
 								style={{width: '10rem'}}
 							/>
-							<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '5rem'}} />
+							<Column header={t('actions', {defaultMessage: '操作'})} body={actionTemplate} style={{width: '5rem'}}/>
 						</DataTable>
 					)}
 				</div>
 
 				{/* 选择提示 */}
 				{selectedFiles.length > 0 && (
-					<div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-						<div className="flex items-center gap-2">
-							<i className="pi pi-info-circle text-blue-600" />
-							<span className="text-blue-800">
+					<div className='bg-blue-50 border border-blue-200 rounded-md p-3'>
+						<div className='flex items-center gap-2'>
+							<i className='pi pi-info-circle text-blue-600'/>
+							<span className='text-blue-800'>
 								{t('selection-info', {
 									count: selectedFiles.length,
-									names: selectedFiles.map((f) => f.name).join(', '),
-									defaultMessage: `已选择 ${selectedFiles.length} 个文件: ${selectedFiles.map((f) => f.name).join(', ')}`,
+									names: selectedFiles.map(f => f.name).join(', '),
+									defaultMessage: `已选择 ${selectedFiles.length} 个文件: ${selectedFiles.map(f => f.name).join(', ')}`,
 								})}
 							</span>
 						</div>

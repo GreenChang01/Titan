@@ -37,19 +37,19 @@ export async function Footer(): Promise<JSX.Element> {
 	];
 
 	return (
-		<footer className="px-2 md:px-4 py-4 bg-gray-200 text-gray-700 max-w-full">
-			<div className="mx-auto max-w-7xl text-center divide-y-1 divide-gray-300">
-				<nav className="mb-4 pb-4">
-					<ul className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16">
-						{footerItemsGroups.map((group) => (
-							<li key={group.label} className="mb-2 text-sm">
-								<p className="tracking-widest text-gray-400 mb-1">{group.label}</p>
+		<footer className='px-2 md:px-4 py-4 bg-gray-200 text-gray-700 max-w-full'>
+			<div className='mx-auto max-w-7xl text-center divide-y-1 divide-gray-300'>
+				<nav className='mb-4 pb-4'>
+					<ul className='flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16'>
+						{footerItemsGroups.map(group => (
+							<li key={group.label} className='mb-2 text-sm'>
+								<p className='tracking-widest text-gray-400 mb-1'>{group.label}</p>
 								<ul>
-									{group.items.map((item) => (
+									{group.items.map(item => (
 										<li key={item.label}>
 											<Link
 												href={item.href}
-												className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
+												className='text-gray-600 hover:text-gray-800 transition-colors duration-200'
 											>
 												{item.label}
 											</Link>
@@ -60,11 +60,11 @@ export async function Footer(): Promise<JSX.Element> {
 						))}
 					</ul>
 				</nav>
-				<div className="flex flex-col items-center gap-4 w-full">
-					<div className="flex justify-end w-full">
-						<LocaleSelect />
+				<div className='flex flex-col items-center gap-4 w-full'>
+					<div className='flex justify-end w-full'>
+						<LocaleSelect/>
 					</div>
-					<p className="text-sm text-gray-400">
+					<p className='text-sm text-gray-400'>
 						&copy; {new Date().getFullYear()} {t('copyright-notice')}
 					</p>
 				</div>

@@ -21,40 +21,40 @@ import {IsString, IsOptional, IsDateString, IsUUID, IsBoolean} from 'class-valid
  * ```
  */
 export class ProjectDto {
-	/** 项目唯一标识符（UUID格式） */
-	@IsUUID()
-	id: string;
+  /** 项目唯一标识符（UUID格式） */
+  @IsUUID()
+  id: string;
 
-	/** 项目名称 */
-	@IsString()
-	name: string;
+  /** 项目名称 */
+  @IsString()
+  name: string;
 
-	/** 项目描述（可选） */
-	@IsOptional()
-	@IsString()
-	description?: string;
+  /** 项目描述（可选） */
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-	/** 项目颜色标识（可选，十六进制颜色值） */
-	@IsOptional()
-	@IsString()
-	color?: string;
+  /** 项目颜色标识（可选，十六进制颜色值） */
+  @IsOptional()
+  @IsString()
+  color?: string;
 
-	/** 项目是否处于激活状态 */
-	@IsBoolean()
-	isActive: boolean;
+  /** 项目是否处于激活状态 */
+  @IsBoolean()
+  isActive: boolean;
 
-	/** 项目最后访问时间（可选，ISO 8601格式） */
-	@IsOptional()
-	@IsDateString()
-	lastAccessedAt?: string;
+  /** 项目最后访问时间（可选，ISO 8601格式） */
+  @IsOptional()
+  @IsDateString()
+  lastAccessedAt?: string;
 
-	/** 项目创建时间（ISO 8601格式） */
-	@IsDateString()
-	createdAt: string;
+  /** 项目创建时间（ISO 8601格式） */
+  @IsDateString()
+  createdAt: string;
 
-	/** 项目最后更新时间（ISO 8601格式） */
-	@IsDateString()
-	updatedAt: string;
+  /** 项目最后更新时间（ISO 8601格式） */
+  @IsDateString()
+  updatedAt: string;
 }
 
 /**
@@ -73,19 +73,19 @@ export class ProjectDto {
  * ```
  */
 export class CreateProjectDto {
-	/** 项目名称（必填） */
-	@IsString()
-	name: string;
+  /** 项目名称（必填） */
+  @IsString()
+  name: string;
 
-	/** 项目描述（可选） */
-	@IsOptional()
-	@IsString()
-	description?: string;
+  /** 项目描述（可选） */
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-	/** 项目颜色标识（可选，十六进制颜色值，默认为蓝色） */
-	@IsOptional()
-	@IsString()
-	color?: string;
+  /** 项目颜色标识（可选，十六进制颜色值，默认为蓝色） */
+  @IsOptional()
+  @IsString()
+  color?: string;
 }
 
 /**
@@ -104,18 +104,18 @@ export class CreateProjectDto {
  * ```
  */
 export class UpdateProjectDto {
-	/** 项目名称（可选） */
-	@IsOptional()
-	@IsString()
-	name?: string;
+  /** 项目名称（可选） */
+  @IsOptional()
+  @IsString()
+  name?: string;
 
-	/** 项目描述（可选） */
-	@IsOptional()
-	@IsString()
-	description?: string;
+  /** 项目描述（可选） */
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-	/** 项目颜色标识（可选，十六进制颜色值） */
-	@IsOptional()
-	@IsString()
-	color?: string;
+  /** 项目颜色标识（可选，十六进制颜色值） */
+  @IsOptional()
+  @IsString()
+  color?: string;
 }

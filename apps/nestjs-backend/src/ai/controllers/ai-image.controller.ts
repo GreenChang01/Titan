@@ -1,6 +1,6 @@
-import {Controller, Post, Get, Body, UseGuards, Req, HttpStatus, HttpException} from '@nestjs/common';
+import {Controller, Post, Get, Body, UseGuards, Req, HttpStatus, HttpException, ValidationPipe, UsePipes} from '@nestjs/common';
 import {ApiTags, ApiOperation, ApiResponse, ApiBearerAuth} from '@nestjs/swagger';
-import {JwtAuthGuard} from '../../common/guards/jwt-auth.guard';
+import {JwtAuthGuard} from '../../auth/jwt-auth.guard';
 import {AIImageService} from '../services/ai-image.service';
 import {GenerateImageDto, BatchGenerateImageDto, RegenerateImageDto} from '../dto/generate-image.dto';
 import {Request} from 'express';
@@ -8,6 +8,7 @@ import {Request} from 'express';
 @ApiTags('AI图片生成')
 @Controller('ai-image')
 @UseGuards(JwtAuthGuard)
+@UsePipes(new ValidationPipe({transform: true, whitelist: true}))
 @ApiBearerAuth()
 export class AIImageController {
 	constructor(private readonly aiImageService: AIImageService) {}
@@ -41,32 +42,21 @@ export class AIImageController {
 		description: '未授权访问',
 	})
 	async generateImage(@Body() dto: GenerateImageDto, @Req() req: Request) {
-		try {
-			const userId = req.user?.userId;
-			if (!userId) {
-				throw new HttpException('用户未认证', HttpStatus.UNAUTHORIZED);
-			}
+		const userId = this.getUserId(req);
+		const result = await this.aiImageService.generateImage(dto, userId);
 
-			const result = await this.aiImageService.generateImage(dto, userId);
-			
-			if (result.status === 'failed') {
-				throw new HttpException(
-					`图片生成失败: ${result.error}`,
-					HttpStatus.INTERNAL_SERVER_ERROR,
-				);
-			}
-
-			return {
-				success: true,
-				data: result,
-				message: '图片生成成功',
-			};
-		} catch (error) {
+		if (result.status === 'failed') {
 			throw new HttpException(
-				error.message || '图片生成失败',
-				error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+				`图片生成失败: ${result.error}`,
+				HttpStatus.INTERNAL_SERVER_ERROR,
 			);
 		}
+
+		return {
+			success: true,
+			data: result,
+			message: '图片生成成功',
+		};
 	}
 
 	@Post('batch-generate')
@@ -100,38 +90,28 @@ export class AIImageController {
 		},
 	})
 	async batchGenerateImages(@Body() dto: BatchGenerateImageDto, @Req() req: Request) {
-		try {
-			const userId = req.user?.userId;
-			if (!userId) {
-				throw new HttpException('用户未认证', HttpStatus.UNAUTHORIZED);
-			}
+		const userId = this.getUserId(req);
 
-			if (dto.prompts.length > 10) {
-				throw new HttpException('一次最多只能生成10张图片', HttpStatus.BAD_REQUEST);
-			}
-
-			const results = await this.aiImageService.batchGenerateImages(
-				dto.prompts,
-				userId,
-				{
-					width: dto.width,
-					height: dto.height,
-					saveToAsset: dto.saveToAsset,
-					projectId: dto.projectId,
-				},
-			);
-
-			return {
-				success: true,
-				data: results,
-				message: `成功生成 ${results.filter(r => r.status === 'completed').length} 张图片`,
-			};
-		} catch (error) {
-			throw new HttpException(
-				error.message || '批量生成失败',
-				error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-			);
+		if (dto.prompts.length > 10) {
+			throw new HttpException('一次最多只能生成10张图片', HttpStatus.BAD_REQUEST);
 		}
+
+		const results = await this.aiImageService.batchGenerateImages(
+			dto.prompts,
+			userId,
+			{
+				width: dto.width,
+				height: dto.height,
+				saveToAsset: dto.saveToAsset,
+				projectId: dto.projectId,
+			},
+		);
+
+		return {
+			success: true,
+			data: results,
+			message: `成功生成 ${results.filter(r => r.status === 'completed').length} 张图片`,
+		};
 	}
 
 	@Post('regenerate')
@@ -144,40 +124,30 @@ export class AIImageController {
 		description: '重新生成成功',
 	})
 	async regenerateImage(@Body() dto: RegenerateImageDto, @Req() req: Request) {
-		try {
-			const userId = req.user?.userId;
-			if (!userId) {
-				throw new HttpException('用户未认证', HttpStatus.UNAUTHORIZED);
-			}
+		const userId = this.getUserId(req);
 
-			const result = await this.aiImageService.regenerateImage(
-				dto.originalPrompt,
-				userId,
-				{
-					width: dto.width,
-					height: dto.height,
-					saveToAsset: dto.saveToAsset,
-				},
-			);
+		const result = await this.aiImageService.regenerateImage(
+			dto.originalPrompt,
+			userId,
+			{
+				width: dto.width,
+				height: dto.height,
+				saveToAsset: dto.saveToAsset,
+			},
+		);
 
-			if (result.status === 'failed') {
-				throw new HttpException(
-					`重新生成失败: ${result.error}`,
-					HttpStatus.INTERNAL_SERVER_ERROR,
-				);
-			}
-
-			return {
-				success: true,
-				data: result,
-				message: '图片重新生成成功',
-			};
-		} catch (error) {
+		if (result.status === 'failed') {
 			throw new HttpException(
-				error.message || '重新生成失败',
-				error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+				`重新生成失败: ${result.error}`,
+				HttpStatus.INTERNAL_SERVER_ERROR,
 			);
 		}
+
+		return {
+			success: true,
+			data: result,
+			message: '图片重新生成成功',
+		};
 	}
 
 	@Get('templates')
@@ -208,18 +178,27 @@ export class AIImageController {
 		},
 	})
 	async getASMRTemplates() {
-		try {
-			const templates = this.aiImageService.getASMRTemplates();
-			return {
-				success: true,
-				data: templates,
-				message: '模板获取成功',
-			};
-		} catch (error) {
-			throw new HttpException(
-				error.message || '模板获取失败',
-				error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-			);
+		const templates = this.aiImageService.getASMRTemplates();
+		return {
+			success: true,
+			data: templates,
+			message: '模板获取成功',
+		};
+	}
+
+	/**
+	 * 从请求中提取用户ID的辅助方法
+	 * @param req 请求对象
+	 * @returns 用户ID
+	 * @throws HttpException 如果用户未认证
+	 */
+	private getUserId(req: Request): string {
+		const user = req.user as any;
+		const userId = user?.id;
+		if (!userId) {
+			throw new HttpException('用户未认证', HttpStatus.UNAUTHORIZED);
 		}
+
+		return userId;
 	}
 }

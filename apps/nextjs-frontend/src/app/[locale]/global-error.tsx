@@ -11,7 +11,7 @@ function GlobalError({reset, error}: {readonly error: Error; readonly reset: () 
 				<h2>Something went wrong!</h2>
 				<p>{error.message}</p>
 				<button
-					type="button"
+					type='button'
 					onClick={() => {
 						reset();
 					}}

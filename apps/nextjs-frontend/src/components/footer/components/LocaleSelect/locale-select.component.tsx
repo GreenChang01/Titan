@@ -21,7 +21,7 @@ export function LocaleSelect(): JSX.Element {
 
 	const parameters = useParams();
 
-	const localeOptions: SelectItemOptionsType = routing.locales.map((locale) => ({
+	const localeOptions: SelectItemOptionsType = routing.locales.map(locale => ({
 		label: t(locale),
 		value: locale,
 	}));
@@ -41,11 +41,11 @@ export function LocaleSelect(): JSX.Element {
 
 	return (
 		<Dropdown
-			className="locale-select-dropdown"
+			className='locale-select-dropdown'
 			disabled={isPending}
 			value={locale}
 			options={localeOptions}
-			dropdownIcon="pi pi-language"
+			dropdownIcon='pi pi-language'
 			onChange={onLocaleChange}
 		/>
 	);

@@ -45,16 +45,16 @@ export type SoundscapeQuality = 'low' | 'medium' | 'high';
  * @param speakerBoost 是否启用扬声器增强效果
  */
 export type VoiceOptions = {
-	/** ElevenLabs语音模型的唯一标识符 */
-	voiceId: string;
-	/** 语音稳定性 (0.0-1.0)，控制输出一致性 */
-	stability?: number;
-	/** 语音相似度 (0.0-1.0)，与原始声音的匹配程度 */
-	similarity?: number;
-	/** 语音风格 (0.0-1.0)，0为稳定，1为变化丰富 */
-	style?: number;
-	/** 是否启用扬声器增强效果 */
-	speakerBoost?: boolean;
+  /** ElevenLabs语音模型的唯一标识符 */
+  voiceId: string;
+  /** 语音稳定性 (0.0-1.0)，控制输出一致性 */
+  stability?: number;
+  /** 语音相似度 (0.0-1.0)，与原始声音的匹配程度 */
+  similarity?: number;
+  /** 语音风格 (0.0-1.0)，0为稳定，1为变化丰富 */
+  style?: number;
+  /** 是否启用扬声器增强效果 */
+  speakerBoost?: boolean;
 };
 
 /**
@@ -70,16 +70,16 @@ export type VoiceOptions = {
  * @param quality 音频质量等级
  */
 export type SoundscapeOptions = {
-	/** 音景描述文本，用于AI生成指导 */
-	prompt: string;
-	/** 音频时长（秒） */
-	duration: number;
-	/** 音景类别，如nature、indoor等 */
-	category: string;
-	/** 音景强度 (0.0-1.0) */
-	intensity: number;
-	/** 音频质量等级 */
-	quality: SoundscapeQuality;
+  /** 音景描述文本，用于AI生成指导 */
+  prompt: string;
+  /** 音频时长（秒） */
+  duration: number;
+  /** 音景类别，如nature、indoor等 */
+  category: string;
+  /** 音景强度 (0.0-1.0) */
+  intensity: number;
+  /** 音频质量等级 */
+  quality: SoundscapeQuality;
 };
 
 /**
@@ -95,23 +95,23 @@ export type SoundscapeOptions = {
  * @param eqSettings 可选的均衡器设置
  */
 export type MixingOptions = {
-	/** 语音音量 (0.0-1.0) */
-	voiceVolume: number;
-	/** 音景音量 (0.0-1.0) */
-	soundscapeVolume: number;
-	/** 淡入时长（秒） */
-	fadeInDuration: number;
-	/** 淡出时长（秒） */
-	fadeOutDuration: number;
-	/** 可选的均衡器设置 */
-	eqSettings?: {
-		/** 低频调节 (dB) */
-		lowFreq: number;
-		/** 中频调节 (dB) */
-		midFreq: number;
-		/** 高频调节 (dB) */
-		highFreq: number;
-	};
+  /** 语音音量 (0.0-1.0) */
+  voiceVolume: number;
+  /** 音景音量 (0.0-1.0) */
+  soundscapeVolume: number;
+  /** 淡入时长（秒） */
+  fadeInDuration: number;
+  /** 淡出时长（秒） */
+  fadeOutDuration: number;
+  /** 可选的均衡器设置 */
+  eqSettings?: {
+    /** 低频调节 (dB) */
+    lowFreq: number;
+    /** 中频调节 (dB) */
+    midFreq: number;
+    /** 高频调节 (dB) */
+    highFreq: number;
+  };
 };
 
 /**
@@ -127,16 +127,16 @@ export type MixingOptions = {
  * @param reverbAmount 混响量 (0.0-1.0)
  */
 export type BinauralSettings = {
-	/** 是否启用双耳效果处理 */
-	enabled: boolean;
-	/** 空间宽度 (0.0-2.0)，控制立体声宽度 */
-	spatialWidth: number;
-	/** 左声道延迟（毫秒） */
-	leftDelay: number;
-	/** 右声道延迟（毫秒） */
-	rightDelay: number;
-	/** 混响量 (0.0-1.0) */
-	reverbAmount: number;
+  /** 是否启用双耳效果处理 */
+  enabled: boolean;
+  /** 空间宽度 (0.0-2.0)，控制立体声宽度 */
+  spatialWidth: number;
+  /** 左声道延迟（毫秒） */
+  leftDelay: number;
+  /** 右声道延迟（毫秒） */
+  rightDelay: number;
+  /** 混响量 (0.0-1.0) */
+  reverbAmount: number;
 };
 
 /**
@@ -150,12 +150,12 @@ export type BinauralSettings = {
  * @param maxRetryAttempts 最大重试次数
  */
 export type QualityRequirements = {
-	/** 最低质量评分 (1.0-10.0) */
-	minimumScore: number;
-	/** 是否启用自动重试 */
-	enableAutoRetry: boolean;
-	/** 最大重试次数 */
-	maxRetryAttempts: number;
+  /** 最低质量评分 (1.0-10.0) */
+  minimumScore: number;
+  /** 是否启用自动重试 */
+  enableAutoRetry: boolean;
+  /** 最大重试次数 */
+  maxRetryAttempts: number;
 };
 
 // === 主要API请求和响应类型 ===
@@ -174,18 +174,18 @@ export type QualityRequirements = {
  * @param qualityRequirements 可选的质量控制配置
  */
 export type AsmrGenerationRequest = {
-	/** 要转换为语音的文本内容 */
-	text: string;
-	/** AI语音合成配置 */
-	voiceSettings: VoiceOptions;
-	/** 背景音景配置 */
-	soundscapeConfig: SoundscapeOptions;
-	/** 音频混合配置 */
-	mixingSettings: MixingOptions;
-	/** 可选的双耳效果配置 */
-	binauralSettings?: BinauralSettings;
-	/** 可选的质量控制配置 */
-	qualityRequirements?: QualityRequirements;
+  /** 要转换为语音的文本内容 */
+  text: string;
+  /** AI语音合成配置 */
+  voiceSettings: VoiceOptions;
+  /** 背景音景配置 */
+  soundscapeConfig: SoundscapeOptions;
+  /** 音频混合配置 */
+  mixingSettings: MixingOptions;
+  /** 可选的双耳效果配置 */
+  binauralSettings?: BinauralSettings;
+  /** 可选的质量控制配置 */
+  qualityRequirements?: QualityRequirements;
 };
 
 /**
@@ -203,20 +203,20 @@ export type AsmrGenerationRequest = {
  * @param requestPayload 原始请求参数，用于UI显示
  */
 export type Job = {
-	/** 作业的唯一标识符 */
-	id: string;
-	/** 作业当前执行状态 */
-	status: JobStatus;
-	/** 作业创建时间（ISO 8601格式） */
-	createdAt: string;
-	/** 作业完成时间（ISO 8601格式） */
-	completedAt?: string;
-	/** 生成结果的下载链接 */
-	resultUrl?: string;
-	/** 错误信息 */
-	error?: string;
-	/** 原始请求参数，用于UI显示 */
-	requestPayload: Partial<AsmrGenerationRequest>;
+  /** 作业的唯一标识符 */
+  id: string;
+  /** 作业当前执行状态 */
+  status: JobStatus;
+  /** 作业创建时间（ISO 8601格式） */
+  createdAt: string;
+  /** 作业完成时间（ISO 8601格式） */
+  completedAt?: string;
+  /** 生成结果的下载链接 */
+  resultUrl?: string;
+  /** 错误信息 */
+  error?: string;
+  /** 原始请求参数，用于UI显示 */
+  requestPayload: Partial<AsmrGenerationRequest>;
 };
 
 /**
@@ -233,18 +233,18 @@ export type Job = {
  * @param estimatedTimeRemaining 预估剩余时间（秒）
  */
 export type JobProgress = {
-	/** 作业唯一标识符 */
-	jobId: string;
-	/** 作业当前状态 */
-	status: JobStatus;
-	/** 完成进度百分比 (0-100) */
-	progress: number;
-	/** 当前执行步骤描述，如"正在生成语音"、"正在混合音景" */
-	currentStep: string;
-	/** 错误信息 */
-	error?: string;
-	/** 预估剩余时间（秒） */
-	estimatedTimeRemaining?: number;
+  /** 作业唯一标识符 */
+  jobId: string;
+  /** 作业当前状态 */
+  status: JobStatus;
+  /** 完成进度百分比 (0-100) */
+  progress: number;
+  /** 当前执行步骤描述，如"正在生成语音"、"正在混合音景" */
+  currentStep: string;
+  /** 错误信息 */
+  error?: string;
+  /** 预估剩余时间（秒） */
+  estimatedTimeRemaining?: number;
 };
 
 // === UI组件相关类型 ===
@@ -262,16 +262,16 @@ export type JobProgress = {
  * @param settings 对应类型的配置参数
  */
 export type AsmrPreset = {
-	/** 预设的唯一标识符 */
-	id: string;
-	/** 预设名称 */
-	name: string;
-	/** 预设描述 */
-	description: string;
-	/** 预设类型：语音、音景或混合 */
-	category: 'voice' | 'soundscape' | 'mixing';
-	/** 对应类型的配置参数 */
-	settings: VoiceOptions | SoundscapeOptions | MixingOptions;
+  /** 预设的唯一标识符 */
+  id: string;
+  /** 预设名称 */
+  name: string;
+  /** 预设描述 */
+  description: string;
+  /** 预设类型：语音、音景或混合 */
+  category: 'voice' | 'soundscape' | 'mixing';
+  /** 对应类型的配置参数 */
+  settings: VoiceOptions | SoundscapeOptions | MixingOptions;
 };
 
 /**
@@ -287,14 +287,14 @@ export type AsmrPreset = {
  * @param isActive 是否为当前活跃步骤
  */
 export type WizardStep = {
-	/** 步骤编号 */
-	id: number;
-	/** 步骤标题 */
-	title: string;
-	/** 步骤描述 */
-	description: string;
-	/** 是否已完成 */
-	isCompleted: boolean;
-	/** 是否为当前活跃步骤 */
-	isActive: boolean;
+  /** 步骤编号 */
+  id: number;
+  /** 步骤标题 */
+  title: string;
+  /** 步骤描述 */
+  description: string;
+  /** 是否已完成 */
+  isCompleted: boolean;
+  /** 是否为当前活跃步骤 */
+  isActive: boolean;
 };

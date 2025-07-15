@@ -98,11 +98,9 @@ export function ProjectList({
 	];
 
 	const filteredAndSortedProjects = displayProjects
-		.filter(
-			(project) =>
-				project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				project.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-		)
+		.filter(project =>
+			project.name.toLowerCase().includes(searchTerm.toLowerCase())
+			|| project.description?.toLowerCase().includes(searchTerm.toLowerCase()))
 		.sort((a, b) => {
 			switch (sortField) {
 				case 'name': {
@@ -167,12 +165,12 @@ export function ProjectList({
 	const projectCardTemplate = (project: Project): JSX.Element => {
 		if (layout === 'list') {
 			return (
-				<div className="border rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-					<div className="flex items-center justify-between">
-						<div className="flex-1">
-							<div className="flex items-center gap-3 mb-2">
+				<div className='border rounded-lg p-4 hover:shadow-md transition-shadow duration-200'>
+					<div className='flex items-center justify-between'>
+						<div className='flex-1'>
+							<div className='flex items-center gap-3 mb-2'>
 								<h3
-									className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600"
+									className='text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600'
 									onClick={() => {
 										handleProjectClick(project);
 									}}
@@ -182,42 +180,42 @@ export function ProjectList({
 								<Tag
 									value={getStatusLabel(project.status)}
 									severity={getStatusSeverity(project.status)}
-									className="text-xs"
+									className='text-xs'
 								/>
 							</div>
-							<p className="text-gray-600 text-sm mb-2">{project.description}</p>
-							<div className="flex items-center gap-4 text-xs text-gray-500">
+							<p className='text-gray-600 text-sm mb-2'>{project.description}</p>
+							<div className='flex items-center gap-4 text-xs text-gray-500'>
 								<span>
-									<i className="pi pi-file mr-1" />
+									<i className='pi pi-file mr-1'/>
 									{t('material-count', {
 										count: project.materialCount,
 										defaultMessage: `${project.materialCount} 个素材`,
 									})}
 								</span>
 								<span>
-									<i className="pi pi-user mr-1" />
+									<i className='pi pi-user mr-1'/>
 									{project.owner.name}
 								</span>
 								<span>
-									<i className="pi pi-calendar mr-1" />
+									<i className='pi pi-calendar mr-1'/>
 									{t('updated-at', {date: project.updatedAt, defaultMessage: `更新于 ${project.updatedAt}`})}
 								</span>
 							</div>
 						</div>
-						<div className="flex gap-2 ml-4">
+						<div className='flex gap-2 ml-4'>
 							<Button
-								icon="pi pi-eye"
-								size="small"
-								severity="info"
+								icon='pi pi-eye'
+								size='small'
+								severity='info'
 								tooltip={t('view-project', {defaultMessage: '查看项目'})}
 								onClick={() => {
 									handleProjectClick(project);
 								}}
 							/>
 							<Button
-								icon="pi pi-trash"
-								size="small"
-								severity="danger"
+								icon='pi pi-trash'
+								size='small'
+								severity='danger'
 								tooltip={t('delete-project', {defaultMessage: '删除项目'})}
 								onClick={() => onDeleteProject?.(project.id)}
 							/>
@@ -228,12 +226,12 @@ export function ProjectList({
 		}
 
 		return (
-			<Card className="h-full hover:shadow-lg transition-shadow duration-200">
-				<div className="space-y-4">
-					<div className="flex items-start justify-between">
-						<div className="flex-1">
+			<Card className='h-full hover:shadow-lg transition-shadow duration-200'>
+				<div className='space-y-4'>
+					<div className='flex items-start justify-between'>
+						<div className='flex-1'>
 							<h3
-								className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600 mb-1"
+								className='text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600 mb-1'
 								onClick={() => {
 									handleProjectClick(project);
 								}}
@@ -243,51 +241,51 @@ export function ProjectList({
 							<Tag
 								value={getStatusLabel(project.status)}
 								severity={getStatusSeverity(project.status)}
-								className="text-xs"
+								className='text-xs'
 							/>
 						</div>
-						<div className="flex gap-1">
+						<div className='flex gap-1'>
 							<Button
-								icon="pi pi-eye"
-								size="small"
-								severity="info"
+								icon='pi pi-eye'
+								size='small'
+								severity='info'
 								tooltip={t('view-project', {defaultMessage: '查看项目'})}
 								onClick={() => {
 									handleProjectClick(project);
 								}}
 							/>
 							<Button
-								icon="pi pi-trash"
-								size="small"
-								severity="danger"
+								icon='pi pi-trash'
+								size='small'
+								severity='danger'
 								tooltip={t('delete-project', {defaultMessage: '删除项目'})}
 								onClick={() => onDeleteProject?.(project.id)}
 							/>
 						</div>
 					</div>
 
-					<p className="text-gray-600 text-sm line-clamp-2">
+					<p className='text-gray-600 text-sm line-clamp-2'>
 						{project.description ?? t('no-description', {defaultMessage: '暂无描述'})}
 					</p>
 
-					<div className="space-y-2">
-						<div className="flex items-center justify-between text-sm">
-							<span className="text-gray-500">
-								<i className="pi pi-file mr-1" />
+					<div className='space-y-2'>
+						<div className='flex items-center justify-between text-sm'>
+							<span className='text-gray-500'>
+								<i className='pi pi-file mr-1'/>
 								{t('materials', {defaultMessage: '素材'})}
 							</span>
-							<span className="font-medium">{project.materialCount}</span>
+							<span className='font-medium'>{project.materialCount}</span>
 						</div>
-						<div className="flex items-center justify-between text-sm">
-							<span className="text-gray-500">
-								<i className="pi pi-user mr-1" />
+						<div className='flex items-center justify-between text-sm'>
+							<span className='text-gray-500'>
+								<i className='pi pi-user mr-1'/>
 								{t('owner', {defaultMessage: '负责人'})}
 							</span>
 							<span>{project.owner.name}</span>
 						</div>
-						<div className="flex items-center justify-between text-sm">
-							<span className="text-gray-500">
-								<i className="pi pi-calendar mr-1" />
+						<div className='flex items-center justify-between text-sm'>
+							<span className='text-gray-500'>
+								<i className='pi pi-calendar mr-1'/>
 								{t('updated', {defaultMessage: '更新'})}
 							</span>
 							<span>{project.updatedAt}</span>
@@ -299,44 +297,44 @@ export function ProjectList({
 	};
 
 	const listHeader = (): JSX.Element => (
-		<div className="space-y-4">
-			<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-				<h2 className="text-xl font-semibold text-gray-900">{t('title', {defaultMessage: '项目列表'})}</h2>
-				<Button label={t('create-project', {defaultMessage: '创建项目'})} icon="pi pi-plus" onClick={onCreateProject} />
+		<div className='space-y-4'>
+			<div className='flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between'>
+				<h2 className='text-xl font-semibold text-gray-900'>{t('title', {defaultMessage: '项目列表'})}</h2>
+				<Button label={t('create-project', {defaultMessage: '创建项目'})} icon='pi pi-plus' onClick={onCreateProject}/>
 			</div>
 
-			<div className="flex flex-col sm:flex-row gap-4">
-				<div className="flex-1">
-					<span className="p-input-icon-left w-full">
-						<i className="pi pi-search" />
+			<div className='flex flex-col sm:flex-row gap-4'>
+				<div className='flex-1'>
+					<span className='p-input-icon-left w-full'>
+						<i className='pi pi-search'/>
 						<InputText
 							value={searchTerm}
 							placeholder={t('search-projects', {defaultMessage: '搜索项目...'})}
-							className="w-full"
-							onChange={(event) => {
+							className='w-full'
+							onChange={event => {
 								setSearchTerm(event.target.value);
 							}}
 						/>
 					</span>
 				</div>
 
-				<div className="flex gap-2">
+				<div className='flex gap-2'>
 					<Dropdown
 						value={sortField}
 						options={sortOptions}
-						optionLabel="label"
-						optionValue="value"
+						optionLabel='label'
+						optionValue='value'
 						placeholder={t('sort-by', {defaultMessage: '排序方式'})}
-						className="w-48"
-						onChange={(event) => {
+						className='w-48'
+						onChange={event => {
 							setSortField(event.value as string);
 						}}
 					/>
 
-					<div className="flex border rounded-md overflow-hidden">
+					<div className='flex border rounded-md overflow-hidden'>
 						<Button
-							icon="pi pi-th-large"
-							size="small"
+							icon='pi pi-th-large'
+							size='small'
 							severity={layout === 'grid' ? 'info' : 'secondary'}
 							tooltip={t('grid-view', {defaultMessage: '网格视图'})}
 							onClick={() => {
@@ -344,8 +342,8 @@ export function ProjectList({
 							}}
 						/>
 						<Button
-							icon="pi pi-list"
-							size="small"
+							icon='pi pi-list'
+							size='small'
 							severity={layout === 'list' ? 'info' : 'secondary'}
 							tooltip={t('list-view', {defaultMessage: '列表视图'})}
 							onClick={() => {
@@ -360,25 +358,25 @@ export function ProjectList({
 
 	if (isLoading) {
 		return (
-			<div className="flex justify-center items-center py-12">
-				<ProgressSpinner />
-				<span className="ml-2">{t('loading', {defaultMessage: '加载中...'})}</span>
+			<div className='flex justify-center items-center py-12'>
+				<ProgressSpinner/>
+				<span className='ml-2'>{t('loading', {defaultMessage: '加载中...'})}</span>
 			</div>
 		);
 	}
 
 	if (filteredAndSortedProjects.length === 0) {
 		return (
-			<div className="space-y-4">
+			<div className='space-y-4'>
 				{listHeader()}
-				<div className="text-center py-12">
-					<i className="pi pi-folder-open text-6xl text-gray-400 mb-4" />
-					<h3 className="text-xl font-semibold text-gray-600 mb-2">
+				<div className='text-center py-12'>
+					<i className='pi pi-folder-open text-6xl text-gray-400 mb-4'/>
+					<h3 className='text-xl font-semibold text-gray-600 mb-2'>
 						{searchTerm
 							? t('no-search-results', {defaultMessage: '未找到匹配的项目'})
 							: t('no-projects', {defaultMessage: '暂无项目'})}
 					</h3>
-					<p className="text-gray-500 mb-6">
+					<p className='text-gray-500 mb-6'>
 						{searchTerm
 							? t('try-different-search', {defaultMessage: '尝试使用不同的搜索词'})
 							: t('create-first-project', {defaultMessage: '创建您的第一个项目来开始管理素材'})}
@@ -386,7 +384,7 @@ export function ProjectList({
 					{!searchTerm && (
 						<Button
 							label={t('create-project', {defaultMessage: '创建项目'})}
-							icon="pi pi-plus"
+							icon='pi pi-plus'
 							onClick={onCreateProject}
 						/>
 					)}
@@ -396,7 +394,7 @@ export function ProjectList({
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className='space-y-4'>
 			{listHeader()}
 			<DataView
 				paginator

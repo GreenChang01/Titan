@@ -1,4 +1,6 @@
-import type {ASMRGenerationRequest, Job, JobProgress, ASMRPreset} from '@titan/shared';
+import type {
+	ASMRGenerationRequest, Job, JobProgress, ASMRPreset,
+} from '@titan/shared';
 
 // Mock data for ASMR presets
 const mockVoicePresets: ASMRPreset[] = [
@@ -198,7 +200,7 @@ export const mockASMRApiService = {
 	 */
 	async createJob(payload: ASMRGenerationRequest): Promise<Job> {
 		// Simulate network delay
-		await new Promise((resolve) => setTimeout(resolve, 500));
+		await new Promise(resolve => setTimeout(resolve, 500));
 
 		const job = generateMockJob(payload);
 
@@ -235,16 +237,16 @@ export const mockASMRApiService = {
 	 * Creates multiple ASMR generation jobs in batch (mock).
 	 */
 	async createBatchJobs(requests: ASMRGenerationRequest[]): Promise<Job[]> {
-		await new Promise((resolve) => setTimeout(resolve, 800));
+		await new Promise(resolve => setTimeout(resolve, 800));
 
-		return Promise.all(requests.map(async (request) => this.createJob(request)));
+		return Promise.all(requests.map(async request => this.createJob(request)));
 	},
 
 	/**
 	 * Fetches the progress for a specific job (mock).
 	 */
 	async getJobProgress(jobId: string): Promise<JobProgress> {
-		await new Promise((resolve) => setTimeout(resolve, 200));
+		await new Promise(resolve => setTimeout(resolve, 200));
 
 		const progress = mockJobProgresses.get(jobId);
 		if (!progress) {
@@ -263,10 +265,10 @@ export const mockASMRApiService = {
 		page: number;
 		limit: number;
 	}> {
-		await new Promise((resolve) => setTimeout(resolve, 300));
+		await new Promise(resolve => setTimeout(resolve, 300));
 
 		const allJobs = [...mockJobs.values()];
-		const filteredJobs = options?.status ? allJobs.filter((job) => job.status === options.status) : allJobs;
+		const filteredJobs = options?.status ? allJobs.filter(job => job.status === options.status) : allJobs;
 
 		const limit = options?.limit || 20;
 		const page = options?.page || 1;
@@ -285,7 +287,7 @@ export const mockASMRApiService = {
 	 * Fetches job details by ID (mock).
 	 */
 	async getJobById(jobId: string): Promise<Job> {
-		await new Promise((resolve) => setTimeout(resolve, 200));
+		await new Promise(resolve => setTimeout(resolve, 200));
 
 		const job = mockJobs.get(jobId);
 		if (!job) {
@@ -299,7 +301,7 @@ export const mockASMRApiService = {
 	 * Retries a failed job (mock).
 	 */
 	async retryJob(jobId: string): Promise<Job> {
-		await new Promise((resolve) => setTimeout(resolve, 400));
+		await new Promise(resolve => setTimeout(resolve, 400));
 
 		const job = mockJobs.get(jobId);
 		if (!job) {
@@ -324,7 +326,7 @@ export const mockASMRApiService = {
 		soundscapePresets: ASMRPreset[];
 		mixingPresets: ASMRPreset[];
 	}> {
-		await new Promise((resolve) => setTimeout(resolve, 400));
+		await new Promise(resolve => setTimeout(resolve, 400));
 
 		return {
 			voicePresets: mockVoicePresets,
@@ -342,7 +344,7 @@ export const mockASMRApiService = {
 		totalCost: number;
 		currency: string;
 	}> {
-		await new Promise((resolve) => setTimeout(resolve, 600));
+		await new Promise(resolve => setTimeout(resolve, 600));
 
 		// Simple mock cost calculation based on text length and duration
 		const textLength = payload.text.length;
@@ -368,7 +370,7 @@ export const mockASMRApiService = {
 		ffmpeg: boolean;
 		overall: boolean;
 	}> {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		await new Promise(resolve => setTimeout(resolve, 1000));
 
 		// Simulate some randomness in service availability
 		const services = {

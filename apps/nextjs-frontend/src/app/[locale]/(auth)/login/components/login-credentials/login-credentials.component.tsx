@@ -29,7 +29,7 @@ export function LoginCredentials(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmitCredentials: SubmitHandler<LoginCredentialsFormFields> = async (data) => {
+	const onSubmitCredentials: SubmitHandler<LoginCredentialsFormFields> = async data => {
 		await loginCredentials({
 			params: {loginCredentialsData: data, language: locale},
 			onSuccess() {
@@ -49,54 +49,54 @@ export function LoginCredentials(): JSX.Element {
 	};
 
 	return (
-		<div className="flex flex-col items-center space-y-6 p-6">
-			<div className="text-center">
-				<h1 className="text-2xl font-bold">{t('title')}</h1>
+		<div className='flex flex-col items-center space-y-6 p-6'>
+			<div className='text-center'>
+				<h1 className='text-2xl font-bold'>{t('title')}</h1>
 			</div>
 
-			<form className="w-full max-w-sm space-y-4" onSubmit={handleSubmitCredentials(onSubmitCredentials)}>
-				<div className="space-y-2">
-					<Label htmlFor="email">{t('email-input-label')}</Label>
+			<form className='w-full max-w-sm space-y-4' onSubmit={handleSubmitCredentials(onSubmitCredentials)}>
+				<div className='space-y-2'>
+					<Label htmlFor='email'>{t('email-input-label')}</Label>
 					<Input
 						{...registerCredentials('email')}
-						id="email"
-						type="email"
+						id='email'
+						type='email'
 						placeholder={t('email-input-label')}
-						data-testid="login-email"
+						data-testid='login-email'
 					/>
 					{errorsCredentials.email ? (
-						<p className="text-sm text-destructive">{errorsCredentials.email.message}</p>
+						<p className='text-sm text-destructive'>{errorsCredentials.email.message}</p>
 					) : null}
 				</div>
 
-				<div className="space-y-2">
-					<Label htmlFor="password">{t('password-input-label')}</Label>
+				<div className='space-y-2'>
+					<Label htmlFor='password'>{t('password-input-label')}</Label>
 					<Input
 						{...registerCredentials('password')}
-						id="password"
-						type="password"
+						id='password'
+						type='password'
 						placeholder={t('password-input-label')}
-						data-testid="login-password"
-						autoComplete="current-password"
+						data-testid='login-password'
+						autoComplete='current-password'
 					/>
 					{errorsCredentials.password ? (
-						<p className="text-sm text-destructive">{errorsCredentials.password.message}</p>
+						<p className='text-sm text-destructive'>{errorsCredentials.password.message}</p>
 					) : null}
 				</div>
 
-				<Button type="submit" disabled={isSubmittingCredentials} className="w-full" data-testid="login-submit">
+				<Button type='submit' disabled={isSubmittingCredentials} className='w-full' data-testid='login-submit'>
 					{isSubmittingCredentials ? t('submit-button-loading-label') : t('submit-button-label')}
 				</Button>
 
 				{errorsCredentials.root ? (
-					<p className="text-sm text-destructive text-center">{errorsCredentials.root.message}</p>
+					<p className='text-sm text-destructive text-center'>{errorsCredentials.root.message}</p>
 				) : null}
 			</form>
 
-			<div className="text-center space-y-2">
-				<p className="text-sm text-muted-foreground">
+			<div className='text-center space-y-2'>
+				<p className='text-sm text-muted-foreground'>
 					{t('forgot-password-question')}{' '}
-					<Link className="text-primary hover:underline" href="/forgot-password" data-testid="login-forgot-password">
+					<Link className='text-primary hover:underline' href='/forgot-password' data-testid='login-forgot-password'>
 						{t('forgot-password-link-label')}
 					</Link>
 				</p>

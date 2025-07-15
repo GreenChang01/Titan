@@ -4,7 +4,9 @@ import Link from 'next/link';
 import {Menu} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
+import {
+	DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type TopNavProps = {
 	readonly links: Array<{
@@ -18,14 +20,14 @@ type TopNavProps = {
 export function TopNav({className, links, ...props}: TopNavProps) {
 	return (
 		<>
-			<div className="md:hidden">
+			<div className='md:hidden'>
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
-						<Button size="icon" variant="outline">
-							<Menu className="h-4 w-4" />
+						<Button size='icon' variant='outline'>
+							<Menu className='h-4 w-4'/>
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent side="bottom" align="start">
+					<DropdownMenuContent side='bottom' align='start'>
 						{links.map(({title, href, isActive, disabled}) => (
 							<DropdownMenuItem key={`${title}-${href}`} asChild>
 								<Link href={href} className={isActive ? '' : 'text-muted-foreground'}>

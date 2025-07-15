@@ -19,20 +19,20 @@ import {type UserStatus} from '../types/user-status.enum';
  * ```
  */
 export class UserDto {
-	/** 用户唯一标识符 */
-	id: string;
-	/** 用户创建时间 */
-	createdAt: Date;
-	/** 用户信息最后更新时间 */
-	updatedAt: Date;
-	/** 用户邮箱地址（用作登录凭据） */
-	email: string;
-	/** 用户显示名称 */
-	username: string;
-	/** 用户当前状态（激活、待确认、被封等） */
-	status: UserStatus;
+  /** 用户唯一标识符 */
+  id: string;
+  /** 用户创建时间 */
+  createdAt: Date;
+  /** 用户信息最后更新时间 */
+  updatedAt: Date;
+  /** 用户邮箱地址（用作登录凭据） */
+  email: string;
+  /** 用户显示名称 */
+  username: string;
+  /** 用户当前状态（激活、待确认、被封等） */
+  status: UserStatus;
 
-	/**
+  /**
 	 * 创建用户DTO实例
 	 *
 	 * @param params 用户基本信息参数
@@ -43,26 +43,26 @@ export class UserDto {
 	 * @param params.username 用户显示名称
 	 * @param params.status 用户当前状态
 	 */
-	constructor({
-		id,
-		createdAt,
-		updatedAt,
-		email,
-		username,
-		status,
-	}: {
-		id: string;
-		createdAt: Date;
-		updatedAt: Date;
-		email: string;
-		username: string;
-		status: UserStatus;
-	}) {
-		this.id = id;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.email = email;
-		this.username = username;
-		this.status = status;
-	}
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    email,
+    username,
+    status,
+  }: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    email: string;
+    username: string;
+    status: UserStatus;
+  }) {
+    this.id = id;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.email = email;
+    this.username = username;
+    this.status = status;
+  }
 }

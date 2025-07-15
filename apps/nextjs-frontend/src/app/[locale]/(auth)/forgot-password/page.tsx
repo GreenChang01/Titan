@@ -11,7 +11,9 @@ import {type ApiError} from '@/utils/api/api-error.ts';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {
+	Card, CardContent, CardHeader, CardTitle,
+} from '@/components/ui/card';
 import {Link} from '@/i18n/navigation.ts';
 
 export default function ForgotPassword(): JSX.Element {
@@ -31,7 +33,7 @@ export default function ForgotPassword(): JSX.Element {
 
 	const locale = useLocale();
 
-	const onSubmit: SubmitHandler<ForgotPasswordFormFields> = async (data) => {
+	const onSubmit: SubmitHandler<ForgotPasswordFormFields> = async data => {
 		await forgotPassword({
 			params: {forgotPasswordData: data, language: locale},
 			onSuccess() {
@@ -57,13 +59,13 @@ export default function ForgotPassword(): JSX.Element {
 
 	if (didSendPasswordReset) {
 		return (
-			<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
-				<Card className="w-full max-w-md">
-					<CardContent className="p-6">
-						<div className="text-center space-y-4">
-							<h2 className="text-2xl font-bold text-green-600">{t('success-header')}</h2>
-							<p className="text-muted-foreground">{t('success-message')}</p>
-							<Link href="/login" className="inline-block">
+			<div className='flex min-h-screen items-center justify-center bg-muted/50 p-4'>
+				<Card className='w-full max-w-md'>
+					<CardContent className='p-6'>
+						<div className='text-center space-y-4'>
+							<h2 className='text-2xl font-bold text-green-600'>{t('success-header')}</h2>
+							<p className='text-muted-foreground'>{t('success-message')}</p>
+							<Link href='/login' className='inline-block'>
 								<Button>返回登录</Button>
 							</Link>
 						</div>
@@ -74,41 +76,41 @@ export default function ForgotPassword(): JSX.Element {
 	}
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
-			<Card className="w-full max-w-md">
+		<div className='flex min-h-screen items-center justify-center bg-muted/50 p-4'>
+			<Card className='w-full max-w-md'>
 				<CardHeader>
-					<CardTitle className="text-center text-2xl font-bold">{t('title')}</CardTitle>
+					<CardTitle className='text-center text-2xl font-bold'>{t('title')}</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-6">
-					<form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-						<div className="space-y-2">
-							<Label htmlFor="email">{t('email-input-label')}</Label>
+				<CardContent className='space-y-6'>
+					<form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
+						<div className='space-y-2'>
+							<Label htmlFor='email'>{t('email-input-label')}</Label>
 							<Input
-								id="email"
-								type="email"
+								id='email'
+								type='email'
 								placeholder={t('email-input-label')}
-								data-testid="forgot-password-email-input"
+								data-testid='forgot-password-email-input'
 								{...register('email')}
 							/>
-							{errors.email ? <p className="text-sm text-destructive">{errors.email.message}</p> : null}
+							{errors.email ? <p className='text-sm text-destructive'>{errors.email.message}</p> : null}
 						</div>
 
-						{errors.root ? <p className="text-sm text-destructive text-center">{errors.root.message}</p> : null}
+						{errors.root ? <p className='text-sm text-destructive text-center'>{errors.root.message}</p> : null}
 
 						<Button
-							type="submit"
-							className="w-full"
+							type='submit'
+							className='w-full'
 							disabled={isSubmitting}
-							data-testid="forgot-password-submit-button"
+							data-testid='forgot-password-submit-button'
 						>
 							{isSubmitting ? t('submit-button-loading-label') : t('submit-button-label')}
 						</Button>
 					</form>
 
-					<div className="text-center">
-						<p className="text-sm text-muted-foreground">
+					<div className='text-center'>
+						<p className='text-sm text-muted-foreground'>
 							记起密码了？{' '}
-							<Link className="text-primary hover:underline" href="/login">
+							<Link className='text-primary hover:underline' href='/login'>
 								返回登录
 							</Link>
 						</p>

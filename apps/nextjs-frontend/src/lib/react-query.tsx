@@ -16,7 +16,7 @@ const createQueryClient = () =>
 				// Retry failed requests 3 times
 				retry: 3,
 				// Retry delay with exponential backoff
-				retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30_000),
+				retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30_000),
 				// Refetch on window focus in production
 				refetchOnWindowFocus: process.env.NODE_ENV === 'production',
 				// Refetch on reconnect
@@ -40,7 +40,7 @@ export function ReactQueryProvider({children}: {readonly children: React.ReactNo
 	return (
 		<QueryClientProvider client={queryClient}>
 			{children}
-			{process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+			{process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false}/>}
 		</QueryClientProvider>
 	);
 }
