@@ -108,10 +108,7 @@ export class AIPromptController {
 	 * @returns 创建的提示词
 	 */
 	@Post()
-	async createPrompt(
-		@Body() createDto: CreatePromptDto,
-		@Request() req: any,
-	): Promise<AIPrompt> {
+	async createPrompt(@Body() createDto: CreatePromptDto, @Request() req: any): Promise<AIPrompt> {
 		const userId = req.user.id;
 
 		// 验证必需字段
@@ -179,9 +176,7 @@ export class AIPromptController {
 	 * @returns 公开提示词列表
 	 */
 	@Get('public')
-	async getPublicPrompts(
-		@Query() query: QueryPromptsDto,
-	): Promise<{items: AIPrompt[]; total: number}> {
+	async getPublicPrompts(@Query() query: QueryPromptsDto): Promise<{items: AIPrompt[]; total: number}> {
 		const limit = query.limit || 20;
 		const offset = query.offset || 0;
 
@@ -211,10 +206,7 @@ export class AIPromptController {
 	 * @returns 提示词信息
 	 */
 	@Get(':id')
-	async getPromptById(
-		@Param('id', ParseUUIDPipe) id: string,
-		@Request() req: any,
-	): Promise<AIPrompt> {
+	async getPromptById(@Param('id', ParseUUIDPipe) id: string, @Request() req: any): Promise<AIPrompt> {
 		const userId = req.user.id;
 		return this.promptService.getPromptById(id, userId);
 	}
@@ -249,10 +241,7 @@ export class AIPromptController {
 	 * @returns 删除结果
 	 */
 	@Delete(':id')
-	async deletePrompt(
-		@Param('id', ParseUUIDPipe) id: string,
-		@Request() req: any,
-	): Promise<{success: boolean}> {
+	async deletePrompt(@Param('id', ParseUUIDPipe) id: string, @Request() req: any): Promise<{success: boolean}> {
 		const userId = req.user.id;
 		const success = await this.promptService.deletePrompt(id, userId);
 
@@ -269,9 +258,7 @@ export class AIPromptController {
 	 * @returns 更新后的提示词
 	 */
 	@Post(':id/increment-usage')
-	async incrementUsage(
-		@Param('id', ParseUUIDPipe) id: string,
-	): Promise<AIPrompt> {
+	async incrementUsage(@Param('id', ParseUUIDPipe) id: string): Promise<AIPrompt> {
 		return this.promptService.incrementUsageCount(id);
 	}
 
@@ -281,9 +268,7 @@ export class AIPromptController {
 	 * @returns 热门标签列表
 	 */
 	@Get('tags/popular')
-	async getPopularTags(
-		@Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
-	): Promise<PromptTag[]> {
+	async getPopularTags(@Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number): Promise<PromptTag[]> {
 		if (limit > 50) {
 			throw new BadRequestException('最多返回50个热门标签');
 		}
@@ -297,9 +282,7 @@ export class AIPromptController {
 	 * @returns 分类统计信息
 	 */
 	@Get('stats/category')
-	async getCategoryStats(
-		@Request() req: any,
-	): Promise<Array<{category: PromptCategory; count: number}>> {
+	async getCategoryStats(@Request() req: any): Promise<Array<{category: PromptCategory; count: number}>> {
 		const userId = req.user.id;
 		return this.promptService.getPromptStatsByCategory(userId);
 	}

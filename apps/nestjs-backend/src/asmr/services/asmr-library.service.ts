@@ -1,16 +1,8 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
 import {EntityRepository} from '@mikro-orm/core';
-import {
-	ASMRLibraryItem,
-	GenerationStatus,
-} from '../dto/asmr-generation.dto';
-import {
-	LibraryFilterDto,
-	UpdateLibraryItemDto,
-	LibraryStatsDto,
-	BulkActionDto,
-} from '../dto/asmr-library.dto';
+import {ASMRLibraryItem, GenerationStatus} from '../dto/asmr-generation.dto';
+import {LibraryFilterDto, UpdateLibraryItemDto, LibraryStatsDto, BulkActionDto} from '../dto/asmr-library.dto';
 import {ASMRGeneration} from '../entities/asmr-generation.entity';
 import {LibraryItemFavorite} from '../entities/library-item-favorite.entity';
 import {LibraryItemRating} from '../entities/library-item-rating.entity';
@@ -34,22 +26,13 @@ export class ASMRLibraryService {
 		userId: string,
 		filter: LibraryFilterDto = {},
 	): Promise<{
-			items: ASMRLibraryItem[];
-			total: number;
-			page: number;
-			limit: number;
-			totalPages: number;
-		}> {
-		const {
-			search,
-			category,
-			status,
-			tags,
-			limit = 20,
-			offset = 0,
-			sortBy = 'createdAt',
-			sortOrder = 'desc',
-		} = filter;
+		items: ASMRLibraryItem[];
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
+	}> {
+		const {search, category, status, tags, limit = 20, offset = 0, sortBy = 'createdAt', sortOrder = 'desc'} = filter;
 
 		// Build filter criteria
 		const where: any = {user: {id: userId}};
@@ -59,19 +42,14 @@ export class ASMRLibraryService {
 		}
 
 		// Get items with basic filtering
-		const [items, total] = await this.asmrGenerationRepository.findAndCount(
-			where,
-			{
-				limit,
-				offset,
-				orderBy: {[sortBy]: sortOrder},
-				populate: ['user'],
-			},
-		);
+		const [items, total] = await this.asmrGenerationRepository.findAndCount(where, {
+			limit,
+			offset,
+			orderBy: {[sortBy]: sortOrder},
+			populate: ['user'],
+		});
 
-		const libraryItems = await Promise.all(
-			items.map(async item => this.mapToLibraryItem(item, userId)),
-		);
+		const libraryItems = await Promise.all(items.map(async (item) => this.mapToLibraryItem(item, userId)));
 
 		return {
 			items: libraryItems,
@@ -83,10 +61,13 @@ export class ASMRLibraryService {
 	}
 
 	async getLibraryItem(id: string, userId: string): Promise<ASMRLibraryItem | null> {
-		const item = await this.asmrGenerationRepository.findOne({
-			id,
-			user: {id: userId},
-		}, {populate: ['user']});
+		const item = await this.asmrGenerationRepository.findOne(
+			{
+				id,
+				user: {id: userId},
+			},
+			{populate: ['user']},
+		);
 
 		if (!item) {
 			return null;
@@ -133,9 +114,7 @@ export class ASMRLibraryService {
 		const ratings = await this.ratingRepository.find({
 			user: {id: userId},
 		});
-		const averageRating = ratings.length > 0
-			? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
-			: 0;
+		const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length : 0;
 
 		// Mock popular tags for now
 		const popularTags = [
@@ -145,14 +124,17 @@ export class ASMRLibraryService {
 		];
 
 		// Get recent generations for activity
-		const recentGenerations = await this.asmrGenerationRepository.find({
-			user: {id: userId},
-		}, {
-			orderBy: {createdAt: 'DESC'},
-			limit: 10,
-		});
+		const recentGenerations = await this.asmrGenerationRepository.find(
+			{
+				user: {id: userId},
+			},
+			{
+				orderBy: {createdAt: 'DESC'},
+				limit: 10,
+			},
+		);
 
-		const recentActivity = recentGenerations.map(gen => ({
+		const recentActivity = recentGenerations.map((gen) => ({
 			date: gen.createdAt,
 			action: 'generated',
 			count: 1,
@@ -170,8 +152,7 @@ export class ASMRLibraryService {
 			averageRating,
 			popularTags,
 			generationStats: {
-				today: recentGenerations.filter(g =>
-					g.createdAt.toDateString() === new Date().toDateString()).length,
+				today: recentGenerations.filter((g) => g.createdAt.toDateString() === new Date().toDateString()).length,
 				thisWeek: recentGenerations.length,
 				thisMonth: recentGenerations.length,
 				thisYear: recentGenerations.length,
@@ -179,9 +160,8 @@ export class ASMRLibraryService {
 			usageStats: {
 				totalGenerations: totalItems,
 				totalCost: completedGenerations.reduce((sum, gen) => sum + (gen.cost || 0), 0),
-				averageCostPerItem: totalItems > 0
-					? completedGenerations.reduce((sum, gen) => sum + (gen.cost || 0), 0) / totalItems
-					: 0,
+				averageCostPerItem:
+					totalItems > 0 ? completedGenerations.reduce((sum, gen) => sum + (gen.cost || 0), 0) / totalItems : 0,
 				averageDuration: completedItems > 0 ? totalDuration / completedItems : 0,
 				mostUsedVoiceType: 'gentle_female',
 				mostUsedSoundscapeType: 'nature',
@@ -190,11 +170,7 @@ export class ASMRLibraryService {
 		};
 	}
 
-	async updateLibraryItem(
-		id: string,
-		userId: string,
-		updates: UpdateLibraryItemDto,
-	): Promise<ASMRLibraryItem> {
+	async updateLibraryItem(id: string, userId: string, updates: UpdateLibraryItemDto): Promise<ASMRLibraryItem> {
 		const item = await this.asmrGenerationRepository.findOne({
 			id,
 			user: {id: userId},
@@ -280,11 +256,7 @@ export class ASMRLibraryService {
 		return true;
 	}
 
-	async rateItem(
-		id: string,
-		userId: string,
-		rating: number,
-	): Promise<boolean> {
+	async rateItem(id: string, userId: string, rating: number): Promise<boolean> {
 		const item = await this.asmrGenerationRepository.findOne({
 			id,
 			user: {id: userId},
@@ -319,37 +291,42 @@ export class ASMRLibraryService {
 	}
 
 	async getRecentItems(userId: string, limit = 10): Promise<ASMRLibraryItem[]> {
-		const items = await this.asmrGenerationRepository.find({
-			user: {id: userId},
-		}, {
-			orderBy: {createdAt: 'DESC'},
-			limit,
-			populate: ['user'],
-		});
-
-		return Promise.all(
-			items.map(async item => this.mapToLibraryItem(item, userId)),
+		const items = await this.asmrGenerationRepository.find(
+			{
+				user: {id: userId},
+			},
+			{
+				orderBy: {createdAt: 'DESC'},
+				limit,
+				populate: ['user'],
+			},
 		);
+
+		return Promise.all(items.map(async (item) => this.mapToLibraryItem(item, userId)));
 	}
 
-	async getFavoriteItems(userId: string, filters: Omit<LibraryFilterDto, 'status'>): Promise<{
+	async getFavoriteItems(
+		userId: string,
+		filters: Omit<LibraryFilterDto, 'status'>,
+	): Promise<{
 		items: ASMRLibraryItem[];
 		total: number;
 	}> {
 		const {limit = 20, offset = 0} = filters;
 
-		const favorites = await this.favoriteRepository.find({
-			user: {id: userId},
-			isFavorite: true,
-		}, {
-			populate: ['item', 'item.user'],
-			limit,
-			offset,
-		});
-
-		const items = await Promise.all(
-			favorites.map(async fav => this.mapToLibraryItem(fav.item, userId)),
+		const favorites = await this.favoriteRepository.find(
+			{
+				user: {id: userId},
+				isFavorite: true,
+			},
+			{
+				populate: ['item', 'item.user'],
+				limit,
+				offset,
+			},
 		);
+
+		const items = await Promise.all(favorites.map(async (fav) => this.mapToLibraryItem(fav.item, userId)));
 
 		const total = await this.favoriteRepository.count({
 			user: {id: userId},
@@ -424,18 +401,19 @@ export class ASMRLibraryService {
 		}
 
 		// Find similar items based on tags
-		const similarItems = await this.asmrGenerationRepository.find({
-			user: {id: userId},
-			id: {$ne: id},
-			tags: {$in: targetItem.tags || []},
-		}, {
-			limit,
-			populate: ['user'],
-		});
-
-		return Promise.all(
-			similarItems.map(async item => this.mapToLibraryItem(item, userId)),
+		const similarItems = await this.asmrGenerationRepository.find(
+			{
+				user: {id: userId},
+				id: {$ne: id},
+				tags: {$in: targetItem.tags || []},
+			},
+			{
+				limit,
+				populate: ['user'],
+			},
 		);
+
+		return Promise.all(similarItems.map(async (item) => this.mapToLibraryItem(item, userId)));
 	}
 
 	async bulkAction(userId: string, bulkActionDto: BulkActionDto): Promise<void> {
@@ -485,20 +463,24 @@ export class ASMRLibraryService {
 		}
 	}
 
-	async exportLibrary(userId: string, format: 'json' | 'csv' | 'xml'): Promise<{
+	async exportLibrary(
+		userId: string,
+		format: 'json' | 'csv' | 'xml',
+	): Promise<{
 		data: any;
 		filename: string;
 		contentType: string;
 	}> {
-		const items = await this.asmrGenerationRepository.find({
-			user: {id: userId},
-		}, {
-			populate: ['user'],
-		});
-
-		const libraryItems = await Promise.all(
-			items.map(async item => this.mapToLibraryItem(item, userId)),
+		const items = await this.asmrGenerationRepository.find(
+			{
+				user: {id: userId},
+			},
+			{
+				populate: ['user'],
+			},
 		);
+
+		const libraryItems = await Promise.all(items.map(async (item) => this.mapToLibraryItem(item, userId)));
 
 		const timestamp = new Date().toISOString().slice(0, 10);
 
@@ -537,14 +519,19 @@ export class ASMRLibraryService {
 
 	private convertToCSV(items: ASMRLibraryItem[]): string {
 		const header = 'id,title,description,duration,fileSize,tags,rating,playCount,createdAt,isPrivate,isFavorite\n';
-		const rows = items.map(item =>
-			`${item.id},"${item.title}","${item.description}",${item.duration},${item.fileSize},"${item.tags.join(';')}",${item.rating || ''},${item.playCount},${item.createdAt.toISOString()},${item.isPrivate},${item.isFavorite}`,
-		).join('\n');
+		const rows = items
+			.map(
+				(item) =>
+					`${item.id},"${item.title}","${item.description}",${item.duration},${item.fileSize},"${item.tags.join(';')}",${item.rating || ''},${item.playCount},${item.createdAt.toISOString()},${item.isPrivate},${item.isFavorite}`,
+			)
+			.join('\n');
 		return header + rows;
 	}
 
 	private convertToXML(items: ASMRLibraryItem[]): string {
-		const xmlItems = items.map(item => `
+		const xmlItems = items
+			.map(
+				(item) => `
       <item>
         <id>${item.id}</id>
         <title><![CDATA[${item.title}]]></title>
@@ -558,7 +545,9 @@ export class ASMRLibraryService {
         <isPrivate>${item.isPrivate}</isPrivate>
         <isFavorite>${item.isFavorite}</isFavorite>
       </item>
-    `).join('');
+    `,
+			)
+			.join('');
 
 		return `<?xml version="1.0" encoding="UTF-8"?>
     <library>

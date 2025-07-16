@@ -81,7 +81,7 @@ export class ASMRGenerationService {
 		this.progressStreams.set(generation.id, progressSubject);
 
 		// Start generation process asynchronously
-		this.processGeneration(generation).catch(error => {
+		this.processGeneration(generation).catch((error) => {
 			this.logger.error(`Generation failed for ${generation.id}:`, error);
 			this.updateProgress(generation.id, {
 				status: GenerationStatus.FAILED,
@@ -204,7 +204,11 @@ export class ASMRGenerationService {
 		});
 	}
 
-	private async mixAudio(generation: ASMRGeneration, voiceFile: string, soundscapeFile?: string): Promise<{
+	private async mixAudio(
+		generation: ASMRGeneration,
+		voiceFile: string,
+		soundscapeFile?: string,
+	): Promise<{
 		filePath: string;
 		duration: number;
 		fileSize: number;
@@ -257,13 +261,12 @@ export class ASMRGenerationService {
 
 	async estimateCost(request: Omit<GenerateASMRDto, 'title'>): Promise<CostEstimation> {
 		const characterCount = request.content.length;
-		const estimatedDuration = Math.ceil(characterCount / 200 * 60); // ~200 chars per minute
+		const estimatedDuration = Math.ceil((characterCount / 200) * 60); // ~200 chars per minute
 
 		// ElevenLabs pricing estimation
 		const voiceCost = Math.ceil(characterCount / 1000) * 0.3; // $0.30 per 1K characters
-		const soundscapeCost = request.soundscape.type === SoundscapeType.NONE
-			? 0
-			: Math.ceil(estimatedDuration / 60) * 0.5; // $0.50 per minute
+		const soundscapeCost =
+			request.soundscape.type === SoundscapeType.NONE ? 0 : Math.ceil(estimatedDuration / 60) * 0.5; // $0.50 per minute
 		const processingCost = 0.1; // Fixed processing cost
 
 		const totalCost = voiceCost + soundscapeCost + processingCost;
@@ -284,7 +287,8 @@ export class ASMRGenerationService {
 				{
 					item: 'Soundscape Generation',
 					cost: soundscapeCost,
-					description: soundscapeCost > 0 ? `${Math.ceil(estimatedDuration / 60)} minutes at $0.50/min` : 'No soundscape',
+					description:
+						soundscapeCost > 0 ? `${Math.ceil(estimatedDuration / 60)} minutes at $0.50/min` : 'No soundscape',
 				},
 				{
 					item: 'Audio Processing',
@@ -368,9 +372,7 @@ export class ASMRGenerationService {
 		return {
 			status: generation.status,
 			progress: currentProgress.progress,
-			result: generation.status === GenerationStatus.COMPLETED
-				? this.generationResults.get(generationId)
-				: undefined,
+			result: generation.status === GenerationStatus.COMPLETED ? this.generationResults.get(generationId) : undefined,
 			error: currentProgress.error,
 		};
 	}
@@ -424,14 +426,17 @@ export class ASMRGenerationService {
 	}
 
 	async getRecentGenerations(userId: string, limit = 10): Promise<ASMRGenerationResponse[]> {
-		const generations = await this.asmrGenerationRepository.find({
-			user: userId,
-		}, {
-			orderBy: {createdAt: 'DESC'},
-			limit,
-		});
+		const generations = await this.asmrGenerationRepository.find(
+			{
+				user: userId,
+			},
+			{
+				orderBy: {createdAt: 'DESC'},
+				limit,
+			},
+		);
 
-		return generations.map(gen => ({
+		return generations.map((gen) => ({
 			generationId: gen.id,
 			status: gen.status,
 			estimatedDuration: gen.estimatedDuration,

@@ -10,9 +10,7 @@ import {AIPromptController} from './controllers/ai-prompt.controller';
  * 包含提示词和标签的管理功能
  */
 @Module({
-	imports: [
-		MikroOrmModule.forFeature([AIPrompt, PromptTag]),
-	],
+	imports: [MikroOrmModule.forFeature([AIPrompt, PromptTag])],
 	controllers: [AIPromptController],
 	providers: [AIPromptService],
 	exports: [AIPromptService],

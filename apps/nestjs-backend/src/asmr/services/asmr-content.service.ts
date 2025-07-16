@@ -5,7 +5,10 @@ import {VoiceSettings, SoundscapeSettings, MixingSettings} from '../dto/asmr-gen
 export class ASMRContentService {
 	private readonly logger = new Logger(ASMRContentService.name);
 
-	async processContent(content: string, settings: VoiceSettings | SoundscapeSettings | MixingSettings): Promise<string> {
+	async processContent(
+		content: string,
+		settings: VoiceSettings | SoundscapeSettings | MixingSettings,
+	): Promise<string> {
 		this.logger.debug('Processing ASMR content');
 
 		// Content processing logic would go here
@@ -48,10 +51,10 @@ export class ASMRContentService {
 			elderlyOptimization: boolean;
 		};
 	}): Promise<{
-			filePath: string;
-			duration: number;
-			fileSize: number;
-		}> {
+		filePath: string;
+		duration: number;
+		fileSize: number;
+	}> {
 		this.logger.debug('Mixing audio files');
 
 		// Audio mixing logic would go here using FFmpeg

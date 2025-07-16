@@ -21,10 +21,10 @@ export class ASMRGeneration extends BaseEntity {
 	@ManyToOne(() => User)
 	user!: User;
 
-	@OneToMany(() => LibraryItemFavorite, favorite => favorite.item)
+	@OneToMany(() => LibraryItemFavorite, (favorite) => favorite.item)
 	favorites = new Collection<LibraryItemFavorite>(this);
 
-	@OneToMany(() => LibraryItemRating, rating => rating.item)
+	@OneToMany(() => LibraryItemRating, (rating) => rating.item)
 	ratings = new Collection<LibraryItemRating>(this);
 
 	@Property({type: types.json})

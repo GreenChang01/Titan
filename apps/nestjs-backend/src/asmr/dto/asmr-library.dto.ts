@@ -22,7 +22,7 @@ export class LibraryFilterDto {
 	@ApiPropertyOptional({description: 'Filter by tags (comma-separated)'})
 	@IsOptional()
 	@IsString()
-	@Transform(({value}) => value ? value.split(',').map((tag: string) => tag.trim()) : undefined)
+	@Transform(({value}) => (value ? value.split(',').map((tag: string) => tag.trim()) : undefined))
 	tags?: string[];
 
 	@ApiPropertyOptional({description: 'Number of items per page', minimum: 1, maximum: 100})
@@ -188,7 +188,10 @@ export class BulkActionDto {
 	@IsString({each: true})
 	itemIds!: string[];
 
-	@ApiProperty({description: 'Action to perform', enum: ['delete', 'favorite', 'unfavorite', 'update-tags', 'update-privacy']})
+	@ApiProperty({
+		description: 'Action to perform',
+		enum: ['delete', 'favorite', 'unfavorite', 'update-tags', 'update-privacy'],
+	})
 	@IsEnum(['delete', 'favorite', 'unfavorite', 'update-tags', 'update-privacy'])
 	action!: 'delete' | 'favorite' | 'unfavorite' | 'update-tags' | 'update-privacy';
 

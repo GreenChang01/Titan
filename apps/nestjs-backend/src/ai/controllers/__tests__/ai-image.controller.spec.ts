@@ -123,9 +123,9 @@ describe('AIImageController', () => {
 
 			jest.spyOn(service, 'generateImage').mockResolvedValue(failedResult);
 
-			await expect(controller.generateImage(dto, mockRequest))
-				.rejects
-				.toThrow(new HttpException('图片生成失败: Generation failed', HttpStatus.INTERNAL_SERVER_ERROR));
+			await expect(controller.generateImage(dto, mockRequest)).rejects.toThrow(
+				new HttpException('图片生成失败: Generation failed', HttpStatus.INTERNAL_SERVER_ERROR),
+			);
 		});
 
 		it('should throw error when user is not authenticated', async () => {
@@ -135,9 +135,9 @@ describe('AIImageController', () => {
 
 			const unauthenticatedRequest = {user: null} as any;
 
-			await expect(controller.generateImage(dto, unauthenticatedRequest))
-				.rejects
-				.toThrow(new HttpException('用户未认证', HttpStatus.UNAUTHORIZED));
+			await expect(controller.generateImage(dto, unauthenticatedRequest)).rejects.toThrow(
+				new HttpException('用户未认证', HttpStatus.UNAUTHORIZED),
+			);
 		});
 	});
 
@@ -159,16 +159,12 @@ describe('AIImageController', () => {
 
 			const result = await controller.batchGenerateImages(dto, mockRequest);
 
-			expect(service.batchGenerateImages).toHaveBeenCalledWith(
-				dto.prompts,
-				mockUserId,
-				{
-					width: dto.width,
-					height: dto.height,
-					saveToAsset: dto.saveToAsset,
-					projectId: dto.projectId,
-				},
-			);
+			expect(service.batchGenerateImages).toHaveBeenCalledWith(dto.prompts, mockUserId, {
+				width: dto.width,
+				height: dto.height,
+				saveToAsset: dto.saveToAsset,
+				projectId: dto.projectId,
+			});
 
 			expect(result).toEqual({
 				success: true,
@@ -182,9 +178,9 @@ describe('AIImageController', () => {
 				prompts: Array.from({length: 11}, () => 'test prompt'), // 11 prompts, exceeds limit of 10
 			};
 
-			await expect(controller.batchGenerateImages(dto, mockRequest))
-				.rejects
-				.toThrow(new HttpException('一次最多只能生成10张图片', HttpStatus.BAD_REQUEST));
+			await expect(controller.batchGenerateImages(dto, mockRequest)).rejects.toThrow(
+				new HttpException('一次最多只能生成10张图片', HttpStatus.BAD_REQUEST),
+			);
 		});
 	});
 
@@ -201,15 +197,11 @@ describe('AIImageController', () => {
 
 			const result = await controller.regenerateImage(dto, mockRequest);
 
-			expect(service.regenerateImage).toHaveBeenCalledWith(
-				dto.originalPrompt,
-				mockUserId,
-				{
-					width: dto.width,
-					height: dto.height,
-					saveToAsset: dto.saveToAsset,
-				},
-			);
+			expect(service.regenerateImage).toHaveBeenCalledWith(dto.originalPrompt, mockUserId, {
+				width: dto.width,
+				height: dto.height,
+				saveToAsset: dto.saveToAsset,
+			});
 
 			expect(result).toEqual({
 				success: true,
@@ -231,9 +223,9 @@ describe('AIImageController', () => {
 
 			jest.spyOn(service, 'regenerateImage').mockResolvedValue(failedResult);
 
-			await expect(controller.regenerateImage(dto, mockRequest))
-				.rejects
-				.toThrow(new HttpException('重新生成失败: Regeneration failed', HttpStatus.INTERNAL_SERVER_ERROR));
+			await expect(controller.regenerateImage(dto, mockRequest)).rejects.toThrow(
+				new HttpException('重新生成失败: Regeneration failed', HttpStatus.INTERNAL_SERVER_ERROR),
+			);
 		});
 	});
 

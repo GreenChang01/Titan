@@ -24,21 +24,13 @@ import {LibraryItemRating} from './entities/library-item-rating.entity';
 
 @Module({
 	imports: [
-		MikroOrmModule.forFeature([
-			ASMRGeneration,
-			ASMRPresetEntity,
-			LibraryItemFavorite,
-			LibraryItemRating,
-		]),
+		MikroOrmModule.forFeature([ASMRGeneration, ASMRPresetEntity, LibraryItemFavorite, LibraryItemRating]),
 		BullModule.registerQueue({
 			name: 'asmr-generation',
 		}),
 		AIAudioModule,
 	],
-	controllers: [
-		ASMRGenerationController,
-		ASMRLibraryController,
-	],
+	controllers: [ASMRGenerationController, ASMRLibraryController],
 	providers: [
 		// New ASMR services
 		ASMRGenerationService,
@@ -47,10 +39,6 @@ import {LibraryItemRating} from './entities/library-item-rating.entity';
 		ASMRContentService,
 		ElevenLabsProvider,
 	],
-	exports: [
-		ASMRGenerationService,
-		ASMRLibraryService,
-		ASMRPresetService,
-	],
+	exports: [ASMRGenerationService, ASMRLibraryService, ASMRPresetService],
 })
 export class ASMRModule {}

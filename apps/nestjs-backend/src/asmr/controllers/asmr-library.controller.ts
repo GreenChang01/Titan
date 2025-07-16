@@ -18,15 +18,8 @@ import {Request} from 'express';
 import {ActiveUser} from '../../auth/types/active-user.type';
 import {JwtAuthGuard} from '../../auth/jwt-auth.guard';
 import {ASMRLibraryService} from '../services/asmr-library.service';
-import {
-	ASMRLibraryItem,
-	GenerationStatus,
-} from '../dto/asmr-generation.dto';
-import {
-	UpdateLibraryItemDto,
-	LibraryFilterDto,
-	LibraryStatsDto,
-} from '../dto/asmr-library.dto';
+import {ASMRLibraryItem, GenerationStatus} from '../dto/asmr-generation.dto';
+import {UpdateLibraryItemDto, LibraryFilterDto, LibraryStatsDto} from '../dto/asmr-library.dto';
 import {ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery} from '@nestjs/swagger';
 
 @ApiTags('ASMR Library')
@@ -51,33 +44,28 @@ export class ASMRLibraryController {
 		@Req() request: Request,
 		@Query() filters: LibraryFilterDto,
 	): Promise<{
-			items: ASMRLibraryItem[];
-			total: number;
-			page: number;
-			totalPages: number;
-		}> {
-		const {userId} = (request.user as ActiveUser);
+		items: ASMRLibraryItem[];
+		total: number;
+		page: number;
+		totalPages: number;
+	}> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getLibraryItems(userId, filters);
 	}
 
 	@Get('stats')
 	@ApiOperation({summary: 'Get library statistics'})
 	@ApiResponse({status: 200, description: 'Statistics retrieved successfully'})
-	async getLibraryStats(
-		@Req() request: Request,
-	): Promise<LibraryStatsDto> {
-		const {userId} = (request.user as ActiveUser);
+	async getLibraryStats(@Req() request: Request): Promise<LibraryStatsDto> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getLibraryStats(userId);
 	}
 
 	@Get('recent')
 	@ApiOperation({summary: 'Get recently generated content'})
 	@ApiResponse({status: 200, description: 'Recent items retrieved successfully'})
-	async getRecentItems(
-		@Req() request: Request,
-		@Query('limit') limit = 5,
-	): Promise<ASMRLibraryItem[]> {
-		const {userId} = (request.user as ActiveUser);
+	async getRecentItems(@Req() request: Request, @Query('limit') limit = 5): Promise<ASMRLibraryItem[]> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getRecentItems(userId, limit);
 	}
 
@@ -88,20 +76,18 @@ export class ASMRLibraryController {
 		@Req() request: Request,
 		@Query() filters: Omit<LibraryFilterDto, 'status'>,
 	): Promise<{
-			items: ASMRLibraryItem[];
-			total: number;
-		}> {
-		const {userId} = (request.user as ActiveUser);
+		items: ASMRLibraryItem[];
+		total: number;
+	}> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getFavoriteItems(userId, filters);
 	}
 
 	@Get('categories')
 	@ApiOperation({summary: 'Get available categories'})
 	@ApiResponse({status: 200, description: 'Categories retrieved successfully'})
-	async getCategories(
-		@Req() request: Request,
-	): Promise<Array<{category: string; count: number}>> {
-		const {userId} = (request.user as ActiveUser);
+	async getCategories(@Req() request: Request): Promise<Array<{category: string; count: number}>> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getCategories(userId);
 	}
 
@@ -112,7 +98,7 @@ export class ASMRLibraryController {
 		@Req() request: Request,
 		@Query('limit') limit = 20,
 	): Promise<Array<{tag: string; count: number}>> {
-		const {userId} = (request.user as ActiveUser);
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.getPopularTags(userId, limit);
 	}
 
@@ -120,11 +106,8 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Get library item by ID'})
 	@ApiResponse({status: 200, description: 'Item retrieved successfully'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async getLibraryItem(
-		@Param('id') id: string,
-		@Req() request: Request,
-	): Promise<ASMRLibraryItem> {
-		const {userId} = (request.user as ActiveUser);
+	async getLibraryItem(@Param('id') id: string, @Req() request: Request): Promise<ASMRLibraryItem> {
+		const {userId} = request.user as ActiveUser;
 		const item = await this.libraryService.getLibraryItem(id, userId);
 
 		if (!item) {
@@ -143,7 +126,7 @@ export class ASMRLibraryController {
 		@Body() updateDto: UpdateLibraryItemDto,
 		@Req() request: Request,
 	): Promise<ASMRLibraryItem> {
-		const {userId} = (request.user as ActiveUser);
+		const {userId} = request.user as ActiveUser;
 		const item = await this.libraryService.updateLibraryItem(id, userId, updateDto);
 
 		if (!item) {
@@ -158,11 +141,8 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Delete library item'})
 	@ApiResponse({status: 204, description: 'Item deleted successfully'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async deleteLibraryItem(
-		@Param('id') id: string,
-		@Req() request: Request,
-	): Promise<void> {
-		const {userId} = (request.user as ActiveUser);
+	async deleteLibraryItem(@Param('id') id: string, @Req() request: Request): Promise<void> {
+		const {userId} = request.user as ActiveUser;
 		const success = await this.libraryService.deleteLibraryItem(id, userId);
 
 		if (!success) {
@@ -175,11 +155,8 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Add item to favorites'})
 	@ApiResponse({status: 204, description: 'Item added to favorites'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async addToFavorites(
-		@Param('id') id: string,
-		@Req() request: Request,
-	): Promise<void> {
-		const {userId} = (request.user as ActiveUser);
+	async addToFavorites(@Param('id') id: string, @Req() request: Request): Promise<void> {
+		const {userId} = request.user as ActiveUser;
 		const success = await this.libraryService.toggleFavorite(id, userId, true);
 
 		if (!success) {
@@ -192,11 +169,8 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Remove item from favorites'})
 	@ApiResponse({status: 204, description: 'Item removed from favorites'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async removeFromFavorites(
-		@Param('id') id: string,
-		@Req() request: Request,
-	): Promise<void> {
-		const {userId} = (request.user as ActiveUser);
+	async removeFromFavorites(@Param('id') id: string, @Req() request: Request): Promise<void> {
+		const {userId} = request.user as ActiveUser;
 		const success = await this.libraryService.toggleFavorite(id, userId, false);
 
 		if (!success) {
@@ -209,11 +183,8 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Increment play count'})
 	@ApiResponse({status: 204, description: 'Play count incremented'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async incrementPlayCount(
-		@Param('id') id: string,
-		@Req() request: Request,
-	): Promise<void> {
-		const {userId} = (request.user as ActiveUser);
+	async incrementPlayCount(@Param('id') id: string, @Req() request: Request): Promise<void> {
+		const {userId} = request.user as ActiveUser;
 		const success = await this.libraryService.incrementPlayCount(id, userId);
 
 		if (!success) {
@@ -227,16 +198,12 @@ export class ASMRLibraryController {
 	@ApiResponse({status: 204, description: 'Rating saved successfully'})
 	@ApiResponse({status: 400, description: 'Invalid rating value'})
 	@ApiResponse({status: 404, description: 'Item not found'})
-	async rateItem(
-		@Param('id') id: string,
-		@Body('rating') rating: number,
-		@Req() request: Request,
-	): Promise<void> {
+	async rateItem(@Param('id') id: string, @Body('rating') rating: number, @Req() request: Request): Promise<void> {
 		if (rating < 1 || rating > 5) {
 			throw new BadRequestException('Rating must be between 1 and 5');
 		}
 
-		const {userId} = (request.user as ActiveUser);
+		const {userId} = request.user as ActiveUser;
 		const success = await this.libraryService.rateItem(id, userId, rating);
 
 		if (!success) {
@@ -252,7 +219,7 @@ export class ASMRLibraryController {
 		@Query('limit') limit = 5,
 		@Req() request: Request,
 	): Promise<ASMRLibraryItem[]> {
-		const {userId} = (request.user as ActiveUser);
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.findSimilarItems(id, userId, limit);
 	}
 
@@ -261,14 +228,15 @@ export class ASMRLibraryController {
 	@ApiOperation({summary: 'Perform bulk actions on items'})
 	@ApiResponse({status: 204, description: 'Bulk action completed'})
 	async bulkAction(
-		@Body() bulkActionDto: {
+		@Body()
+		bulkActionDto: {
 			itemIds: string[];
 			action: 'delete' | 'favorite' | 'unfavorite' | 'update-tags';
 			data?: any;
 		},
 		@Req() request: Request,
 	): Promise<void> {
-		const {userId} = (request.user as ActiveUser);
+		const {userId} = request.user as ActiveUser;
 		await this.libraryService.bulkAction(userId, bulkActionDto);
 	}
 
@@ -279,11 +247,11 @@ export class ASMRLibraryController {
 		@Param('format') format: 'json' | 'csv' | 'xml',
 		@Req() request: Request,
 	): Promise<{
-			data: any;
-			filename: string;
-			contentType: string;
-		}> {
-		const {userId} = (request.user as ActiveUser);
+		data: any;
+		filename: string;
+		contentType: string;
+	}> {
+		const {userId} = request.user as ActiveUser;
 		return this.libraryService.exportLibrary(userId, format);
 	}
 }

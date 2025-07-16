@@ -100,17 +100,13 @@ describe('PromptsService', () => {
 		it('应该在标题为空时抛出异常', async () => {
 			const invalidData = {...mockPromptData, title: ''};
 
-			await expect(service.createPrompt(mockUserId, invalidData)).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.createPrompt(mockUserId, invalidData)).rejects.toThrow(BadRequestException);
 		});
 
 		it('应该在内容为空时抛出异常', async () => {
 			const invalidData = {...mockPromptData, content: ''};
 
-			await expect(service.createPrompt(mockUserId, invalidData)).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.createPrompt(mockUserId, invalidData)).rejects.toThrow(BadRequestException);
 		});
 	});
 
@@ -127,26 +123,19 @@ describe('PromptsService', () => {
 			const result = await service.getPromptById(mockId, mockUserId);
 
 			expect(result).toBe(mockPrompt);
-			expect(promptRepository.findOne).toHaveBeenCalledWith(
-				{id: mockId, userId: mockUserId},
-				{populate: ['tags']},
-			);
+			expect(promptRepository.findOne).toHaveBeenCalledWith({id: mockId, userId: mockUserId}, {populate: ['tags']});
 		});
 
 		it('应该在提示词不存在时抛出异常', async () => {
 			promptRepository.findOne.mockResolvedValue(null);
 
-			await expect(service.getPromptById('non-existent', mockUserId)).rejects.toThrow(
-				NotFoundException,
-			);
+			await expect(service.getPromptById('non-existent', mockUserId)).rejects.toThrow(NotFoundException);
 		});
 	});
 
 	describe('getUserPrompts', () => {
 		it('应该返回用户的提示词列表', async () => {
-			const mockPrompts = [
-				new AIPrompt({userId: mockUserId, ...mockPromptData}),
-			];
+			const mockPrompts = [new AIPrompt({userId: mockUserId, ...mockPromptData})];
 
 			promptRepository.findAndCount.mockResolvedValue([mockPrompts, 1]);
 
@@ -209,9 +198,9 @@ describe('PromptsService', () => {
 		it('应该在提示词不存在时抛出异常', async () => {
 			promptRepository.findOne.mockResolvedValue(null);
 
-			await expect(
-				service.updatePrompt('non-existent', mockUserId, {title: '新标题'}),
-			).rejects.toThrow(NotFoundException);
+			await expect(service.updatePrompt('non-existent', mockUserId, {title: '新标题'})).rejects.toThrow(
+				NotFoundException,
+			);
 		});
 	});
 
@@ -301,9 +290,7 @@ describe('PromptsService', () => {
 		});
 
 		it('应该在标签名为空时抛出异常', async () => {
-			await expect(service.createTag({name: ''})).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.createTag({name: ''})).rejects.toThrow(BadRequestException);
 		});
 	});
 
@@ -328,18 +315,13 @@ describe('PromptsService', () => {
 		it('应该在提示词不存在时抛出异常', async () => {
 			promptRepository.findOne.mockResolvedValue(null);
 
-			await expect(
-				service.addTagToPrompt('non-existent', 'tag-id', mockUserId),
-			).rejects.toThrow(NotFoundException);
+			await expect(service.addTagToPrompt('non-existent', 'tag-id', mockUserId)).rejects.toThrow(NotFoundException);
 		});
 	});
 
 	describe('getAllTags', () => {
 		it('应该返回所有标签', async () => {
-			const mockTags = [
-				new PromptTag({name: '放松'}),
-				new PromptTag({name: '睡眠'}),
-			];
+			const mockTags = [new PromptTag({name: '放松'}), new PromptTag({name: '睡眠'})];
 
 			tagRepository.findAndCount.mockResolvedValue([mockTags, 2]);
 

@@ -42,11 +42,7 @@ export class PromptTag extends BaseEntity {
 	/**
 	 * 构造函数
 	 */
-	constructor(data: {
-		name: string;
-		category?: string;
-		color?: string;
-	}) {
+	constructor(data: {name: string; category?: string; color?: string}) {
 		super();
 		this.name = data.name;
 		this.category = data.category;

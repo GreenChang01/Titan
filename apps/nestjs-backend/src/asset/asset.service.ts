@@ -304,13 +304,16 @@ export class AssetService {
 			AssetType.ASMR_VOICE_SAMPLE,
 		];
 
-		return this.assetRepository.find({
-			userId,
-			assetType: {$in: asmrTypes},
-			tags: {$contains: [mood]},
-		}, {
-			orderBy: {createdAt: 'DESC'},
-		});
+		return this.assetRepository.find(
+			{
+				userId,
+				assetType: {$in: asmrTypes},
+				tags: {$contains: [mood]},
+			},
+			{
+				orderBy: {createdAt: 'DESC'},
+			},
+		);
 	}
 
 	/**
@@ -319,14 +322,17 @@ export class AssetService {
 	 * @param assetData 素材数据
 	 * @returns 创建的素材
 	 */
-	async createAIGeneratedAsset(userId: string, assetData: {
-		name: string;
-		type: AssetType;
-		url: string;
-		metadata?: Record<string, any>;
-		tags?: string[];
-		description?: string;
-	}): Promise<Asset> {
+	async createAIGeneratedAsset(
+		userId: string,
+		assetData: {
+			name: string;
+			type: AssetType;
+			url: string;
+			metadata?: Record<string, any>;
+			tags?: string[];
+			description?: string;
+		},
+	): Promise<Asset> {
 		try {
 			const asset = new Asset({
 				userId,

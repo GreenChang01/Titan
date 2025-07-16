@@ -71,10 +71,7 @@ export class ASMRAssetController {
 	 * @returns ASMR素材列表
 	 */
 	@Get()
-	async getASMRAssets(
-		@Query() query: QueryASMRAssetsDto,
-		@Request() req: any,
-	): Promise<Asset[]> {
+	async getASMRAssets(@Query() query: QueryASMRAssetsDto, @Request() req: any): Promise<Asset[]> {
 		const userId = req.user.id;
 
 		if (query.mood) {
@@ -91,10 +88,7 @@ export class ASMRAssetController {
 	 * @returns 符合情绪的素材列表
 	 */
 	@Get('mood/:mood')
-	async getASMRAssetsByMood(
-		@Query('mood') mood: string,
-		@Request() req: any,
-	): Promise<Asset[]> {
+	async getASMRAssetsByMood(@Query('mood') mood: string, @Request() req: any): Promise<Asset[]> {
 		const userId = req.user.id;
 
 		if (!mood?.trim()) {
@@ -111,10 +105,7 @@ export class ASMRAssetController {
 	 * @returns 创建的素材
 	 */
 	@Post('ai-generated')
-	async createAIGeneratedAsset(
-		@Body() createDto: CreateAIAssetDto,
-		@Request() req: any,
-	): Promise<Asset> {
+	async createAIGeneratedAsset(@Body() createDto: CreateAIAssetDto, @Request() req: any): Promise<Asset> {
 		const userId = req.user.id;
 
 		// 验证必需字段
@@ -160,14 +151,12 @@ export class ASMRAssetController {
 	 * @returns 统计信息
 	 */
 	@Get('stats')
-	async getASMRAssetStats(
-		@Request() req: any,
-	): Promise<{
-			totalCount: number;
-			byType: Record<string, number>;
-			byMood: Record<string, number>;
-			recentUploads: number;
-		}> {
+	async getASMRAssetStats(@Request() req: any): Promise<{
+		totalCount: number;
+		byType: Record<string, number>;
+		byMood: Record<string, number>;
+		recentUploads: number;
+	}> {
 		const userId = req.user.id;
 		return this.assetService.getASMRAssetStats(userId);
 	}
@@ -208,9 +197,7 @@ export class ASMRAssetController {
 	 * @returns 情绪分布统计
 	 */
 	@Get('mood-distribution')
-	async getMoodDistribution(
-		@Request() req: any,
-	): Promise<Record<string, number>> {
+	async getMoodDistribution(@Request() req: any): Promise<Record<string, number>> {
 		const userId = req.user.id;
 		const stats = await this.assetService.getASMRAssetStats(userId);
 		return stats.byMood;
@@ -222,9 +209,7 @@ export class ASMRAssetController {
 	 * @returns 类型分布统计
 	 */
 	@Get('type-distribution')
-	async getTypeDistribution(
-		@Request() req: any,
-	): Promise<Record<string, number>> {
+	async getTypeDistribution(@Request() req: any): Promise<Record<string, number>> {
 		const userId = req.user.id;
 		const stats = await this.assetService.getASMRAssetStats(userId);
 		return stats.byType;

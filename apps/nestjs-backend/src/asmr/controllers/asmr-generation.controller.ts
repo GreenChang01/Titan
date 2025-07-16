@@ -47,11 +47,8 @@ export class ASMRGenerationController {
 	@ApiOperation({summary: 'Generate ASMR audio content'})
 	@ApiResponse({status: 201, description: 'Generation started successfully'})
 	@ApiResponse({status: 400, description: 'Invalid request data'})
-	async generateASMR(
-		@Body() generateDto: GenerateASMRDto,
-		@Req() request: Request,
-	): Promise<ASMRGenerationResponse> {
-		const {userId} = (request.user as ActiveUser);
+	async generateASMR(@Body() generateDto: GenerateASMRDto, @Req() request: Request): Promise<ASMRGenerationResponse> {
+		const {userId} = request.user as ActiveUser;
 
 		const generationRequest: ASMRGenerationRequest = {
 			...generateDto,
@@ -73,9 +70,7 @@ export class ASMRGenerationController {
 	@Get('estimate-cost')
 	@ApiOperation({summary: 'Estimate generation cost'})
 	@ApiResponse({status: 200, description: 'Cost estimation calculated'})
-	async estimateCost(
-		@Body() estimateDto: Omit<GenerateASMRDto, 'title'>,
-	): Promise<CostEstimation> {
+	async estimateCost(@Body() estimateDto: Omit<GenerateASMRDto, 'title'>): Promise<CostEstimation> {
 		return this.asmrGenerationService.estimateCost(estimateDto);
 	}
 
@@ -89,9 +84,7 @@ export class ASMRGenerationController {
 	@Get('presets/:type')
 	@ApiOperation({summary: 'Get presets by type'})
 	@ApiResponse({status: 200, description: 'Presets retrieved successfully'})
-	async getPresetsByType(
-		@Param('type') type: 'voice' | 'soundscape' | 'mixing',
-	): Promise<ASMRPreset[]> {
+	async getPresetsByType(@Param('type') type: 'voice' | 'soundscape' | 'mixing'): Promise<ASMRPreset[]> {
 		return this.asmrPresetService.getPresetsByType(type);
 	}
 
@@ -129,10 +122,7 @@ export class ASMRGenerationController {
 	@Get(':id/download')
 	@ApiOperation({summary: 'Download generated ASMR file'})
 	@ApiResponse({status: 200, description: 'File download initiated'})
-	async downloadGenerated(
-		@Param('id') id: string,
-		@Res() response: Response,
-	): Promise<void> {
+	async downloadGenerated(@Param('id') id: string, @Res() response: Response): Promise<void> {
 		const result = await this.asmrGenerationService.getGenerationResult(id);
 
 		if (!result?.filePath) {
@@ -155,23 +145,19 @@ export class ASMRGenerationController {
 	@Get('recent')
 	@ApiOperation({summary: 'Get recent generations'})
 	@ApiResponse({status: 200, description: 'Recent generations retrieved'})
-	async getRecentGenerations(
-		@Req() request: Request,
-	): Promise<ASMRGenerationResponse[]> {
-		const {userId} = (request.user as ActiveUser);
+	async getRecentGenerations(@Req() request: Request): Promise<ASMRGenerationResponse[]> {
+		const {userId} = request.user as ActiveUser;
 		return this.asmrGenerationService.getRecentGenerations(userId);
 	}
 
 	@Post('validate')
 	@ApiOperation({summary: 'Validate generation parameters'})
 	@ApiResponse({status: 200, description: 'Parameters validated successfully'})
-	async validateParameters(
-		@Body() validateDto: GenerateASMRDto,
-	): Promise<{
-			valid: boolean;
-			issues?: string[];
-			suggestions?: string[];
-		}> {
+	async validateParameters(@Body() validateDto: GenerateASMRDto): Promise<{
+		valid: boolean;
+		issues?: string[];
+		suggestions?: string[];
+	}> {
 		return this.asmrGenerationService.validateParameters(validateDto);
 	}
 }

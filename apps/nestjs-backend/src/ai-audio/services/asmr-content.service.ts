@@ -193,8 +193,8 @@ export class ASMRContentService {
 
 			// 7. 质量检查和重试逻辑
 			if (
-				optimizedRequest.qualityRequirements?.enableAutoRetry
-				&& qualityReport.overallScore < optimizedRequest.qualityRequirements.minimumScore
+				optimizedRequest.qualityRequirements?.enableAutoRetry &&
+				qualityReport.overallScore < optimizedRequest.qualityRequirements.minimumScore
 			) {
 				this.logger.warn(
 					`Quality score ${qualityReport.overallScore} below minimum ${optimizedRequest.qualityRequirements.minimumScore}, considering retry`,

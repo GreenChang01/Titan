@@ -1,4 +1,15 @@
-import {Controller, Post, Get, Body, UseGuards, Req, HttpStatus, HttpException, ValidationPipe, UsePipes} from '@nestjs/common';
+import {
+	Controller,
+	Post,
+	Get,
+	Body,
+	UseGuards,
+	Req,
+	HttpStatus,
+	HttpException,
+	ValidationPipe,
+	UsePipes,
+} from '@nestjs/common';
 import {ApiTags, ApiOperation, ApiResponse, ApiBearerAuth} from '@nestjs/swagger';
 import {JwtAuthGuard} from '../../auth/jwt-auth.guard';
 import {AIImageService} from '../services/ai-image.service';
@@ -46,10 +57,7 @@ export class AIImageController {
 		const result = await this.aiImageService.generateImage(dto, userId);
 
 		if (result.status === 'failed') {
-			throw new HttpException(
-				`图片生成失败: ${result.error}`,
-				HttpStatus.INTERNAL_SERVER_ERROR,
-			);
+			throw new HttpException(`图片生成失败: ${result.error}`, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return {
@@ -96,21 +104,17 @@ export class AIImageController {
 			throw new HttpException('一次最多只能生成10张图片', HttpStatus.BAD_REQUEST);
 		}
 
-		const results = await this.aiImageService.batchGenerateImages(
-			dto.prompts,
-			userId,
-			{
-				width: dto.width,
-				height: dto.height,
-				saveToAsset: dto.saveToAsset,
-				projectId: dto.projectId,
-			},
-		);
+		const results = await this.aiImageService.batchGenerateImages(dto.prompts, userId, {
+			width: dto.width,
+			height: dto.height,
+			saveToAsset: dto.saveToAsset,
+			projectId: dto.projectId,
+		});
 
 		return {
 			success: true,
 			data: results,
-			message: `成功生成 ${results.filter(r => r.status === 'completed').length} 张图片`,
+			message: `成功生成 ${results.filter((r) => r.status === 'completed').length} 张图片`,
 		};
 	}
 
@@ -126,21 +130,14 @@ export class AIImageController {
 	async regenerateImage(@Body() dto: RegenerateImageDto, @Req() req: Request) {
 		const userId = this.getUserId(req);
 
-		const result = await this.aiImageService.regenerateImage(
-			dto.originalPrompt,
-			userId,
-			{
-				width: dto.width,
-				height: dto.height,
-				saveToAsset: dto.saveToAsset,
-			},
-		);
+		const result = await this.aiImageService.regenerateImage(dto.originalPrompt, userId, {
+			width: dto.width,
+			height: dto.height,
+			saveToAsset: dto.saveToAsset,
+		});
 
 		if (result.status === 'failed') {
-			throw new HttpException(
-				`重新生成失败: ${result.error}`,
-				HttpStatus.INTERNAL_SERVER_ERROR,
-			);
+			throw new HttpException(`重新生成失败: ${result.error}`, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return {

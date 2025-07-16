@@ -259,8 +259,8 @@ export class UsersService {
 
 		// 如果重置令牌超过 2 小时，抛出错误
 		if (
-			user.passwordResetTokenCreatedAt
-			&& new Date(user.passwordResetTokenCreatedAt).getTime() + 2 * oneHour < Date.now()
+			user.passwordResetTokenCreatedAt &&
+			new Date(user.passwordResetTokenCreatedAt).getTime() + 2 * oneHour < Date.now()
 		) {
 			throw new GoneException(`Reset token ${resetToken} expired`);
 		}

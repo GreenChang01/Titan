@@ -119,9 +119,7 @@ describe('AIPromptService', () => {
 			const invalidData = {...createData, title: ''};
 
 			// Act & Assert
-			await expect(service.createPrompt(invalidData)).rejects.toThrow(
-				new BadRequestException('提示词标题不能为空'),
-			);
+			await expect(service.createPrompt(invalidData)).rejects.toThrow(new BadRequestException('提示词标题不能为空'));
 		});
 
 		it('should throw BadRequestException when content is empty', async () => {
@@ -129,9 +127,7 @@ describe('AIPromptService', () => {
 			const invalidData = {...createData, content: ''};
 
 			// Act & Assert
-			await expect(service.createPrompt(invalidData)).rejects.toThrow(
-				new BadRequestException('提示词内容不能为空'),
-			);
+			await expect(service.createPrompt(invalidData)).rejects.toThrow(new BadRequestException('提示词内容不能为空'));
 		});
 
 		it('should throw BadRequestException when title is too long', async () => {
@@ -221,10 +217,7 @@ describe('AIPromptService', () => {
 			expect(promptRepository.findAndCount).toHaveBeenCalledWith(
 				{
 					userId: mockUserId,
-					$or: [
-						{title: {$ilike: '%meditation%'}},
-						{content: {$ilike: '%meditation%'}},
-					],
+					$or: [{title: {$ilike: '%meditation%'}}, {content: {$ilike: '%meditation%'}}],
 				},
 				expect.objectContaining({
 					populate: ['tags'],
@@ -247,10 +240,7 @@ describe('AIPromptService', () => {
 			expect(promptRepository.findOne).toHaveBeenCalledWith(
 				{
 					id: mockPromptId,
-					$or: [
-						{userId: mockUserId},
-						{isPublic: true},
-					],
+					$or: [{userId: mockUserId}, {isPublic: true}],
 				},
 				{
 					populate: ['tags'],
@@ -433,19 +423,14 @@ describe('AIPromptService', () => {
 			const result = await service.getPromptStatsByCategory(mockUserId);
 
 			// Assert
-			expect(mockConnection.execute).toHaveBeenCalledWith(
-				expect.stringContaining('WHERE user_id = ?'),
-				[mockUserId],
-			);
+			expect(mockConnection.execute).toHaveBeenCalledWith(expect.stringContaining('WHERE user_id = ?'), [mockUserId]);
 			expect(result).toEqual(mockStats);
 		});
 
 		it('should return global statistics when no userId provided', async () => {
 			// Arrange
 			const mockConnection = {
-				execute: jest.fn().mockResolvedValue([
-					{category: 'meditation', count: '10'},
-				]),
+				execute: jest.fn().mockResolvedValue([{category: 'meditation', count: '10'}]),
 			};
 
 			mockPromptRepository.getEntityManager.mockReturnValue({
@@ -456,10 +441,7 @@ describe('AIPromptService', () => {
 			const result = await service.getPromptStatsByCategory();
 
 			// Assert
-			expect(mockConnection.execute).toHaveBeenCalledWith(
-				expect.not.stringContaining('WHERE user_id = ?'),
-				[],
-			);
+			expect(mockConnection.execute).toHaveBeenCalledWith(expect.not.stringContaining('WHERE user_id = ?'), []);
 			expect(result).toEqual([{category: PromptCategory.MEDITATION, count: 10}]);
 		});
 

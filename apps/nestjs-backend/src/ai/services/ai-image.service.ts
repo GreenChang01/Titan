@@ -58,14 +58,7 @@ export class AIImageService {
 
 			// 如果需要保存到Asset系统
 			if (saveToAsset) {
-				const asset = await this.saveAssetToDatabase(
-					userId,
-					prompt,
-					imageUrl,
-					finalSeed,
-					width,
-					height,
-				);
+				const asset = await this.saveAssetToDatabase(userId, prompt, imageUrl, finalSeed, width, height);
 				result.asset = asset;
 			}
 
@@ -164,8 +157,8 @@ export class AIImageService {
 		];
 
 		return tagMappings
-			.filter(mapping => mapping.keywords.some(keyword => lowerPrompt.includes(keyword)))
-			.map(mapping => mapping.tag);
+			.filter((mapping) => mapping.keywords.some((keyword) => lowerPrompt.includes(keyword)))
+			.map((mapping) => mapping.tag);
 	}
 
 	/**
@@ -240,14 +233,11 @@ export class AIImageService {
 		const results: AIImageGenerationResult[] = [];
 
 		for (const prompt of prompts) {
-			const result = await this.generateImage(
-				{...baseOptions, prompt},
-				userId,
-			);
+			const result = await this.generateImage({...baseOptions, prompt}, userId);
 			results.push(result);
 
 			// 简单的延迟，避免过快请求
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 
 		return results;
@@ -266,9 +256,6 @@ export class AIImageService {
 		options: Partial<GenerateImageDto> = {},
 	): Promise<AIImageGenerationResult> {
 		const newSeed = Math.floor(Math.random() * 10_000) + 1;
-		return this.generateImage(
-			{...options, prompt: originalPrompt, seed: newSeed},
-			userId,
-		);
+		return this.generateImage({...options, prompt: originalPrompt, seed: newSeed}, userId);
 	}
 }

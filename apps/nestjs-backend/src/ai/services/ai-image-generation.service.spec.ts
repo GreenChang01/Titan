@@ -130,28 +130,20 @@ describe('AIImageGenerationService', () => {
 		});
 
 		it('应该在提示词为空时抛出异常', async () => {
-			await expect(service.generateImage('', mockUserId)).rejects.toThrow(
-				BadRequestException,
-			);
-			await expect(service.generateImage('   ', mockUserId)).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.generateImage('', mockUserId)).rejects.toThrow(BadRequestException);
+			await expect(service.generateImage('   ', mockUserId)).rejects.toThrow(BadRequestException);
 		});
 
 		it('应该在提示词过长时抛出异常', async () => {
 			const longPrompt = 'a'.repeat(2001);
-			await expect(service.generateImage(longPrompt, mockUserId)).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.generateImage(longPrompt, mockUserId)).rejects.toThrow(BadRequestException);
 		});
 
 		it('应该在URL验证失败时抛出异常', async () => {
 			// 模拟URL验证失败
 			jest.spyOn(service as any, 'validateImageUrl').mockResolvedValue(false);
 
-			await expect(service.generateImage(mockPrompt, mockUserId)).rejects.toThrow(
-				BadRequestException,
-			);
+			await expect(service.generateImage(mockPrompt, mockUserId)).rejects.toThrow(BadRequestException);
 		});
 
 		it('应该使用默认参数', async () => {
@@ -195,18 +187,13 @@ describe('AIImageGenerationService', () => {
 		it('应该正确处理没有参数的情况', () => {
 			const url = (service as any).buildPollinationsUrl(mockPrompt, {});
 
-			expect(url).toBe(
-				`https://image.pollinations.ai/prompt/${encodeURIComponent(mockPrompt)}`,
-			);
+			expect(url).toBe(`https://image.pollinations.ai/prompt/${encodeURIComponent(mockPrompt)}`);
 		});
 	});
 
 	describe('validateImageUrl', () => {
 		it('应该验证有效的HTTP/HTTPS URL', async () => {
-			const validUrls = [
-				'https://example.com/image.jpg',
-				'http://example.com/image.png',
-			];
+			const validUrls = ['https://example.com/image.jpg', 'http://example.com/image.png'];
 
 			for (const url of validUrls) {
 				const result = await (service as any).validateImageUrl(url);
@@ -344,10 +331,7 @@ describe('AIImageGenerationService', () => {
 			const result = await service.deleteAIImage(mockId, mockUserId);
 
 			expect(result).toBe(true);
-			expect(entityManager.removeAndFlush).toHaveBeenCalledWith([
-				mockAIImage,
-				mockAIImage.asset,
-			]);
+			expect(entityManager.removeAndFlush).toHaveBeenCalledWith([mockAIImage, mockAIImage.asset]);
 		});
 
 		it('应该在图片不存在时返回false', async () => {

@@ -38,17 +38,17 @@ export class ASMRPresetService implements OnModuleInit {
 	}
 
 	async getPresetsByType(type: 'voice' | 'soundscape' | 'mixing'): Promise<ASMRPreset[]> {
-		const presetType = type === 'voice'
-			? PresetType.VOICE
-			: (type === 'soundscape'
-				? PresetType.SOUNDSCAPE
-				: PresetType.MIXING);
+		const presetType =
+			type === 'voice' ? PresetType.VOICE : type === 'soundscape' ? PresetType.SOUNDSCAPE : PresetType.MIXING;
 
-		const presets = await this.presetRepository.find({
-			type: presetType,
-		}, {
-			orderBy: {usageCount: 'DESC'},
-		});
+		const presets = await this.presetRepository.find(
+			{
+				type: presetType,
+			},
+			{
+				orderBy: {usageCount: 'DESC'},
+			},
+		);
 
 		return presets.map((preset: ASMRPresetEntity) => this.mapEntityToDto(preset));
 	}
@@ -70,11 +70,14 @@ export class ASMRPresetService implements OnModuleInit {
 	}
 
 	async getElderlyFriendlyPresets(): Promise<ASMRPreset[]> {
-		const presets = await this.presetRepository.find({
-			elderlyFriendly: true,
-		}, {
-			orderBy: {usageCount: 'DESC'},
-		});
+		const presets = await this.presetRepository.find(
+			{
+				elderlyFriendly: true,
+			},
+			{
+				orderBy: {usageCount: 'DESC'},
+			},
+		);
 
 		return presets.map((preset: ASMRPresetEntity) => this.mapEntityToDto(preset));
 	}
@@ -369,11 +372,12 @@ export class ASMRPresetService implements OnModuleInit {
 
 		// Save all presets
 		for (const preset of defaultPresets) {
-			const convertedType = preset.type === 'voice'
-				? PresetType.VOICE
-				: (preset.type === 'soundscape'
-					? PresetType.SOUNDSCAPE
-					: PresetType.MIXING);
+			const convertedType =
+				preset.type === 'voice'
+					? PresetType.VOICE
+					: preset.type === 'soundscape'
+						? PresetType.SOUNDSCAPE
+						: PresetType.MIXING;
 
 			const entity = em.create(ASMRPresetEntity, {
 				...preset,

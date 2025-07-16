@@ -116,10 +116,7 @@ export class AIPromptService {
 			}
 
 			if (options.search) {
-				where.$or = [
-					{title: {$ilike: `%${options.search}%`}},
-					{content: {$ilike: `%${options.search}%`}},
-				];
+				where.$or = [{title: {$ilike: `%${options.search}%`}}, {content: {$ilike: `%${options.search}%`}}];
 			}
 
 			const [items, total] = await this.promptRepository.findAndCount(where, {
@@ -146,14 +143,16 @@ export class AIPromptService {
 	 * @param options 查询选项
 	 * @returns 公开提示词列表
 	 */
-	async getPublicPrompts(options: {
-		category?: PromptCategory;
-		limit?: number;
-		offset?: number;
-		search?: string;
-		sortBy?: 'createdAt' | 'usageCount' | 'rating';
-		sortOrder?: 'ASC' | 'DESC';
-	} = {}): Promise<{items: AIPrompt[]; total: number}> {
+	async getPublicPrompts(
+		options: {
+			category?: PromptCategory;
+			limit?: number;
+			offset?: number;
+			search?: string;
+			sortBy?: 'createdAt' | 'usageCount' | 'rating';
+			sortOrder?: 'ASC' | 'DESC';
+		} = {},
+	): Promise<{items: AIPrompt[]; total: number}> {
 		try {
 			const where: any = {isPublic: true};
 
@@ -163,10 +162,7 @@ export class AIPromptService {
 			}
 
 			if (options.search) {
-				where.$or = [
-					{title: {$ilike: `%${options.search}%`}},
-					{content: {$ilike: `%${options.search}%`}},
-				];
+				where.$or = [{title: {$ilike: `%${options.search}%`}}, {content: {$ilike: `%${options.search}%`}}];
 			}
 
 			// 设置排序
@@ -204,10 +200,7 @@ export class AIPromptService {
 
 			// 如果提供了用户ID，则限制只能访问自己的或公开的提示词
 			if (userId) {
-				where.$or = [
-					{userId},
-					{isPublic: true},
-				];
+				where.$or = [{userId}, {isPublic: true}];
 			}
 
 			const prompt = await this.promptRepository.findOne(where, {
