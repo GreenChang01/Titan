@@ -12,20 +12,13 @@ import {
 import {Badge} from '@/components/ui/badge';
 
 export function Step1Content(): JSX.Element {
-	const {formData, setText, completeStep, nextStep} = useASMRStore();
+	const {formData, setText, completeStep} = useASMRStore();
 
 	const handleTextChange = (text: string) => {
 		setText(text);
 		// Auto-complete step when text is not empty
 		if (text.trim().length > 10) {
 			completeStep(1);
-		}
-	};
-
-	const handleContinue = () => {
-		if (formData.text && formData.text.trim().length > 10) {
-			completeStep(1);
-			nextStep();
 		}
 	};
 

@@ -232,3 +232,4 @@ export function AIImagesClient() {
 		</div>
 	);
 }
+

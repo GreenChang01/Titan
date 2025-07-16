@@ -8,9 +8,6 @@ import {
 } from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {
-	Tabs, TabsContent, TabsList, TabsTrigger,
-} from '@/components/ui/tabs';
-import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -21,7 +18,6 @@ import {
 	Search,
 	Grid3X3,
 	List,
-	Filter,
 	Download,
 	Eye,
 	Trash2,
@@ -51,13 +47,12 @@ export const AIImageManager: React.FC<AIImageManagerProps> = ({
 }) => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-	const [selectedImage, setSelectedImage] = useState<AIImage | undefined>(null);
+	const [selectedImage, setSelectedImage] = useState<AIImage | undefined>(undefined);
 	const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-	const [stats, setStats] = useState<AIImageStats | undefined>(null);
-	const [currentPage, setCurrentPage] = useState(1);
+	const [stats] = useState<AIImageStats | undefined>(undefined);
 
 	// React Query hooks
-	const {data: images = [], isLoading, error, refetch} = useAIImages();
+	const {data: images = [], isLoading, refetch} = useAIImages();
 	const deleteMutation = useDeleteAIImage();
 	const regenerateMutation = useGenerateAIImage();
 

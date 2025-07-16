@@ -24,7 +24,12 @@ async function bootstrap(): Promise<void> {
 
 	// 配置 CORS 跨域资源共享
 	app.enableCors({
-		origin: process.env.FRONTEND_HOST, // 允许的前端域名
+		origin: [
+			process.env.FRONTEND_HOST || 'http://localhost:3000',
+			'http://localhost:3001',
+			'http://127.0.0.1:3000',
+			'http://127.0.0.1:3001',
+		], // 允许的前端域名
 		credentials: true, // 允许携带凭据
 	});
 

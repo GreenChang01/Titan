@@ -1,4 +1,6 @@
-import {useMutation, useQuery, useQueryClient, useInfiniteQuery} from '@tanstack/react-query';
+import {
+	useMutation, useQuery, useQueryClient, useInfiniteQuery,
+} from '@tanstack/react-query';
 import {useToast} from '@/hooks/use-toast/use-toast.hook';
 import {apiClient} from '@/lib/api-client';
 
@@ -36,7 +38,7 @@ export type GenerateImageResponse = {
 
 export type AIImagesPage = {
 	items: AIImage[];
-	nextCursor: number | null;
+	nextCursor: number | undefined;
 	hasMore: boolean;
 	totalCount: number;
 };
@@ -77,7 +79,7 @@ const aiImageApi = {
 		};
 
 		const response = await apiClient.get<AIImagesPage>('/ai/images', queryParams);
-		
+
 		// Transform the response to match our AIImagesPage format if needed
 		if (Array.isArray(response.data)) {
 			// Mock pagination for existing API that returns array
@@ -125,9 +127,9 @@ export function useAIImages() {
 export function useInfiniteAIImages(filters: Record<string, unknown> = {}) {
 	return useInfiniteQuery({
 		queryKey: aiImageKeys.infinite(filters),
-		queryFn: ({pageParam}) => aiImageApi.getImagesPaginated({cursor: pageParam as number}),
+		queryFn: async ({pageParam}) => aiImageApi.getImagesPaginated({cursor: pageParam}),
 		initialPageParam: 0,
-		getNextPageParam: (lastPage: AIImagesPage) => {
+		getNextPageParam(lastPage: AIImagesPage) {
 			// Return null (not undefined) to signal no more pages - important for SSR serialization
 			return lastPage.nextCursor;
 		},

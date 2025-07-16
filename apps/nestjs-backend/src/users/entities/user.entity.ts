@@ -78,16 +78,21 @@ export class User extends BaseEntity {
 		password,
 		username,
 		confirmationCode,
+		status,
 	}: {
 		email: string;
 		password: string;
 		username: string;
 		confirmationCode: string;
+		status?: UserStatus;
 	}) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.username = username;
 		this.confirmationCode = confirmationCode;
+		if (status) {
+			this.status = status;
+		}
 	}
 }

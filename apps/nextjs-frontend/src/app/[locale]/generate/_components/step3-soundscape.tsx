@@ -2,13 +2,12 @@
 
 import {useState, useEffect, type JSX} from 'react';
 import {
-	Play, Pause, Volume2, Loader2,
+	Loader2,
 } from 'lucide-react';
-import type {ASMRPreset, SoundscapeOptions} from '@titan/shared';
+import type {SoundscapeOptions, AsmrPreset} from '@titan/shared';
 import {
 	Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
-import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {Label} from '@/components/ui/label';
 import {Slider} from '@/components/ui/slider';
@@ -22,7 +21,7 @@ import {cn} from '@/lib/utils';
 
 export function Step3Soundscape(): JSX.Element {
 	const {formData, setSoundscapeConfig} = useASMRStore();
-	const [presets, setPresets] = useState<ASMRPreset[]>([]);
+	const [presets, setPresets] = useState<AsmrPreset[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [selectedPreset, setSelectedPreset] = useState<string>('');
 	const [customSettings, setCustomSettings] = useState<SoundscapeOptions>({
@@ -118,13 +117,13 @@ export function Step3Soundscape(): JSX.Element {
 										<div className='flex items-start justify-between'>
 											<h4 className='font-medium'>{preset.name}</h4>
 											<Badge variant='secondary' className='text-xs'>
-												{preset.settings?.category || 'nature'}
+												{(preset.settings as any)?.category || 'nature'}
 											</Badge>
 										</div>
 										<p className='text-sm text-muted-foreground'>{preset.description}</p>
 										<div className='flex items-center justify-between text-xs text-muted-foreground'>
-											<span>时长: {formatDuration(preset.settings?.duration || 300)}</span>
-											<span>强度: {preset.settings?.intensity || 3}/5</span>
+											<span>时长: {formatDuration((preset.settings as any)?.duration || 300)}</span>
+											<span>强度: {(preset.settings as any)?.intensity || 3}/5</span>
 										</div>
 									</div>
 								</CardContent>
@@ -263,7 +262,7 @@ export function Step3Soundscape(): JSX.Element {
 						<div>
 							<span className='text-muted-foreground'>质量:</span>
 							<span className='ml-2 font-medium'>
-								{customSettings.quality === 'standard' ? '标准' : customSettings.quality === 'high' ? '高质量' : '专业'}
+								{customSettings.quality === 'standard' as any ? '标准' : customSettings.quality === 'high' as any ? '高质量' : '专业'}
 							</span>
 						</div>
 					</div>

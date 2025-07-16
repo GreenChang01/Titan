@@ -1,6 +1,6 @@
 import {Injectable, Logger, BadRequestException, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@mikro-orm/nestjs';
-import {EntityRepository} from '@mikro-orm/core';
+import {EntityRepository, EntityManager} from '@mikro-orm/core';
 import {AIPrompt} from '../entities/prompt.entity';
 import {PromptTag} from '../entities/prompt-tag.entity';
 import {PromptCategory} from '../../common/enums/prompt-category.enum';
@@ -18,6 +18,7 @@ export class AIPromptService {
 		private readonly promptRepository: EntityRepository<AIPrompt>,
 		@InjectRepository(PromptTag)
 		private readonly tagRepository: EntityRepository<PromptTag>,
+		private readonly em: EntityManager,
 	) {}
 
 	/**
@@ -65,7 +66,7 @@ export class AIPromptService {
 			});
 
 			// 持久化到数据库
-			await this.promptRepository.persistAndFlush(prompt);
+			await this.em.persistAndFlush(prompt);
 
 			// 处理标签
 			if (data.tags?.length) {
@@ -76,7 +77,12 @@ export class AIPromptService {
 
 			return prompt;
 		} catch (error) {
-			this.logger.error(`创建AI提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`创建AI提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('创建AI提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -125,7 +131,12 @@ export class AIPromptService {
 
 			return {items, total};
 		} catch (error) {
-			this.logger.error(`获取用户提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取用户提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取用户提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -171,7 +182,12 @@ export class AIPromptService {
 
 			return {items, total};
 		} catch (error) {
-			this.logger.error(`获取公开提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取公开提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取公开提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -204,7 +220,12 @@ export class AIPromptService {
 
 			return prompt;
 		} catch (error) {
-			this.logger.error(`获取提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -281,13 +302,18 @@ export class AIPromptService {
 				}
 			}
 
-			await this.promptRepository.persistAndFlush(prompt);
+			await this.em.persistAndFlush(prompt);
 
 			this.logger.log(`AI提示词更新成功: ${id} by user: ${userId}`);
 
 			return prompt;
 		} catch (error) {
-			this.logger.error(`更新AI提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`更新AI提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('更新AI提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -309,12 +335,17 @@ export class AIPromptService {
 				return false;
 			}
 
-			await this.promptRepository.removeAndFlush(prompt);
+			await this.em.removeAndFlush(prompt);
 
 			this.logger.log(`AI提示词删除成功: ${id} by user: ${userId}`);
 			return true;
 		} catch (error) {
-			this.logger.error(`删除AI提示词失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`删除AI提示词失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('删除AI提示词失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -333,11 +364,16 @@ export class AIPromptService {
 			}
 
 			prompt.usageCount += 1;
-			await this.promptRepository.persistAndFlush(prompt);
+			await this.em.persistAndFlush(prompt);
 
 			return prompt;
 		} catch (error) {
-			this.logger.error(`增加使用次数失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`增加使用次数失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('增加使用次数失败: Unknown error', error);
+			}
+
 			throw error;
 		}
 	}
@@ -361,7 +397,7 @@ export class AIPromptService {
 					name: tagName.trim(),
 					category: prompt.category,
 				});
-				await this.tagRepository.persistAndFlush(tag);
+				await this.em.persistAndFlush(tag);
 			}
 
 			// 添加标签到提示词
@@ -387,7 +423,12 @@ export class AIPromptService {
 				},
 			);
 		} catch (error) {
-			this.logger.error(`获取热门标签失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取热门标签失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取热门标签失败: Unknown error', error);
+			}
+
 			return [];
 		}
 	}
@@ -420,7 +461,12 @@ export class AIPromptService {
 				count: Number.parseInt(row.count, 10),
 			}));
 		} catch (error) {
-			this.logger.error(`获取分类统计失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取分类统计失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取分类统计失败: Unknown error', error);
+			}
+
 			return [];
 		}
 	}

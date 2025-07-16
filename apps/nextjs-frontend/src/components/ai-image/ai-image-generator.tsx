@@ -2,15 +2,14 @@
 
 import React, {useState} from 'react';
 import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {
 	Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {
-	Tabs, TabsContent, TabsList, TabsTrigger,
-} from '@/components/ui/tabs';
+	Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
 import {
 	Loader2, Wand2, Image, Download, RefreshCw,
 } from 'lucide-react';
@@ -18,7 +17,6 @@ import {useGenerateAIImage} from '@/hooks/use-ai-images';
 
 type AIImageGeneratorProps = {
 	readonly onGenerated?: (imageUrl: string, prompt: string) => void;
-	readonly projectId?: string;
 };
 
 type ASMRTemplate = {
@@ -81,16 +79,15 @@ const ASMR_TEMPLATES: ASMRTemplates = {
 	},
 };
 
-export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
+export function AIImageGenerator({
 	onGenerated,
-	projectId,
-}) => {
+}: AIImageGeneratorProps) {
 	const [prompt, setPrompt] = useState('');
 	const [generatedImage, setGeneratedImage] = useState<{
 		url: string;
 		prompt: string;
 		seed: number;
-	} | undefined>(null);
+	} | undefined>(undefined);
 	const [selectedCategory, setSelectedCategory] = useState<string>('nature');
 
 	const generateMutation = useGenerateAIImage();
@@ -189,38 +186,43 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 					</CardDescription>
 				</CardHeader>
 				<CardContent className='space-y-4'>
-					<Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-						<TabsList className='grid w-full grid-cols-4'>
-							{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
-								<TabsTrigger key={key} value={key}>
-									{template.title}
-								</TabsTrigger>
-							))}
-						</TabsList>
+					<div className='space-y-2'>
+						<label className='text-sm font-medium'>选择场景类型</label>
+						<Select value={selectedCategory} onValueChange={setSelectedCategory}>
+							<SelectTrigger>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
+									<SelectItem key={key} value={key}>
+										{template.title}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+						<p className='text-sm text-muted-foreground'>
+							{ASMR_TEMPLATES[selectedCategory]?.description}
+						</p>
+					</div>
 
-						{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
-							<TabsContent key={key} value={key} className='space-y-3'>
-								<p className='text-sm text-muted-foreground'>
-									{template.description}
-								</p>
-								<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-									{template.templates.map((templateText, index) => (
-										<Button
-											key={index}
-											variant='outline'
-											size='sm'
-											className='text-left justify-start h-auto p-3'
-											onClick={() => {
-												handleTemplateSelect(templateText);
-											}}
-										>
-											<span className='text-xs'>{templateText}</span>
-										</Button>
-									))}
-								</div>
-							</TabsContent>
-						))}
-					</Tabs>
+					<div className='space-y-2'>
+						<label className='text-sm font-medium'>场景模板</label>
+						<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+							{ASMR_TEMPLATES[selectedCategory]?.templates.map((templateText, index) => (
+								<Button
+									key={index}
+									variant='outline'
+									size='sm'
+									className='text-left justify-start h-auto p-3'
+									onClick={() => {
+										handleTemplateSelect(templateText);
+									}}
+								>
+									<span className='text-xs'>{templateText}</span>
+								</Button>
+							))}
+						</div>
+					</div>
 
 					<div className='space-y-2'>
 						<label className='text-sm font-medium'>图片描述</label>
@@ -287,7 +289,7 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
 								src={generatedImage.url}
 								alt={generatedImage.prompt}
 								className='w-full max-w-md mx-auto rounded-lg shadow-lg'
-								onError={e => {
+								onError={() => {
 									console.error('图片加载失败');
 								}}
 							/>
@@ -312,4 +314,4 @@ export const AIImageGenerator: React.FC<AIImageGeneratorProps> = ({
                      </Card> : null}
 		</div>
 	);
-};
+}

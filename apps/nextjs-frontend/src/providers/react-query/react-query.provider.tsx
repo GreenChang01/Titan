@@ -38,12 +38,12 @@ const createQueryClient = () =>
 export function ReactQueryProvider({children}: {readonly children: React.ReactNode}): JSX.Element {
 	// Use useState instead of useMemo to ensure single instance per component lifecycle
 	const [queryClient] = useState(() => createQueryClient());
-	
+
 	// Connect API client with QueryClient for cache invalidation
 	useEffect(() => {
 		apiClient.setQueryClient(queryClient);
 	}, [queryClient]);
-	
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ReactQueryDevtools initialIsOpen={false}/> {/* This will only be available if NODE_ENV === 'development' */}

@@ -2,35 +2,31 @@
 
 import {useState, useEffect, type JSX} from 'react';
 import {
-	Settings, Volume2, Headphones, Zap, Info, Loader2,
+	Volume2, Headphones, Zap, Info, Loader2,
 } from 'lucide-react';
-import type {ASMRPreset, MixingSettings, QualityRequirements} from '@titan/shared';
+import type {AsmrPreset, MixingOptions, QualityRequirements} from '@titan/shared';
 import {
 	Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
-import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {Label} from '@/components/ui/label';
 import {Slider} from '@/components/ui/slider';
-import {
-	Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
 import {Switch} from '@/components/ui/switch';
 import {Separator} from '@/components/ui/separator';
 import {
-	Tabs, TabsContent, TabsList, TabsTrigger,
-} from '@/components/ui/tabs';
+	Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+} from '@/components/ui/accordion';
 import {useASMRStore} from '@/store/asmr/asmr.store';
 import {ASMRApiService} from '@/lib/services/asmr-api.service';
 import {cn} from '@/lib/utils';
 
 export function Step4Advanced(): JSX.Element {
 	const {formData, setMixingSettings, setQualityRequirements} = useASMRStore();
-	const [presets, setPresets] = useState<ASMRPreset[]>([]);
+	const [presets, setPresets] = useState<AsmrPreset[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [selectedPreset, setSelectedPreset] = useState<string>('');
 
-	const [mixingSettings, setLocalMixingSettings] = useState<MixingSettings>({
+	const [mixingSettings, setLocalMixingSettings] = useState<MixingOptions>({
 		voiceVolume: 0.7,
 		soundscapeVolume: 0.3,
 		fadeInDuration: 3,
@@ -45,8 +41,7 @@ export function Step4Advanced(): JSX.Element {
 	const [qualitySettings, setLocalQualitySettings] = useState<QualityRequirements>({
 		minimumScore: 7,
 		enableAutoRetry: true,
-		maxRetries: 3,
-		strictValidation: false,
+		maxRetryAttempts: 3,
 	});
 
 	// Load mixing presets on component mount
@@ -90,12 +85,12 @@ export function Step4Advanced(): JSX.Element {
 		setSelectedPreset(presetId);
 		const preset = presets.find(p => p.id === presetId);
 		if (preset?.settings) {
-			const presetMixingSettings = preset.settings as MixingSettings;
+			const presetMixingSettings = preset.settings as MixingOptions;
 			setLocalMixingSettings(presetMixingSettings);
 		}
 	};
 
-	const handleMixingChange = (field: keyof MixingSettings, value: any) => {
+	const handleMixingChange = (field: keyof MixingOptions, value: any) => {
 		setLocalMixingSettings(previous => ({...previous, [field]: value}));
 		// Clear preset selection when manually adjusting
 		if (selectedPreset) {
@@ -107,6 +102,9 @@ export function Step4Advanced(): JSX.Element {
 		setLocalMixingSettings(previous => ({
 			...previous,
 			eqSettings: {
+				lowFreq: 0,
+				midFreq: 0,
+				highFreq: 0,
 				...previous.eqSettings,
 				[freq]: value,
 			},
@@ -132,18 +130,19 @@ export function Step4Advanced(): JSX.Element {
 
 	return (
 		<div className='space-y-6'>
-			<Tabs defaultValue='mixing' className='w-full'>
-				<TabsList className='grid w-full grid-cols-3'>
-					<TabsTrigger value='mixing'>混音设置</TabsTrigger>
-					<TabsTrigger value='quality'>质量控制</TabsTrigger>
-					<TabsTrigger value='advanced'>高级选项</TabsTrigger>
-				</TabsList>
-
-				<TabsContent value='mixing' className='space-y-6'>
-					{/* Mixing Presets */}
-					<Card>
-						<CardHeader>
-							<CardTitle>混音预设</CardTitle>
+			<Accordion type='multiple' defaultValue={['mixing', 'quality']} className='w-full'>
+				<AccordionItem value='mixing'>
+					<AccordionTrigger>
+						<div className='flex items-center gap-2'>
+							<Volume2 className='h-4 w-4' />
+							<span>混音设置</span>
+						</div>
+					</AccordionTrigger>
+					<AccordionContent className='space-y-6'>
+						{/* Mixing Presets */}
+						<Card>
+							<CardHeader>
+								<CardTitle>混音预设</CardTitle>
 							<CardDescription>选择专业的混音预设或自定义设置</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -291,19 +290,19 @@ export function Step4Advanced(): JSX.Element {
 								<div className='flex items-center justify-between'>
 									<Label htmlFor='eq-low'>低频 (60-250Hz)</Label>
 									<span className='text-sm font-medium'>
-										{mixingSettings.eqSettings.lowFreq > 0 ? '+' : ''}
-										{mixingSettings.eqSettings.lowFreq}dB
+										{(mixingSettings.eqSettings?.lowFreq || 0) > 0 ? '+' : ''}
+										{mixingSettings.eqSettings?.lowFreq || 0}dB
 									</span>
 								</div>
 								<Slider
 									id='eq-low'
-									value={[mixingSettings.eqSettings.lowFreq]}
+									value={[mixingSettings.eqSettings?.lowFreq || 0]}
 									min={-6}
 									max={6}
 									step={0.5}
 									className='w-full'
 									onValueChange={value => {
-										handleEqChange('lowFreq', value[0]);
+										handleEqChange('lowFreq', value[0] || 0);
 									}}
 								/>
 							</div>
@@ -313,19 +312,19 @@ export function Step4Advanced(): JSX.Element {
 								<div className='flex items-center justify-between'>
 									<Label htmlFor='eq-mid'>中频 (250-4000Hz)</Label>
 									<span className='text-sm font-medium'>
-										{mixingSettings.eqSettings.midFreq > 0 ? '+' : ''}
-										{mixingSettings.eqSettings.midFreq}dB
+										{(mixingSettings.eqSettings?.midFreq || 0) > 0 ? '+' : ''}
+										{mixingSettings.eqSettings?.midFreq || 0}dB
 									</span>
 								</div>
 								<Slider
 									id='eq-mid'
-									value={[mixingSettings.eqSettings.midFreq]}
+									value={[mixingSettings.eqSettings?.midFreq || 0]}
 									min={-6}
 									max={6}
 									step={0.5}
 									className='w-full'
 									onValueChange={value => {
-										handleEqChange('midFreq', value[0]);
+										handleEqChange('midFreq', value[0] || 0);
 									}}
 								/>
 							</div>
@@ -335,19 +334,19 @@ export function Step4Advanced(): JSX.Element {
 								<div className='flex items-center justify-between'>
 									<Label htmlFor='eq-high'>高频 (4000-20000Hz)</Label>
 									<span className='text-sm font-medium'>
-										{mixingSettings.eqSettings.highFreq > 0 ? '+' : ''}
-										{mixingSettings.eqSettings.highFreq}dB
+										{(mixingSettings.eqSettings?.highFreq || 0) > 0 ? '+' : ''}
+										{mixingSettings.eqSettings?.highFreq || 0}dB
 									</span>
 								</div>
 								<Slider
 									id='eq-high'
-									value={[mixingSettings.eqSettings.highFreq]}
+									value={[mixingSettings.eqSettings?.highFreq || 0]}
 									min={-6}
 									max={6}
 									step={0.5}
 									className='w-full'
 									onValueChange={value => {
-										handleEqChange('highFreq', value[0]);
+										handleEqChange('highFreq', value[0] || 0);
 									}}
 								/>
 							</div>
@@ -362,9 +361,17 @@ export function Step4Advanced(): JSX.Element {
 							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
+				</AccordionContent>
+			</AccordionItem>
 
-				<TabsContent value='quality' className='space-y-6'>
+			<AccordionItem value='quality'>
+				<AccordionTrigger>
+					<div className='flex items-center gap-2'>
+						<Zap className='h-4 w-4' />
+						<span>质量控制</span>
+					</div>
+				</AccordionTrigger>
+				<AccordionContent className='space-y-6'>
 					{/* Quality Requirements */}
 					<Card>
 						<CardHeader>
@@ -414,43 +421,34 @@ export function Step4Advanced(): JSX.Element {
 								<div className='space-y-3'>
 									<div className='flex items-center justify-between'>
 										<Label htmlFor='max-retries'>最大重试次数</Label>
-										<span className='text-sm font-medium'>{qualitySettings.maxRetries}次</span>
+										<span className='text-sm font-medium'>{qualitySettings.maxRetryAttempts}次</span>
 									</div>
 									<Slider
 										id='max-retries'
-										value={[qualitySettings.maxRetries]}
+										value={[qualitySettings.maxRetryAttempts]}
 										min={1}
 										max={5}
 										step={1}
 										className='w-full'
 										onValueChange={value => {
-											handleQualityChange('maxRetries', value[0]);
+											handleQualityChange('maxRetryAttempts', value[0]);
 										}}
 									/>
 								</div>
 							) : null}
-
-							<Separator/>
-
-							{/* Strict Validation */}
-							<div className='flex items-center justify-between'>
-								<div className='space-y-0.5'>
-									<Label htmlFor='strict-validation'>严格验证</Label>
-									<p className='text-sm text-muted-foreground'>启用更严格的音频质量检查</p>
-								</div>
-								<Switch
-									id='strict-validation'
-									checked={qualitySettings.strictValidation}
-									onCheckedChange={checked => {
-										handleQualityChange('strictValidation', checked);
-									}}
-								/>
-							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
+				</AccordionContent>
+			</AccordionItem>
 
-				<TabsContent value='advanced' className='space-y-6'>
+			<AccordionItem value='advanced'>
+				<AccordionTrigger>
+					<div className='flex items-center gap-2'>
+						<Headphones className='h-4 w-4' />
+						<span>高级选项</span>
+					</div>
+				</AccordionTrigger>
+				<AccordionContent className='space-y-6'>
 					{/* Advanced Options */}
 					<Card>
 						<CardHeader>
@@ -477,8 +475,9 @@ export function Step4Advanced(): JSX.Element {
 							</div>
 						</CardContent>
 					</Card>
-				</TabsContent>
-			</Tabs>
+				</AccordionContent>
+			</AccordionItem>
+		</Accordion>
 
 			{/* Settings Summary */}
 			<Card className='bg-muted/50 border-muted'>

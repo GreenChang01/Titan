@@ -1,4 +1,4 @@
-import {QueryClient} from '@tanstack/react-query';
+import {type QueryClient} from '@tanstack/react-query';
 
 /**
  * Centralized API client with authentication and interceptors
@@ -6,35 +6,35 @@ import {QueryClient} from '@tanstack/react-query';
  * authentication token management, and request/response interceptors.
  */
 
-export interface APIClientConfig {
+export type APIClientConfig = {
 	baseURL?: string;
 	timeout?: number;
 	headers?: Record<string, string>;
-}
+};
 
-export interface APIResponse<T = unknown> {
+export type APIResponse<T = unknown> = {
 	data: T;
 	status: number;
 	statusText: string;
 	headers: Headers;
-}
+};
 
-export interface APIError {
+export type APIError = {
 	message: string;
 	status?: number;
 	code?: string;
 	details?: unknown;
-}
+};
 
 class APIClientClass {
-	private baseURL: string;
-	private timeout: number;
-	private defaultHeaders: Record<string, string>;
+	private readonly baseURL: string;
+	private readonly timeout: number;
+	private readonly defaultHeaders: Record<string, string>;
 	private queryClient?: QueryClient;
 
 	constructor(config: APIClientConfig = {}) {
 		this.baseURL = config.baseURL || process.env.NEXT_PUBLIC_API_URL || '/api';
-		this.timeout = config.timeout || 30000; // 30 seconds
+		this.timeout = config.timeout || 30_000; // 30 seconds
 		this.defaultHeaders = {
 			'Content-Type': 'application/json',
 			...config.headers,
@@ -51,8 +51,11 @@ class APIClientClass {
 	/**
 	 * Get authentication token from storage
 	 */
-	private getAuthToken(): string | null {
-		if (typeof window === 'undefined') return null;
+	private getAuthToken(): string | undefined {
+		if (globalThis.window === undefined) {
+			return null;
+		}
+
 		return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 	}
 
@@ -60,8 +63,10 @@ class APIClientClass {
 	 * Set authentication token
 	 */
 	setAuthToken(token: string, persist = true) {
-		if (typeof window === 'undefined') return;
-		
+		if (globalThis.window === undefined) {
+			return;
+		}
+
 		if (persist) {
 			localStorage.setItem('authToken', token);
 		} else {
@@ -73,8 +78,10 @@ class APIClientClass {
 	 * Clear authentication token
 	 */
 	clearAuthToken() {
-		if (typeof window === 'undefined') return;
-		
+		if (globalThis.window === undefined) {
+			return;
+		}
+
 		localStorage.removeItem('authToken');
 		sessionStorage.removeItem('authToken');
 	}
@@ -84,7 +91,7 @@ class APIClientClass {
 	 */
 	private buildHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
 		const headers = {...this.defaultHeaders, ...customHeaders};
-		
+
 		const token = this.getAuthToken();
 		if (token) {
 			headers.Authorization = `Bearer ${token}`;
@@ -98,7 +105,9 @@ class APIClientClass {
 	 */
 	private createAbortController(): AbortController {
 		const controller = new AbortController();
-		setTimeout(() => controller.abort(), this.timeout);
+		setTimeout(() => {
+			controller.abort();
+		}, this.timeout);
 		return controller;
 	}
 
@@ -135,8 +144,8 @@ class APIClientClass {
 			if (response.status === 401) {
 				this.clearAuthToken();
 				// Optionally redirect to login
-				if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
-					window.location.href = '/login';
+				if (globalThis.window !== undefined && globalThis.location.pathname !== '/login') {
+					globalThis.location.href = '/login';
 				}
 			}
 
@@ -153,6 +162,7 @@ class APIClientClass {
 		if (endpoint.startsWith('http')) {
 			return endpoint;
 		}
+
 		return `${this.baseURL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 	}
 
@@ -166,7 +176,7 @@ class APIClientClass {
 			body?: unknown;
 			headers?: Record<string, string>;
 			queryParams?: Record<string, string>;
-		} = {}
+		} = {},
 	): Promise<APIResponse<T>> {
 		const url = this.buildURL(endpoint);
 		const {body, headers = {}, queryParams} = options;
@@ -174,11 +184,11 @@ class APIClientClass {
 		// Add query parameters
 		const searchParams = new URLSearchParams();
 		if (queryParams) {
-			Object.entries(queryParams).forEach(([key, value]) => {
+			for (const [key, value] of Object.entries(queryParams)) {
 				if (value !== undefined && value !== null) {
 					searchParams.append(key, value);
 				}
-			});
+			}
 		}
 
 		const finalURL = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
@@ -209,6 +219,7 @@ class APIClientClass {
 			if (error instanceof Error && error.name === 'AbortError') {
 				throw new Error(`Request timeout after ${this.timeout}ms`);
 			}
+
 			throw error;
 		}
 	}
@@ -242,11 +253,11 @@ class APIClientClass {
 	async uploadFile<T>(endpoint: string, file: File, additionalData?: Record<string, string>): Promise<APIResponse<T>> {
 		const formData = new FormData();
 		formData.append('file', file);
-		
+
 		if (additionalData) {
-			Object.entries(additionalData).forEach(([key, value]) => {
+			for (const [key, value] of Object.entries(additionalData)) {
 				formData.append(key, value);
-			});
+			}
 		}
 
 		return this.request<T>('POST', endpoint, {body: formData});

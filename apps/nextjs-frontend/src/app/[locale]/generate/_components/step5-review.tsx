@@ -30,7 +30,7 @@ export function Step5Review(): JSX.Element {
 	const handleSubmit = async () => {
 		try {
 			setSubmitting(true);
-			setError(null);
+			setError('');
 
 			if (!formData.text || !formData.voiceSettings || !formData.soundscapeConfig || !formData.mixingSettings) {
 				throw new Error('请完成所有必需的配置');

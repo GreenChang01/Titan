@@ -7,14 +7,19 @@ import {useInfiniteAIImages, aiImageKeys} from '@/hooks/use-ai-images';
 import {Card, CardContent} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
-import {Loader2, Download, Eye, AlertCircle} from 'lucide-react';
+import {
+	Loader2, Download, Eye, AlertCircle,
+} from 'lucide-react';
 
-interface VirtualizedAIImagesProps {
-	filters?: Record<string, unknown>;
-	className?: string;
-}
+type VirtualizedAIImagesProps = {
+	readonly filters?: Record<string, unknown>;
+	readonly className?: string;
+};
 
-export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImagesProps) {
+// Default filters object to prevent React re-render issues
+const defaultFilters = {};
+
+export function VirtualizedAIImages({filters = defaultFilters, className}: VirtualizedAIImagesProps) {
 	const queryClient = useQueryClient();
 	const {
 		data,
@@ -39,17 +44,17 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 	const handlePrefetch = useCallback((index: number) => {
 		const prefetchThreshold = 5; // Prefetch when hovering near the end
 		if (index >= allImages.length - prefetchThreshold && hasNextPage && data) {
-			const nextPageParam = data.pages[data.pages.length - 1]?.nextCursor;
-			if (nextPageParam !== null && !prefetchedPagesRef.current.has(nextPageParam)) {
+			const nextPageParam = data.pages.at(-1)?.nextCursor;
+			if (nextPageParam !== null && nextPageParam !== undefined && !prefetchedPagesRef.current.has(nextPageParam)) {
 				console.log(`🚀 Prefetching next page with cursor: ${nextPageParam}`);
 				prefetchedPagesRef.current.add(nextPageParam);
-				
+
 				queryClient.prefetchInfiniteQuery({
 					queryKey: aiImageKeys.infinite(filters),
-					queryFn: ({pageParam}) => {
+					queryFn: async ({pageParam = 0}) => {
 						// Use same API call as the main hook
 						if (process.env.NODE_ENV === 'development') {
-							return Promise.resolve({
+							return {
 								items: Array.from({length: 10}, (_, i) => ({
 									id: `prefetch-${nextPageParam}-${i}`,
 									prompt: `Prefetched AI image ${i + 1}`,
@@ -67,12 +72,14 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 								nextCursor: nextPageParam < 4 ? nextPageParam + 1 : null,
 								hasMore: nextPageParam < 4,
 								totalCount: 50,
-							});
+							};
 						}
+
 						// Production API call would go here
-						return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(res => res.json());
+						return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(async res => res.json());
 					},
 					initialPageParam: 0,
+					getNextPageParam: (lastPage: {nextCursor: number | null}) => lastPage.nextCursor,
 					pages: data.pages.length + 1, // Ensure we have one more page cached
 				});
 			}
@@ -82,7 +89,7 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 	const rowVirtualizer = useVirtualizer({
 		count: hasNextPage ? allImages.length + 1 : allImages.length,
 		getScrollElement: () => parentRef.current,
-		itemSize: 380, // Estimate height: image (300px) + content (80px)
+		estimateSize: () => 380, // Estimate height: image (300px) + content (80px)
 		overscan: 5,
 	});
 
@@ -90,13 +97,13 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 
 	// Auto-fetch next page when scrolling near the end
 	useEffect(() => {
-		const lastItem = virtualItems[virtualItems.length - 1];
+		const lastItem = virtualItems.at(-1);
 
 		if (
-			lastItem &&
-			lastItem.index >= allImages.length - 1 &&
-			hasNextPage &&
-			!isFetchingNextPage
+			lastItem
+			&& lastItem.index >= allImages.length - 1
+			&& hasNextPage
+			&& !isFetchingNextPage
 		) {
 			fetchNextPage();
 		}
@@ -124,7 +131,9 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 				<p className='text-red-600'>Error loading images: {error?.message}</p>
 				<Button
 					variant='outline'
-					onClick={() => window.location.reload()}
+					onClick={() => {
+						globalThis.location.reload();
+					}}
 				>
 					Retry
 				</Button>
@@ -135,7 +144,7 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 	const handleDownload = (imageUrl: string, prompt: string) => {
 		const link = document.createElement('a');
 		link.href = imageUrl;
-		link.download = `ai-image-${prompt.slice(0, 30).replace(/\s+/g, '-')}.jpg`;
+		link.download = `ai-image-${prompt.slice(0, 30).replaceAll(/\s+/g, '-')}.jpg`;
 		document.body.append(link);
 		link.click();
 		link.remove();
@@ -153,11 +162,9 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 						</p>
 					</div>
 					<div className='flex items-center space-x-2'>
-						{hasNextPage && (
-							<Badge variant='secondary'>
-								{isFetchingNextPage ? 'Loading more...' : 'Scroll for more'}
-							</Badge>
-						)}
+						{hasNextPage ? <Badge variant='secondary'>
+							{isFetchingNextPage ? 'Loading more...' : 'Scroll for more'}
+						</Badge> : null}
 					</div>
 				</div>
 			</div>
@@ -193,7 +200,9 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 									transform: `translateY(${virtualItem.start}px)`,
 								}}
 								className='px-4 py-2'
-								onMouseEnter={() => handlePrefetch(virtualItem.index)}
+								onMouseEnter={() => {
+									handlePrefetch(virtualItem.index);
+								}}
 							>
 								{isLoaderRow ? (
 									<div className='flex justify-center items-center h-full'>
@@ -275,3 +284,4 @@ export function VirtualizedAIImages({filters = {}, className}: VirtualizedAIImag
 		</div>
 	);
 }
+

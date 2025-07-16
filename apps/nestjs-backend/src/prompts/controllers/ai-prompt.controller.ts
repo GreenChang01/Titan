@@ -25,10 +25,10 @@ import {PromptCategory} from '../../common/enums/prompt-category.enum';
  */
 export class CreatePromptDto {
 	/** 提示词标题 */
-	title: string;
+	title!: string;
 
 	/** 提示词内容 */
-	content: string;
+	content!: string;
 
 	/** 提示词分类 */
 	category?: PromptCategory;

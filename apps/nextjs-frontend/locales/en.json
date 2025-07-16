@@ -97,6 +97,7 @@
     "register-link-label": "Register here",
     "error-401-403": "Invalid email or password. Please try again.",
     "error-500": "An unexpected error occurred while logging in. Please try again later.",
+    "error-network": "Cannot connect to the server. Please check your connection and try again.",
     "error-default": "An unknown error occurred while logging in. Please try again later."
   },
   "Component-Login-2FA": {

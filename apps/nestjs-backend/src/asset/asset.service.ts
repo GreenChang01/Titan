@@ -360,7 +360,11 @@ export class AssetService {
 			this.logger.log(`AI生成素材创建成功: ${asset.id} for user: ${userId}`);
 			return asset;
 		} catch (error) {
-			this.logger.error(`创建AI生成素材失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`创建AI生成素材失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('创建AI生成素材失败: Unknown error', error);
+			}
 			throw error;
 		}
 	}
@@ -437,7 +441,11 @@ export class AssetService {
 				recentUploads,
 			};
 		} catch (error) {
-			this.logger.error(`获取ASMR素材统计失败: ${error.message}`, error.stack);
+			if (error instanceof Error) {
+				this.logger.error(`获取ASMR素材统计失败: ${error.message}`, error.stack);
+			} else {
+				this.logger.error('获取ASMR素材统计失败: Unknown error', error);
+			}
 			throw error;
 		}
 	}

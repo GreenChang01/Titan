@@ -69,6 +69,7 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 
 	const userName = user?.username || 'User';
 	const userEmail = user?.email || 'user@example.com';
+	const pathname = usePathname();
 
 	return (
 		<header
@@ -88,7 +89,9 @@ export function Header({className, fixed, children, ...props}: HeaderProps) {
 			) : null}
 
 			{/* Page title and navigation */}
-			<div className='flex-1 flex items-center gap-4'>{children}</div>
+			<div className='flex-1 flex items-center gap-4'>
+				{children}
+			</div>
 
 			{/* Right side - User Menu */}
 			<div className='flex items-center gap-3'>

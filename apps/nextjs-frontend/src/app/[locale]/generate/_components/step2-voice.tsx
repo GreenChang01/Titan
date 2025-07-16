@@ -9,26 +9,16 @@ import {
 	Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
-import {
-	Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
 import {Slider} from '@/components/ui/slider';
 
 export function Step2Voice(): JSX.Element {
-	const {formData, setVoiceSettings, completeStep, nextStep} = useASMRStore();
+	const {formData, setVoiceSettings, completeStep} = useASMRStore();
 
 	const handleVoiceChange = (field: string, value: any) => {
 		setVoiceSettings({[field]: value});
 		// Auto-complete step when voice is selected
 		if (field === 'voiceId' && value) {
 			completeStep(2);
-		}
-	};
-
-	const handleContinue = () => {
-		if (formData.voiceSettings?.voiceId) {
-			completeStep(2);
-			nextStep();
 		}
 	};
 

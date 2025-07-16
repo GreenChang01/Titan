@@ -5,6 +5,7 @@ import {EntityRepository, EntityManager} from '@mikro-orm/core';
 import {AIGeneratedImage} from '../entities/ai-generated-image.entity';
 import {Asset} from '../../asset/entities/asset.entity';
 import {AssetType} from '../../common/enums/asset-type.enum';
+import {UploadSource} from '../../common/enums/content.enum';
 
 /**
  * AI图片生成服务

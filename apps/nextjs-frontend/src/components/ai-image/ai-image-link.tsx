@@ -5,26 +5,29 @@ import Link from 'next/link';
 import {useQueryClient} from '@tanstack/react-query';
 import {aiImageKeys} from '@/hooks/use-ai-images';
 
-interface AIImageLinkProps {
-	href: string;
-	children: React.ReactNode;
-	filters?: Record<string, unknown>;
-	className?: string;
-}
+type AIImageLinkProps = {
+	readonly href: string;
+	readonly children: React.ReactNode;
+	readonly filters?: Record<string, unknown>;
+	readonly className?: string;
+};
 
-export function AIImageLink({href, children, filters = {}, className}: AIImageLinkProps) {
+// Default filters object to prevent React re-render issues
+const defaultFilters = {};
+
+export function AIImageLink({href, children, filters = defaultFilters, className}: AIImageLinkProps) {
 	const queryClient = useQueryClient();
 
 	const handlePrefetch = () => {
 		// Prefetch AI images data for the target route
 		queryClient.prefetchInfiniteQuery({
 			queryKey: aiImageKeys.infinite(filters),
-			queryFn: async ({pageParam}) => {
+			queryFn: async ({pageParam = 0}) => {
 				// Use same mock data structure as the main hook
 				if (process.env.NODE_ENV === 'development') {
-					const cursor = pageParam as number;
+					const cursor = pageParam;
 					const limit = 10;
-					
+
 					return {
 						items: Array.from({length: limit}, (_, index) => ({
 							id: `route-prefetch-${cursor * limit + index}`,
@@ -45,20 +48,22 @@ export function AIImageLink({href, children, filters = {}, className}: AIImageLi
 						totalCount: 50,
 					};
 				}
+
 				// Production API call
-				return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(res => res.json());
+				return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(async res => res.json());
 			},
 			initialPageParam: 0,
+			getNextPageParam: (lastPage: {nextCursor: number | null}) => lastPage.nextCursor,
 			// Only prefetch first page on route hover
 			pages: 1,
 		});
-		
+
 		console.log('🔗 Route prefetching triggered for:', href);
 	};
 
 	return (
-		<Link 
-			href={href} 
+		<Link
+			href={href}
 			className={className}
 			onMouseEnter={handlePrefetch}
 		>

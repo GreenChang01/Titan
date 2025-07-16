@@ -20,13 +20,13 @@ import {AssetType} from '../../common/enums/asset-type.enum';
  */
 export class CreateAIAssetDto {
 	/** 素材名称 */
-	name: string;
+	name!: string;
 
 	/** 素材类型 */
-	type: AssetType;
+	type!: AssetType;
 
 	/** 素材URL */
-	url: string;
+	url!: string;
 
 	/** 元数据 */
 	metadata?: Record<string, any>;

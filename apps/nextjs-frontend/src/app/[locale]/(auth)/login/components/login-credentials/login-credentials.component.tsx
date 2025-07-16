@@ -37,12 +37,15 @@ export function LoginCredentials(): JSX.Element {
 				router.push('/');
 			},
 			onError(error: ApiError) {
-				if (error.response.status === 401 || error.response.status === 403) {
+				if (error.response?.status === 401 || error.response?.status === 403) {
 					setErrorCredentials('root', {message: t('error-401-403')});
-				} else if (error.response.status === 500) {
+				} else if (error.response?.status === 500) {
 					setErrorCredentials('root', {message: t('error-500')});
-				} else {
+				} else if (error.response) {
 					setErrorCredentials('root', {message: t('error-default')});
+				} else {
+					// Network error (server not reachable)
+					setErrorCredentials('root', {message: t('error-network')});
 				}
 			},
 		});

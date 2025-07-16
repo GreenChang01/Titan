@@ -24,6 +24,7 @@ import {TemplateModule} from './template/template.module';
 import {UsersModule} from './users/users.module';
 import {AIModule} from './ai/ai.module';
 import {PromptsModule} from './prompts/prompts.module';
+import {ASMRModule} from './asmr/asmr.module';
 
 /**
  * 应用程序主模块
@@ -78,6 +79,7 @@ import {PromptsModule} from './prompts/prompts.module';
 		AIAudioModule, // AI音频处理模块
 		AIModule, // AI图片生成模块
 		PromptsModule, // AI提示词管理模块
+		ASMRModule, // ASMR音频生成模块
 	],
 	providers: [
 		CryptoService, // 加密服务

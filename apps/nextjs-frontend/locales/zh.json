@@ -98,6 +98,7 @@
     "register-link-label": "在这里注册",
     "error-401-403": "无效的电子邮件或密码。请重试。",
     "error-500": "登录时发生意外错误。请稍后重试。",
+    "error-network": "无法连接到服务器。请检查连接并重试。",
     "error-default": "登录时发生未知错误。请稍后重试。"
   },
   "Component-Login-2FA": {
