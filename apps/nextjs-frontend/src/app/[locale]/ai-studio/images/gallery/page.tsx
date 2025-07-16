@@ -14,7 +14,7 @@ import {Header} from '@/components/layout/header';
 
 export default function AIImagesGalleryPage() {
 	return (
-		<div className="min-h-screen bg-background">
+		<div className='min-h-screen bg-background'>
 			<Header>
 				<div className='flex-1'>
 					<h1 className='text-lg font-medium'>AI图片库</h1>
@@ -24,9 +24,9 @@ export default function AIImagesGalleryPage() {
 					<Breadcrumb>
 						<BreadcrumbList>
 							<BreadcrumbItem>
-								<BreadcrumbLink href="/dashboard">工作台</BreadcrumbLink>
+								<BreadcrumbLink href='/dashboard'>工作台</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbPage>AI图片库</BreadcrumbPage>
 							</BreadcrumbItem>
@@ -34,10 +34,10 @@ export default function AIImagesGalleryPage() {
 					</Breadcrumb>
 				</div>
 			</Header>
-			
-			<div className="p-6">
-				<div className="max-w-7xl mx-auto">
-					<AIImageManager />
+
+			<div className='p-6'>
+				<div className='max-w-7xl mx-auto'>
+					<AIImageManager/>
 				</div>
 			</div>
 		</div>

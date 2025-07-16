@@ -385,7 +385,11 @@ function ConfigCard({config}: ConfigCardProps) {
 }
 
 export function AliyunDriveConnector() {
-	const {data: configs, isLoading, refetch} = useAliyunDriveConfigs();
+	const {data: configs, isLoading, refetch, isFetching} = useAliyunDriveConfigs();
+
+	const handleRefresh = async () => {
+		await refetch();
+	};
 
 	if (isLoading) {
 		return (
@@ -412,20 +416,28 @@ export function AliyunDriveConnector() {
 						<p className='text-sm text-muted-foreground mt-1'>管理您的阿里云盘WebDAV连接配置</p>
 					</div>
 					<div className='flex items-center gap-2'>
-						<Button variant='outline' size='sm' onClick={async () => refetch()}>
-							<RefreshCw className='h-4 w-4'/>
+						<Button variant='outline' size='sm' onClick={handleRefresh} disabled={isFetching}>
+							{isFetching ? (
+								<Loader2 className='h-4 w-4 animate-spin'/>
+							) : (
+								<RefreshCw className='h-4 w-4'/>
+							)}
 						</Button>
-						<ConfigForm/>
 					</div>
 				</div>
 			</CardHeader>
 
 			<CardContent>
 				{configs && configs.length > 0 ? (
-					<div className='grid gap-4 md:grid-cols-2'>
-						{configs.map(config => (
-							<ConfigCard key={config.id} config={config}/>
-						))}
+					<div className='space-y-4'>
+						<div className='flex justify-end'>
+							<ConfigForm/>
+						</div>
+						<div className='grid gap-4 md:grid-cols-2'>
+							{configs.map(config => (
+								<ConfigCard key={config.id} config={config}/>
+							))}
+						</div>
 					</div>
 				) : (
 					<div className='text-center py-8'>

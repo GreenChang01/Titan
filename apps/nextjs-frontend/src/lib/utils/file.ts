@@ -11,11 +11,11 @@ import {
 } from 'lucide-react';
 
 // File type definitions
-export interface FileType {
+export type FileType = {
 	icon: React.ComponentType<{className?: string}>;
 	color: string;
 	category: 'image' | 'video' | 'audio' | 'document' | 'archive' | 'code' | 'other';
-}
+};
 
 // File extension to type mapping
 const fileTypeMap: Record<string, FileType> = {
@@ -27,7 +27,7 @@ const fileTypeMap: Record<string, FileType> = {
 	webp: {icon: ImageIcon, color: 'text-green-500', category: 'image'},
 	svg: {icon: ImageIcon, color: 'text-green-500', category: 'image'},
 	bmp: {icon: ImageIcon, color: 'text-green-500', category: 'image'},
-	
+
 	// Videos
 	mp4: {icon: VideoIcon, color: 'text-red-500', category: 'video'},
 	avi: {icon: VideoIcon, color: 'text-red-500', category: 'video'},
@@ -36,7 +36,7 @@ const fileTypeMap: Record<string, FileType> = {
 	flv: {icon: VideoIcon, color: 'text-red-500', category: 'video'},
 	webm: {icon: VideoIcon, color: 'text-red-500', category: 'video'},
 	mkv: {icon: VideoIcon, color: 'text-red-500', category: 'video'},
-	
+
 	// Audio
 	mp3: {icon: AudioWaveform, color: 'text-purple-500', category: 'audio'},
 	wav: {icon: AudioWaveform, color: 'text-purple-500', category: 'audio'},
@@ -44,7 +44,7 @@ const fileTypeMap: Record<string, FileType> = {
 	aac: {icon: AudioWaveform, color: 'text-purple-500', category: 'audio'},
 	ogg: {icon: AudioWaveform, color: 'text-purple-500', category: 'audio'},
 	m4a: {icon: AudioWaveform, color: 'text-purple-500', category: 'audio'},
-	
+
 	// Documents
 	pdf: {icon: FileTextIcon, color: 'text-red-600', category: 'document'},
 	doc: {icon: FileTextIcon, color: 'text-blue-600', category: 'document'},
@@ -52,23 +52,23 @@ const fileTypeMap: Record<string, FileType> = {
 	txt: {icon: FileTextIcon, color: 'text-gray-600', category: 'document'},
 	md: {icon: FileTextIcon, color: 'text-gray-600', category: 'document'},
 	rtf: {icon: FileTextIcon, color: 'text-blue-600', category: 'document'},
-	
+
 	// Spreadsheets
 	xls: {icon: FileSpreadsheet, color: 'text-green-600', category: 'document'},
 	xlsx: {icon: FileSpreadsheet, color: 'text-green-600', category: 'document'},
 	csv: {icon: FileSpreadsheet, color: 'text-green-600', category: 'document'},
-	
+
 	// Presentations
 	ppt: {icon: Presentation, color: 'text-orange-600', category: 'document'},
 	pptx: {icon: Presentation, color: 'text-orange-600', category: 'document'},
-	
+
 	// Archives
 	zip: {icon: FileArchive, color: 'text-yellow-600', category: 'archive'},
 	rar: {icon: FileArchive, color: 'text-yellow-600', category: 'archive'},
 	'7z': {icon: FileArchive, color: 'text-yellow-600', category: 'archive'},
 	tar: {icon: FileArchive, color: 'text-yellow-600', category: 'archive'},
 	gz: {icon: FileArchive, color: 'text-yellow-600', category: 'archive'},
-	
+
 	// Code
 	js: {icon: Code, color: 'text-yellow-500', category: 'code'},
 	ts: {icon: Code, color: 'text-blue-500', category: 'code'},
@@ -120,13 +120,15 @@ export function getFileCategory(filename: string): string {
  * Format file size in human-readable format
  */
 export function formatFileSize(bytes: number): string {
-	if (bytes === 0) return '0 Bytes';
-	
+	if (bytes === 0) {
+		return '0 Bytes';
+	}
+
 	const k = 1024;
 	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+
+	return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
 }
 
 /**
@@ -192,14 +194,16 @@ export function formatFileDate(date: string | Date): string {
 	const now = new Date();
 	const diffTime = Math.abs(now.getTime() - fileDate.getTime());
 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-	
+
 	if (diffDays === 1) {
 		return 'Yesterday';
-	} else if (diffDays < 7) {
-		return `${diffDays} days ago`;
-	} else {
-		return fileDate.toLocaleDateString();
 	}
+
+	if (diffDays < 7) {
+		return `${diffDays} days ago`;
+	}
+
+	return fileDate.toLocaleDateString();
 }
 
 /**
@@ -208,34 +212,46 @@ export function formatFileDate(date: string | Date): string {
 export function sortFiles<T extends {name: string; size?: number; createdAt?: string | Date; isDirectory?: boolean}>(
 	files: T[],
 	sortBy: 'name' | 'size' | 'date' | 'type' = 'name',
-	sortOrder: 'asc' | 'desc' = 'asc'
+	sortOrder: 'asc' | 'desc' = 'asc',
 ): T[] {
 	return [...files].sort((a, b) => {
 		// Always put directories first
-		if (a.isDirectory && !b.isDirectory) return -1;
-		if (!a.isDirectory && b.isDirectory) return 1;
-		
+		if (a.isDirectory && !b.isDirectory) {
+			return -1;
+		}
+
+		if (!a.isDirectory && b.isDirectory) {
+			return 1;
+		}
+
 		let comparison = 0;
-		
+
 		switch (sortBy) {
-			case 'name':
+			case 'name': {
 				comparison = a.name.localeCompare(b.name);
 				break;
-			case 'size':
+			}
+
+			case 'size': {
 				comparison = (a.size || 0) - (b.size || 0);
 				break;
-			case 'date':
+			}
+
+			case 'date': {
 				const dateA = new Date(a.createdAt || 0).getTime();
 				const dateB = new Date(b.createdAt || 0).getTime();
 				comparison = dateA - dateB;
 				break;
-			case 'type':
+			}
+
+			case 'type': {
 				const extA = getFileExtension(a.name);
 				const extB = getFileExtension(b.name);
 				comparison = extA.localeCompare(extB);
 				break;
+			}
 		}
-		
+
 		return sortOrder === 'asc' ? comparison : -comparison;
 	});
 }
@@ -245,14 +261,15 @@ export function sortFiles<T extends {name: string; size?: number; createdAt?: st
  */
 export function filterFiles<T extends {name: string}>(
 	files: T[],
-	searchQuery: string
+	searchQuery: string,
 ): T[] {
-	if (!searchQuery.trim()) return files;
-	
+	if (!searchQuery.trim()) {
+		return files;
+	}
+
 	const query = searchQuery.toLowerCase();
-	return files.filter(file => 
-		file.name.toLowerCase().includes(query)
-	);
+	return files.filter(file =>
+		file.name.toLowerCase().includes(query));
 }
 
 /**
@@ -260,7 +277,7 @@ export function filterFiles<T extends {name: string}>(
  */
 export function getFileMimeType(filename: string): string {
 	const extension = getFileExtension(filename);
-	
+
 	const mimeTypes: Record<string, string> = {
 		// Images
 		jpg: 'image/jpeg',
@@ -270,7 +287,7 @@ export function getFileMimeType(filename: string): string {
 		webp: 'image/webp',
 		svg: 'image/svg+xml',
 		bmp: 'image/bmp',
-		
+
 		// Videos
 		mp4: 'video/mp4',
 		avi: 'video/x-msvideo',
@@ -279,7 +296,7 @@ export function getFileMimeType(filename: string): string {
 		flv: 'video/x-flv',
 		webm: 'video/webm',
 		mkv: 'video/x-matroska',
-		
+
 		// Audio
 		mp3: 'audio/mpeg',
 		wav: 'audio/wav',
@@ -287,7 +304,7 @@ export function getFileMimeType(filename: string): string {
 		aac: 'audio/aac',
 		ogg: 'audio/ogg',
 		m4a: 'audio/mp4',
-		
+
 		// Documents
 		pdf: 'application/pdf',
 		doc: 'application/msword',
@@ -295,23 +312,23 @@ export function getFileMimeType(filename: string): string {
 		txt: 'text/plain',
 		md: 'text/markdown',
 		rtf: 'application/rtf',
-		
+
 		// Spreadsheets
 		xls: 'application/vnd.ms-excel',
 		xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 		csv: 'text/csv',
-		
+
 		// Presentations
 		ppt: 'application/vnd.ms-powerpoint',
 		pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-		
+
 		// Archives
 		zip: 'application/zip',
 		rar: 'application/x-rar-compressed',
 		'7z': 'application/x-7z-compressed',
 		tar: 'application/x-tar',
 		gz: 'application/gzip',
-		
+
 		// Code
 		js: 'application/javascript',
 		ts: 'application/typescript',
@@ -334,6 +351,6 @@ export function getFileMimeType(filename: string): string {
 		kt: 'text/x-kotlin',
 		dart: 'text/x-dart',
 	};
-	
+
 	return mimeTypes[extension] || 'application/octet-stream';
 }

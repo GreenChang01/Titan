@@ -1,7 +1,9 @@
 'use client';
 
 import {type JSX, useState} from 'react';
-import {FileText, Plus, Edit2, Trash2, Search, Filter, Tags, Star, Copy, Clock} from 'lucide-react';
+import {
+	FileText, Plus, Edit2, Trash2, Search, Filter, Tags, Star, Copy, Clock,
+} from 'lucide-react';
 import {Header} from '@/components/layout/header';
 import {Main} from '@/components/layout/main';
 import {
@@ -21,9 +23,11 @@ import {
 import {
 	DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {
+	Tabs, TabsContent, TabsList, TabsTrigger,
+} from '@/components/ui/tabs';
 
-interface Prompt {
+type Prompt = {
 	id: string;
 	title: string;
 	content: string;
@@ -34,7 +38,7 @@ interface Prompt {
 	usageCount: number;
 	createdAt: string;
 	updatedAt: string;
-}
+};
 
 // Mock data for demonstration
 const mockPrompts: Prompt[] = [
@@ -94,7 +98,7 @@ export default function PromptsPage(): JSX.Element {
 	const [selectedCategory, setSelectedCategory] = useState<string>('all');
 	const [filterFavorites, setFilterFavorites] = useState(false);
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-	const [editingPrompt, setEditingPrompt] = useState<Prompt | null>(null);
+	const [editingPrompt, setEditingPrompt] = useState<Prompt | undefined>(null);
 
 	// Form state
 	const [formData, setFormData] = useState({
@@ -108,27 +112,27 @@ export default function PromptsPage(): JSX.Element {
 	// Filter and sort prompts
 	const filteredPrompts = prompts
 		.filter(prompt => {
-			const matchesSearch = prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				prompt.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				prompt.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+			const matchesSearch = prompt.title.toLowerCase().includes(searchTerm.toLowerCase())
+				|| prompt.content.toLowerCase().includes(searchTerm.toLowerCase())
+				|| prompt.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
 			const matchesCategory = selectedCategory === 'all' || prompt.category === selectedCategory;
 			const matchesFavorites = !filterFavorites || prompt.isFavorite;
 			return matchesSearch && matchesCategory && matchesFavorites;
 		})
 		.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
-	const categories = ['all', ...Array.from(new Set(prompts.map(p => p.category)))];
+	const categories = ['all', ...new Set(prompts.map(p => p.category))];
 
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString('zh-CN', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		});
-	};
+	const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('zh-CN', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	});
 
 	const handleCreatePrompt = () => {
-		if (!formData.title || !formData.content) return;
+		if (!formData.title || !formData.content) {
+			return;
+		}
 
 		const newPrompt: Prompt = {
 			id: Date.now().toString(),
@@ -144,12 +148,16 @@ export default function PromptsPage(): JSX.Element {
 		};
 
 		setPrompts([newPrompt, ...prompts]);
-		setFormData({title: '', content: '', description: '', category: '', tags: ''});
+		setFormData({
+			title: '', content: '', description: '', category: '', tags: '',
+		});
 		setIsCreateDialogOpen(false);
 	};
 
 	const handleUpdatePrompt = () => {
-		if (!editingPrompt || !formData.title || !formData.content) return;
+		if (!editingPrompt || !formData.title || !formData.content) {
+			return;
+		}
 
 		const updatedPrompt: Prompt = {
 			...editingPrompt,
@@ -163,7 +171,9 @@ export default function PromptsPage(): JSX.Element {
 
 		setPrompts(prompts.map(p => p.id === editingPrompt.id ? updatedPrompt : p));
 		setEditingPrompt(null);
-		setFormData({title: '', content: '', description: '', category: '', tags: ''});
+		setFormData({
+			title: '', content: '', description: '', category: '', tags: '',
+		});
 	};
 
 	const handleDeletePrompt = (id: string) => {
@@ -171,9 +181,8 @@ export default function PromptsPage(): JSX.Element {
 	};
 
 	const handleToggleFavorite = (id: string) => {
-		setPrompts(prompts.map(p => 
-			p.id === id ? {...p, isFavorite: !p.isFavorite} : p
-		));
+		setPrompts(prompts.map(p =>
+			p.id === id ? {...p, isFavorite: !p.isFavorite} : p));
 	};
 
 	const handleCopyPrompt = (content: string) => {
@@ -193,183 +202,212 @@ export default function PromptsPage(): JSX.Element {
 	};
 
 	const resetForm = () => {
-		setFormData({title: '', content: '', description: '', category: '', tags: ''});
+		setFormData({
+			title: '', content: '', description: '', category: '', tags: '',
+		});
 		setEditingPrompt(null);
 	};
 
-	const PromptCard = ({prompt}: {prompt: Prompt}) => (
-		<Card className="group hover:shadow-md transition-shadow">
-			<CardHeader className="pb-3">
-				<div className="flex items-start justify-between">
-					<div className="flex-1">
-						<div className="flex items-center gap-2 mb-2">
-							<CardTitle className="text-lg">{prompt.title}</CardTitle>
-							{prompt.isFavorite && (
-								<Star className="h-4 w-4 text-yellow-500 fill-current"/>
-							)}
+	function PromptCard({prompt}: {readonly prompt: Prompt}) {
+		return (
+			<Card className='group hover:shadow-md transition-shadow'>
+				<CardHeader className='pb-3'>
+					<div className='flex items-start justify-between'>
+						<div className='flex-1'>
+							<div className='flex items-center gap-2 mb-2'>
+								<CardTitle className='text-lg'>{prompt.title}</CardTitle>
+								{prompt.isFavorite ? <Star className='h-4 w-4 text-yellow-500 fill-current'/> : null}
+							</div>
+							<CardDescription className='line-clamp-2'>
+								{prompt.description}
+							</CardDescription>
 						</div>
-						<CardDescription className="line-clamp-2">
-							{prompt.description}
-						</CardDescription>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='ghost' size='sm' className='opacity-0 group-hover:opacity-100 transition-opacity'>
+									<Edit2 className='h-4 w-4'/>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='end'>
+								<DropdownMenuItem onClick={() => {
+									handleEditPrompt(prompt);
+								}}
+								>
+									<Edit2 className='h-4 w-4 mr-2'/>
+									编辑
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => {
+									handleCopyPrompt(prompt.content);
+								}}
+								>
+									<Copy className='h-4 w-4 mr-2'/>
+									复制内容
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => {
+									handleToggleFavorite(prompt.id);
+								}}
+								>
+									<Star className='h-4 w-4 mr-2'/>
+									{prompt.isFavorite ? '取消收藏' : '添加收藏'}
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									className='text-destructive'
+									onClick={() => {
+										handleDeletePrompt(prompt.id);
+									}}
+								>
+									<Trash2 className='h-4 w-4 mr-2'/>
+									删除
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-								<Edit2 className="h-4 w-4"/>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem onClick={() => handleEditPrompt(prompt)}>
-								<Edit2 className="h-4 w-4 mr-2"/>
-								编辑
-							</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => handleCopyPrompt(prompt.content)}>
-								<Copy className="h-4 w-4 mr-2"/>
-								复制内容
-							</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => handleToggleFavorite(prompt.id)}>
-								<Star className="h-4 w-4 mr-2"/>
-								{prompt.isFavorite ? '取消收藏' : '添加收藏'}
-							</DropdownMenuItem>
-							<DropdownMenuItem 
-								onClick={() => handleDeletePrompt(prompt.id)}
-								className="text-destructive"
+				</CardHeader>
+				<CardContent>
+					<div className='space-y-4'>
+						<div className='bg-muted/30 p-3 rounded-lg'>
+							<p className='text-sm line-clamp-3'>{prompt.content}</p>
+						</div>
+
+						<div className='flex items-center gap-2 flex-wrap'>
+							<Badge variant='secondary'>{prompt.category}</Badge>
+							{prompt.tags.map(tag => (
+								<Badge key={tag} variant='outline' className='text-xs'>
+									{tag}
+								</Badge>
+							))}
+						</div>
+
+						<div className='flex items-center justify-between text-sm text-muted-foreground'>
+							<div className='flex items-center gap-4'>
+								<span className='flex items-center gap-1'>
+									<Clock className='h-3 w-3'/>
+									{formatDate(prompt.updatedAt)}
+								</span>
+								<span>使用 {prompt.usageCount} 次</span>
+							</div>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={() => {
+									handleCopyPrompt(prompt.content);
+								}}
 							>
-								<Trash2 className="h-4 w-4 mr-2"/>
-								删除
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
-			</CardHeader>
-			<CardContent>
-				<div className="space-y-4">
-					<div className="bg-muted/30 p-3 rounded-lg">
-						<p className="text-sm line-clamp-3">{prompt.content}</p>
-					</div>
-					
-					<div className="flex items-center gap-2 flex-wrap">
-						<Badge variant="secondary">{prompt.category}</Badge>
-						{prompt.tags.map(tag => (
-							<Badge key={tag} variant="outline" className="text-xs">
-								{tag}
-							</Badge>
-						))}
-					</div>
-
-					<div className="flex items-center justify-between text-sm text-muted-foreground">
-						<div className="flex items-center gap-4">
-							<span className="flex items-center gap-1">
-								<Clock className="h-3 w-3"/>
-								{formatDate(prompt.updatedAt)}
-							</span>
-							<span>使用 {prompt.usageCount} 次</span>
+								<Copy className='h-4 w-4 mr-1'/>
+								使用
+							</Button>
 						</div>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => handleCopyPrompt(prompt.content)}
-						>
-							<Copy className="h-4 w-4 mr-1"/>
-							使用
-						</Button>
 					</div>
-				</div>
-			</CardContent>
-		</Card>
-	);
+				</CardContent>
+			</Card>
+		);
+	}
 
-	const PromptFormDialog = ({
-		open, 
-		onOpenChange, 
-		title, 
-		onSubmit
+	function PromptFormDialog({
+		open,
+		onOpenChange,
+		title,
+		onSubmit,
 	}: {
-		open: boolean;
-		onOpenChange: (open: boolean) => void;
-		title: string;
-		onSubmit: () => void;
-	}) => (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-2xl">
-				<DialogHeader>
-					<DialogTitle>{title}</DialogTitle>
-					<DialogDescription>
-						{editingPrompt ? '编辑提示词内容' : '创建新的提示词模板'}
-					</DialogDescription>
-				</DialogHeader>
-				<div className="space-y-4">
-					<div className="grid grid-cols-2 gap-4">
-						<div className="space-y-2">
-							<Label htmlFor="title">标题</Label>
+		readonly open: boolean;
+		readonly onOpenChange: (open: boolean) => void;
+		readonly title: string;
+		readonly onSubmit: () => void;
+	}) {
+		return (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<DialogContent className='max-w-2xl'>
+					<DialogHeader>
+						<DialogTitle>{title}</DialogTitle>
+						<DialogDescription>
+							{editingPrompt ? '编辑提示词内容' : '创建新的提示词模板'}
+						</DialogDescription>
+					</DialogHeader>
+					<div className='space-y-4'>
+						<div className='grid grid-cols-2 gap-4'>
+							<div className='space-y-2'>
+								<Label htmlFor='title'>标题</Label>
+								<Input
+									id='title'
+									value={formData.title}
+									placeholder='提示词标题'
+									onChange={e => {
+										setFormData({...formData, title: e.target.value});
+									}}
+								/>
+							</div>
+							<div className='space-y-2'>
+								<Label htmlFor='category'>分类</Label>
+								<Input
+									id='category'
+									value={formData.category}
+									placeholder='如：睡眠引导、冥想练习'
+									onChange={e => {
+										setFormData({...formData, category: e.target.value});
+									}}
+								/>
+							</div>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='description'>描述</Label>
 							<Input
-								id="title"
-								value={formData.title}
-								onChange={(e) => setFormData({...formData, title: e.target.value})}
-								placeholder="提示词标题"
+								id='description'
+								value={formData.description}
+								placeholder='简短描述这个提示词的用途'
+								onChange={e => {
+									setFormData({...formData, description: e.target.value});
+								}}
 							/>
 						</div>
-						<div className="space-y-2">
-							<Label htmlFor="category">分类</Label>
+						<div className='space-y-2'>
+							<Label htmlFor='content'>提示词内容</Label>
+							<Textarea
+								id='content'
+								value={formData.content}
+								placeholder='输入提示词的具体内容...'
+								className='min-h-[200px]'
+								onChange={e => {
+									setFormData({...formData, content: e.target.value});
+								}}
+							/>
+						</div>
+						<div className='space-y-2'>
+							<Label htmlFor='tags'>标签</Label>
 							<Input
-								id="category"
-								value={formData.category}
-								onChange={(e) => setFormData({...formData, category: e.target.value})}
-								placeholder="如：睡眠引导、冥想练习"
+								id='tags'
+								value={formData.tags}
+								placeholder='用逗号分隔多个标签，如：睡眠, 放松, 呼吸'
+								onChange={e => {
+									setFormData({...formData, tags: e.target.value});
+								}}
 							/>
 						</div>
 					</div>
-					<div className="space-y-2">
-						<Label htmlFor="description">描述</Label>
-						<Input
-							id="description"
-							value={formData.description}
-							onChange={(e) => setFormData({...formData, description: e.target.value})}
-							placeholder="简短描述这个提示词的用途"
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="content">提示词内容</Label>
-						<Textarea
-							id="content"
-							value={formData.content}
-							onChange={(e) => setFormData({...formData, content: e.target.value})}
-							placeholder="输入提示词的具体内容..."
-							className="min-h-[200px]"
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="tags">标签</Label>
-						<Input
-							id="tags"
-							value={formData.tags}
-							onChange={(e) => setFormData({...formData, tags: e.target.value})}
-							placeholder="用逗号分隔多个标签，如：睡眠, 放松, 呼吸"
-						/>
-					</div>
-				</div>
-				<DialogFooter>
-					<Button variant="outline" onClick={() => {
-						onOpenChange(false);
-						resetForm();
-					}}>
-						取消
-					</Button>
-					<Button 
-						onClick={onSubmit}
-						disabled={!formData.title || !formData.content}
-					>
-						{editingPrompt ? '保存' : '创建'}
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
-	);
+					<DialogFooter>
+						<Button
+							variant='outline' onClick={() => {
+								onOpenChange(false);
+								resetForm();
+							}}
+						>
+							取消
+						</Button>
+						<Button
+							disabled={!formData.title || !formData.content}
+							onClick={onSubmit}
+						>
+							{editingPrompt ? '保存' : '创建'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		);
+	}
 
 	return (
 		<>
 			<Header>
-				<div className="flex items-center justify-between w-full">
+				<div className='flex items-center justify-between w-full'>
 					<div>
 						<h1 className='text-lg font-medium flex items-center gap-2'>
 							<FileText className='h-5 w-5 text-primary'/>
@@ -379,8 +417,11 @@ export default function PromptsPage(): JSX.Element {
 							管理您的ASMR生成提示词模板
 						</p>
 					</div>
-					<Button onClick={() => setIsCreateDialogOpen(true)}>
-						<Plus className="h-4 w-4 mr-2"/>
+					<Button onClick={() => {
+						setIsCreateDialogOpen(true);
+					}}
+					>
+						<Plus className='h-4 w-4 mr-2'/>
 						新建提示词
 					</Button>
 				</div>
@@ -390,36 +431,40 @@ export default function PromptsPage(): JSX.Element {
 				<div className='max-w-7xl mx-auto space-y-6'>
 					{/* Search and Filters */}
 					<Card>
-						<CardContent className="pt-6">
-							<div className="flex flex-col md:flex-row gap-4">
-								<div className="flex-1">
-									<div className="relative">
-										<Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground"/>
+						<CardContent className='pt-6'>
+							<div className='flex flex-col md:flex-row gap-4'>
+								<div className='flex-1'>
+									<div className='relative'>
+										<Search className='absolute left-3 top-3 h-4 w-4 text-muted-foreground'/>
 										<Input
-											placeholder="搜索提示词..."
+											placeholder='搜索提示词...'
 											value={searchTerm}
-											onChange={(e) => setSearchTerm(e.target.value)}
-											className="pl-10"
+											className='pl-10'
+											onChange={e => {
+												setSearchTerm(e.target.value);
+											}}
 										/>
 									</div>
 								</div>
-								<div className="flex gap-2">
+								<div className='flex gap-2'>
 									<Select value={selectedCategory} onValueChange={setSelectedCategory}>
-										<SelectTrigger className="w-40">
-											<SelectValue placeholder="分类"/>
+										<SelectTrigger className='w-40'>
+											<SelectValue placeholder='分类'/>
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="all">全部分类</SelectItem>
+											<SelectItem value='all'>全部分类</SelectItem>
 											{categories.filter(cat => cat !== 'all').map(category => (
 												<SelectItem key={category} value={category}>{category}</SelectItem>
 											))}
 										</SelectContent>
 									</Select>
 									<Button
-										variant={filterFavorites ? "default" : "outline"}
-										onClick={() => setFilterFavorites(!filterFavorites)}
+										variant={filterFavorites ? 'default' : 'outline'}
+										onClick={() => {
+											setFilterFavorites(!filterFavorites);
+										}}
 									>
-										<Star className="h-4 w-4 mr-1"/>
+										<Star className='h-4 w-4 mr-1'/>
 										收藏
 									</Button>
 								</div>
@@ -428,75 +473,76 @@ export default function PromptsPage(): JSX.Element {
 					</Card>
 
 					{/* Statistics */}
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
 						<Card>
-							<CardContent className="pt-6">
-								<div className="text-center">
-									<div className="text-2xl font-bold text-primary">{prompts.length}</div>
-									<div className="text-sm text-muted-foreground">总提示词</div>
+							<CardContent className='pt-6'>
+								<div className='text-center'>
+									<div className='text-2xl font-bold text-primary'>{prompts.length}</div>
+									<div className='text-sm text-muted-foreground'>总提示词</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="pt-6">
-								<div className="text-center">
-									<div className="text-2xl font-bold text-green-600">
+							<CardContent className='pt-6'>
+								<div className='text-center'>
+									<div className='text-2xl font-bold text-green-600'>
 										{prompts.filter(p => p.isFavorite).length}
 									</div>
-									<div className="text-sm text-muted-foreground">收藏</div>
+									<div className='text-sm text-muted-foreground'>收藏</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="pt-6">
-								<div className="text-center">
-									<div className="text-2xl font-bold text-blue-600">
+							<CardContent className='pt-6'>
+								<div className='text-center'>
+									<div className='text-2xl font-bold text-blue-600'>
 										{categories.length - 1}
 									</div>
-									<div className="text-sm text-muted-foreground">分类</div>
+									<div className='text-sm text-muted-foreground'>分类</div>
 								</div>
 							</CardContent>
 						</Card>
 						<Card>
-							<CardContent className="pt-6">
-								<div className="text-center">
-									<div className="text-2xl font-bold text-purple-600">
+							<CardContent className='pt-6'>
+								<div className='text-center'>
+									<div className='text-2xl font-bold text-purple-600'>
 										{prompts.reduce((acc, p) => acc + p.usageCount, 0)}
 									</div>
-									<div className="text-sm text-muted-foreground">总使用次数</div>
+									<div className='text-sm text-muted-foreground'>总使用次数</div>
 								</div>
 							</CardContent>
 						</Card>
 					</div>
 
 					{/* Prompts List */}
-					<div className="space-y-4">
+					<div className='space-y-4'>
 						{filteredPrompts.length === 0 ? (
 							<Card>
-								<CardContent className="pt-6 text-center py-12">
-									<FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4"/>
-									<h3 className="text-lg font-medium">
-										{searchTerm || selectedCategory !== 'all' || filterFavorites ? 
-											'没有找到匹配的提示词' : 
-											'还没有提示词'
-										}
+								<CardContent className='pt-6 text-center py-12'>
+									<FileText className='h-12 w-12 text-muted-foreground mx-auto mb-4'/>
+									<h3 className='text-lg font-medium'>
+										{searchTerm || selectedCategory !== 'all' || filterFavorites
+											? '没有找到匹配的提示词'
+											: '还没有提示词'}
 									</h3>
-									<p className="text-muted-foreground mb-4">
-										{searchTerm || selectedCategory !== 'all' || filterFavorites ? 
-											'尝试调整搜索条件或筛选器' : 
-											'创建您的第一个提示词模板'
-										}
+									<p className='text-muted-foreground mb-4'>
+										{searchTerm || selectedCategory !== 'all' || filterFavorites
+											? '尝试调整搜索条件或筛选器'
+											: '创建您的第一个提示词模板'}
 									</p>
 									{!searchTerm && selectedCategory === 'all' && !filterFavorites && (
-										<Button onClick={() => setIsCreateDialogOpen(true)}>
-											<Plus className="h-4 w-4 mr-2"/>
+										<Button onClick={() => {
+											setIsCreateDialogOpen(true);
+										}}
+										>
+											<Plus className='h-4 w-4 mr-2'/>
 											新建提示词
 										</Button>
 									)}
 								</CardContent>
 							</Card>
 						) : (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+							<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 								{filteredPrompts.map(prompt => (
 									<PromptCard key={prompt.id} prompt={prompt}/>
 								))}
@@ -507,20 +553,20 @@ export default function PromptsPage(): JSX.Element {
 					{/* Create/Edit Dialog */}
 					<PromptFormDialog
 						open={isCreateDialogOpen}
+						title='新建提示词'
 						onOpenChange={setIsCreateDialogOpen}
-						title="新建提示词"
 						onSubmit={handleCreatePrompt}
 					/>
-					
+
 					<PromptFormDialog
-						open={!!editingPrompt}
-						onOpenChange={(open) => {
+						open={Boolean(editingPrompt)}
+						title='编辑提示词'
+						onOpenChange={open => {
 							if (!open) {
 								setEditingPrompt(null);
 								resetForm();
 							}
 						}}
-						title="编辑提示词"
 						onSubmit={handleUpdatePrompt}
 					/>
 				</div>

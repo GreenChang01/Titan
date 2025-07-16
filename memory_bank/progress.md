@@ -2,13 +2,15 @@
 
 ## 当前任务进度
 
-### 主要任务：修复编译错误
+### 主要任务：修复前端API请求404错误
 
-- [x] 识别问题：`aliyun-drive` 模块存在两个编译错误。
-- [x] 委派子任务1: 修复 `aliyun-drive.controller.ts` 中的类型错误。
-- [x] 委派子任务2: 修复 `aliyun-drive.service.ts` 中的属性名错误。
-- [x] 确认两个子任务均已完成。
-- [ ] 验证应用启动成功。
+- [x] 发现问题：前端请求 `/api/aliyun-drive/config/test` 返回 404。
+- [x] 检查后端路由 `aliyun-drive.controller.ts`，确认路由 `POST /aliyun-drive/config/test` 存在。
+- [x] 检查后端全局前缀 `main.ts`，确认前缀 `/api` 已设置。
+- [x] 检查前端配置 `next.config.ts`，发现缺少API代理。
+- [x] **完成**: 在 `next.config.ts` 中添加了 `rewrites` 规则以代理API请求。
+- [ ] **待办**: 通知用户重启前端开发服务器。
+- [ ] **待办**: 验证问题是否已解决。
 
 ## 里程碑记录
 

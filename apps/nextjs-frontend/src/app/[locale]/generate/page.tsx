@@ -1,7 +1,9 @@
 'use client';
 
 import {type JSX, useState} from 'react';
-import {Sparkles, FileText, Mic, Volume2, Settings, Play, Download, Loader2} from 'lucide-react';
+import {
+	Sparkles, FileText, Mic, Volume2, Settings, Play, Download, Loader2,
+} from 'lucide-react';
 import {useASMRStore} from '@/store/asmr/asmr.store';
 import {Header} from '@/components/layout/header';
 import {Main} from '@/components/layout/main';
@@ -13,7 +15,9 @@ import {Label} from '@/components/ui/label';
 import {Textarea} from '@/components/ui/textarea';
 import {Badge} from '@/components/ui/badge';
 import {Slider} from '@/components/ui/slider';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {
+	Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
 import {Progress} from '@/components/ui/progress';
 import {Separator} from '@/components/ui/separator';
 
@@ -87,6 +91,7 @@ export default function ASMRGenerationPage(): JSX.Element {
 					clearInterval(interval);
 					return 95;
 				}
+
 				return prev + Math.random() * 10;
 			});
 		}, 500);
@@ -94,8 +99,8 @@ export default function ASMRGenerationPage(): JSX.Element {
 		try {
 			await generateAudio();
 			setProgress(100);
-		} catch (err) {
-			console.error('Generation failed:', err);
+		} catch (error_) {
+			console.error('Generation failed:', error_);
 		} finally {
 			setIsGenerating(false);
 			clearInterval(interval);
@@ -119,36 +124,32 @@ export default function ASMRGenerationPage(): JSX.Element {
 			<Main>
 				<div className='max-w-4xl mx-auto space-y-6'>
 					{/* 错误提示 */}
-					{error && (
-						<Card className='border-destructive'>
-							<CardContent className='pt-6'>
-								<div className='text-sm text-destructive'>
-									<strong>错误:</strong> {error}
-								</div>
-							</CardContent>
-						</Card>
-					)}
+					{error ? <Card className='border-destructive'>
+						<CardContent className='pt-6'>
+							<div className='text-sm text-destructive'>
+								<strong>错误:</strong> {error}
+							</div>
+						</CardContent>
+					</Card> : null}
 
 					{/* 生成进度 */}
-					{isGenerating && (
-						<Card>
-							<CardContent className='pt-6'>
-								<div className='space-y-4'>
-									<div className='flex items-center gap-3'>
-										<Loader2 className='h-5 w-5 animate-spin text-primary'/>
-										<span className='text-sm font-medium'>正在生成ASMR音频...</span>
-									</div>
-									<Progress value={progress} className='w-full'/>
-									<div className='text-xs text-muted-foreground'>
-										{progress < 30 && '正在处理文本内容...'}
-										{progress >= 30 && progress < 70 && '正在生成语音...'}
-										{progress >= 70 && progress < 95 && '正在添加音景效果...'}
-										{progress >= 95 && '即将完成...'}
-									</div>
+					{isGenerating ? <Card>
+						<CardContent className='pt-6'>
+							<div className='space-y-4'>
+								<div className='flex items-center gap-3'>
+									<Loader2 className='h-5 w-5 animate-spin text-primary'/>
+									<span className='text-sm font-medium'>正在生成ASMR音频...</span>
 								</div>
-							</CardContent>
-						</Card>
-					)}
+								<Progress value={progress} className='w-full'/>
+								<div className='text-xs text-muted-foreground'>
+									{progress < 30 && '正在处理文本内容...'}
+									{progress >= 30 && progress < 70 && '正在生成语音...'}
+									{progress >= 70 && progress < 95 && '正在添加音景效果...'}
+									{progress >= 95 && '即将完成...'}
+								</div>
+							</div>
+						</CardContent>
+					</Card> : null}
 
 					{/* 主要内容区域 */}
 					<div className='grid gap-6 lg:grid-cols-2'>
@@ -170,7 +171,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 										value={formData.text || ''}
 										className='min-h-[200px] text-base leading-relaxed'
 										maxLength={2000}
-										onChange={e => setText(e.target.value)}
+										onChange={e => {
+											setText(e.target.value);
+										}}
 									/>
 									<div className='flex justify-between items-center text-sm text-muted-foreground'>
 										<span>建议长度：100-800字符</span>
@@ -199,7 +202,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 															variant='outline'
 															size='sm'
 															className='w-full'
-															onClick={() => setText(template.content)}
+															onClick={() => {
+																setText(template.content);
+															}}
 														>
 															使用此模板
 														</Button>
@@ -229,7 +234,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 									<Label className='text-sm font-medium'>语音类型</Label>
 									<Select
 										value={formData.voiceSettings?.voiceId || ''}
-										onValueChange={(value) => setVoiceSettings({voiceId: value})}
+										onValueChange={value => {
+											setVoiceSettings({voiceId: value});
+										}}
 									>
 										<SelectTrigger>
 											<SelectValue placeholder='选择语音类型'/>
@@ -256,7 +263,9 @@ export default function ASMRGenerationPage(): JSX.Element {
 									<Label className='text-sm font-medium'>背景音景</Label>
 									<Select
 										value={formData.soundscapeConfig?.category || 'none'}
-										onValueChange={(value) => setVoiceSettings({soundscape: value})}
+										onValueChange={value => {
+											setVoiceSettings({soundscape: value});
+										}}
 									>
 										<SelectTrigger>
 											<SelectValue placeholder='选择背景音景'/>
@@ -286,11 +295,13 @@ export default function ASMRGenerationPage(): JSX.Element {
 											语音速度
 										</Label>
 										<Slider
-											value={[formData.voiceSettings?.speed || 1.0]}
-											max={2.0}
+											value={[formData.voiceSettings?.speed || 1]}
+											max={2}
 											min={0.5}
 											step={0.1}
-											onValueChange={(value) => setVoiceSettings({speed: value[0]})}
+											onValueChange={value => {
+												setVoiceSettings({speed: value[0]});
+											}}
 										/>
 										<div className='flex justify-between text-xs text-muted-foreground'>
 											<span>慢速</span>
@@ -306,10 +317,12 @@ export default function ASMRGenerationPage(): JSX.Element {
 										</Label>
 										<Slider
 											value={[formData.voiceSettings?.volume || 0.8]}
-											max={1.0}
+											max={1}
 											min={0.1}
 											step={0.1}
-											onValueChange={(value) => setVoiceSettings({volume: value[0]})}
+											onValueChange={value => {
+												setVoiceSettings({volume: value[0]});
+											}}
 										/>
 									</div>
 								</div>
@@ -344,36 +357,34 @@ export default function ASMRGenerationPage(): JSX.Element {
 					</Card>
 
 					{/* 生成结果 */}
-					{result && (
-						<Card>
-							<CardHeader>
-								<CardTitle className='flex items-center gap-2'>
-									<Play className='h-5 w-5'/>
-									生成完成
-								</CardTitle>
-								<CardDescription>
-									您的ASMR音频已生成完成
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className='space-y-4'>
-									<div className='flex items-center gap-4'>
-										<Button variant='outline' size='sm'>
-											<Play className='h-4 w-4 mr-2'/>
-											预览播放
-										</Button>
-										<Button size='sm'>
-											<Download className='h-4 w-4 mr-2'/>
-											下载音频
-										</Button>
-									</div>
-									<div className='text-sm text-muted-foreground'>
-										文件大小: {result.fileSize || 'N/A'} | 时长: {result.duration || 'N/A'}
-									</div>
+					{result ? <Card>
+						<CardHeader>
+							<CardTitle className='flex items-center gap-2'>
+								<Play className='h-5 w-5'/>
+								生成完成
+							</CardTitle>
+							<CardDescription>
+								您的ASMR音频已生成完成
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className='space-y-4'>
+								<div className='flex items-center gap-4'>
+									<Button variant='outline' size='sm'>
+										<Play className='h-4 w-4 mr-2'/>
+										预览播放
+									</Button>
+									<Button size='sm'>
+										<Download className='h-4 w-4 mr-2'/>
+										下载音频
+									</Button>
 								</div>
-							</CardContent>
-						</Card>
-					)}
+								<div className='text-sm text-muted-foreground'>
+									文件大小: {result.fileSize || 'N/A'} | 时长: {result.duration || 'N/A'}
+								</div>
+							</div>
+						</CardContent>
+					</Card> : null}
 				</div>
 			</Main>
 		</>

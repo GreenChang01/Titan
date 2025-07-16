@@ -190,7 +190,7 @@ export function AIImageGenerator({
 						<label className='text-sm font-medium'>选择场景类型</label>
 						<Select value={selectedCategory} onValueChange={setSelectedCategory}>
 							<SelectTrigger>
-								<SelectValue />
+								<SelectValue/>
 							</SelectTrigger>
 							<SelectContent>
 								{Object.entries(ASMR_TEMPLATES).map(([key, template]) => (
@@ -311,7 +311,7 @@ export function AIImageGenerator({
 						</div>
 					</div>
 				</CardContent>
-                     </Card> : null}
+			</Card> : null}
 		</div>
 	);
 }

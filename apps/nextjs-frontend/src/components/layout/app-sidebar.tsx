@@ -1,7 +1,7 @@
 'use client';
 
 import {
-	HomeIcon, ProjectorIcon, Sparkles, Library, Package, FileText, Settings, ChevronRight, Folder, Cloud, FileImage, Mic
+	HomeIcon, ProjectorIcon, Sparkles, Library, Package, FileText, Settings, ChevronRight, Folder, Cloud, FileImage, Mic,
 } from 'lucide-react';
 import {useTranslations} from 'next-intl';
 import {
@@ -73,7 +73,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
 									<AIImageLink href='/generate'>
-										<Sparkles className="text-purple-500"/>
+										<Sparkles className='text-purple-500'/>
 										<span>开始创作</span>
 									</AIImageLink>
 								</SidebarMenuButton>
@@ -89,7 +89,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
 									<AIImageLink href='/library'>
-										<Library className="text-blue-500"/>
+										<Library className='text-blue-500'/>
 										<span>内容库</span>
 									</AIImageLink>
 								</SidebarMenuButton>
@@ -103,12 +103,12 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
-								<Collapsible className="group/collapsible">
+								<Collapsible className='group/collapsible'>
 									<CollapsibleTrigger asChild>
 										<SidebarMenuButton>
-											<Package className="text-green-500"/>
+											<Package className='text-green-500'/>
 											<span>素材库</span>
-											<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+											<ChevronRight className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90'/>
 										</SidebarMenuButton>
 									</CollapsibleTrigger>
 									<CollapsibleContent>
@@ -116,7 +116,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 											<SidebarMenuSubItem>
 												<SidebarMenuSubButton asChild>
 													<AIImageLink href='/assets/upload'>
-														<FileImage className="w-3 h-3"/>
+														<FileImage className='w-3 h-3'/>
 														<span>本地上传</span>
 													</AIImageLink>
 												</SidebarMenuSubButton>
@@ -124,7 +124,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 											<SidebarMenuSubItem>
 												<SidebarMenuSubButton asChild>
 													<AIImageLink href='/assets/aliyun-drive/browser'>
-														<Folder className="w-3 h-3"/>
+														<Folder className='w-3 h-3'/>
 														<span>阿里云盘</span>
 													</AIImageLink>
 												</SidebarMenuSubButton>
@@ -132,7 +132,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 											<SidebarMenuSubItem>
 												<SidebarMenuSubButton asChild>
 													<AIImageLink href='/assets/aliyun-drive/settings'>
-														<Cloud className="w-3 h-3"/>
+														<Cloud className='w-3 h-3'/>
 														<span>WebDAV设置</span>
 													</AIImageLink>
 												</SidebarMenuSubButton>
@@ -152,7 +152,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
 									<AIImageLink href='/prompts'>
-										<FileText className="text-orange-500"/>
+										<FileText className='text-orange-500'/>
 										<span>提示词库</span>
 									</AIImageLink>
 								</SidebarMenuButton>
@@ -168,7 +168,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 							<SidebarMenuItem>
 								<SidebarMenuButton asChild>
 									<AIImageLink href='/settings'>
-										<Settings className="text-gray-500"/>
+										<Settings className='text-gray-500'/>
 										<span>设置</span>
 									</AIImageLink>
 								</SidebarMenuButton>

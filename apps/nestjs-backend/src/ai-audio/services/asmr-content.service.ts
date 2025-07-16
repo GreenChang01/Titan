@@ -11,7 +11,7 @@ import {
 	ASMRMixingPresets,
 } from '../interfaces';
 import {ElevenLabsProvider} from '../providers/elevenlabs.provider';
-import {ElevenLabsSoundscapeProvider} from '../providers/soundverse.provider';
+import {ElevenLabsSoundscapeProvider} from '../providers/elevenlabs-soundscape.provider';
 import {FfmpegAudioMixer} from './ffmpeg-audio-mixer.service';
 
 /**

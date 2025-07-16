@@ -33,7 +33,7 @@ class APIClientClass {
 	private queryClient?: QueryClient;
 
 	constructor(config: APIClientConfig = {}) {
-		this.baseURL = config.baseURL || process.env.NEXT_PUBLIC_API_URL || '/api';
+		this.baseURL = config.baseURL || (process.env.NEXT_PUBLIC_BACKEND_URL ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api` : '/api');
 		this.timeout = config.timeout || 30_000; // 30 seconds
 		this.defaultHeaders = {
 			'Content-Type': 'application/json',

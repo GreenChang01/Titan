@@ -6,12 +6,12 @@ import {cn} from '@/lib/utils';
 const Breadcrumb = React.forwardRef<
 	HTMLElement,
 	React.ComponentPropsWithoutRef<'nav'> & {
-		separator?: React.ComponentType<{className?: string}>;
+		readonly separator?: React.ComponentType<{className?: string}>;
 	}
 >(({className, children, separator: Separator = ChevronRight, ...props}, ref) => (
 	<nav
 		ref={ref}
-		aria-label="breadcrumb"
+		aria-label='breadcrumb'
 		className={cn('flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground', className)}
 		{...props}
 	>
@@ -49,7 +49,7 @@ BreadcrumbItem.displayName = 'BreadcrumbItem';
 const BreadcrumbLink = React.forwardRef<
 	HTMLAnchorElement,
 	React.ComponentPropsWithoutRef<'a'> & {
-		asChild?: boolean;
+		readonly asChild?: boolean;
 	}
 >(({asChild, className, ...props}, ref) => {
 	const Comp = asChild ? Slot : 'a';
@@ -70,9 +70,9 @@ const BreadcrumbPage = React.forwardRef<
 >(({className, ...props}, ref) => (
 	<span
 		ref={ref}
-		role="link"
-		aria-disabled="true"
-		aria-current="page"
+		role='link'
+		aria-disabled='true'
+		aria-current='page'
 		className={cn('font-normal text-foreground', className)}
 		{...props}
 	/>
@@ -82,7 +82,7 @@ BreadcrumbPage.displayName = 'BreadcrumbPage';
 const BreadcrumbSeparator = React.forwardRef<
 	HTMLLIElement,
 	React.ComponentPropsWithoutRef<'li'> & {
-		children?: React.ReactNode;
+		readonly children?: React.ReactNode;
 	}
 >(({children, className, ...props}, ref) => {
 	const {separator: Separator} = useBreadcrumbContext();
@@ -90,12 +90,12 @@ const BreadcrumbSeparator = React.forwardRef<
 	return (
 		<li
 			ref={ref}
-			role="presentation"
-			aria-hidden="true"
+			role='presentation'
+			aria-hidden='true'
 			className={cn('[&>svg]:size-3.5', className)}
 			{...props}
 		>
-			{children ?? <Separator />}
+			{children ?? <Separator/>}
 		</li>
 	);
 });
@@ -107,13 +107,13 @@ const BreadcrumbEllipsis = React.forwardRef<
 >(({className, ...props}, ref) => (
 	<span
 		ref={ref}
-		role="presentation"
-		aria-hidden="true"
+		role='presentation'
+		aria-hidden='true'
 		className={cn('flex h-9 w-9 items-center justify-center', className)}
 		{...props}
 	>
-		<MoreHorizontal className="h-4 w-4" />
-		<span className="sr-only">More</span>
+		<MoreHorizontal className='h-4 w-4'/>
+		<span className='sr-only'>More</span>
 	</span>
 ));
 BreadcrumbEllipsis.displayName = 'BreadcrumbEllipsis';
@@ -130,6 +130,7 @@ const useBreadcrumbContext = () => {
 	if (!context) {
 		throw new Error('useBreadcrumbContext must be used within a BreadcrumbProvider');
 	}
+
 	return context;
 };
 

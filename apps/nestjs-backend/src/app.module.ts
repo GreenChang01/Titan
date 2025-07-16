@@ -5,7 +5,7 @@ import {APP_GUARD} from '@nestjs/core';
 import {ScheduleModule} from '@nestjs/schedule';
 import {ThrottlerGuard, ThrottlerModule} from '@nestjs/throttler';
 import {BullModule} from '@nestjs/bull';
-import mikroOrmConfig from 'mikro-orm.config';
+import mikroOrmConfig from '../mikro-orm.config';
 import {AIAudioModule} from './ai-audio/ai-audio.module';
 import {AliyunDriveModule} from './aliyun-drive/aliyun-drive.module';
 import {AssetModule} from './asset/asset.module';

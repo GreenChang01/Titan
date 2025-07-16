@@ -38,7 +38,12 @@ export function AuthenticatedLayout({children}: Props) {
 		return <AuthLoadingSpinner/>;
 	}
 
-	// 用户已认证或者加载中，显示正常布局
+	// 如果没有用户且不在加载状态，显示加载状态直到重定向
+	if (!user && !loading) {
+		return <AuthLoadingSpinner/>;
+	}
+
+	// 用户已认证，显示正常布局
 	return (
 		<SidebarProvider defaultOpen>
 			<AppSidebar/>

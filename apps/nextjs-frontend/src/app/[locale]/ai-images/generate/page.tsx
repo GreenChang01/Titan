@@ -17,11 +17,11 @@ export default function AIImagesGeneratePage() {
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/dashboard'>工作台</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/ai-images'>AI图片</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbPage>生成图片</BreadcrumbPage>
 							</BreadcrumbItem>

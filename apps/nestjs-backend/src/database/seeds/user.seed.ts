@@ -1,4 +1,4 @@
-import {EntityManager} from '@mikro-orm/postgresql';
+import {type EntityManager} from '@mikro-orm/postgresql';
 import {User} from '../../users/entities/user.entity';
 import {UserStatus} from '@titan/shared';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ export class UserSeeder {
 			username: 'admin',
 			password: await bcrypt.hash('password123', 10),
 			status: UserStatus.ACTIVE,
-			confirmationCode: Math.floor(100000 + Math.random() * 900000).toString(),
+			confirmationCode: Math.floor(100_000 + Math.random() * 900_000).toString(),
 		});
 
 		// Create test user
@@ -20,7 +20,7 @@ export class UserSeeder {
 			username: 'testuser',
 			password: await bcrypt.hash('password123', 10),
 			status: UserStatus.ACTIVE,
-			confirmationCode: Math.floor(100000 + Math.random() * 900000).toString(),
+			confirmationCode: Math.floor(100_000 + Math.random() * 900_000).toString(),
 		});
 
 		await em.persistAndFlush([adminUser, testUser]);

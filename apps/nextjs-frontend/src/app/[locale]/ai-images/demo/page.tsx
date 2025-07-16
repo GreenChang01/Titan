@@ -19,11 +19,11 @@ export default function AIImagesDemoPage() {
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/dashboard'>工作台</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/ai-images'>AI图片</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbPage>功能演示</BreadcrumbPage>
 							</BreadcrumbItem>

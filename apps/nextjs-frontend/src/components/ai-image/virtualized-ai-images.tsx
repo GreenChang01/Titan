@@ -51,7 +51,7 @@ export function VirtualizedAIImages({filters = defaultFilters, className}: Virtu
 
 				queryClient.prefetchInfiniteQuery({
 					queryKey: aiImageKeys.infinite(filters),
-					queryFn: async ({pageParam = 0}) => {
+					async queryFn({pageParam = 0}) {
 						// Use same API call as the main hook
 						if (process.env.NODE_ENV === 'development') {
 							return {
@@ -79,7 +79,7 @@ export function VirtualizedAIImages({filters = defaultFilters, className}: Virtu
 						return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(async res => res.json());
 					},
 					initialPageParam: 0,
-					getNextPageParam: (lastPage: {nextCursor: number | null}) => lastPage.nextCursor,
+					getNextPageParam: (lastPage: {nextCursor: number | undefined}) => lastPage.nextCursor,
 					pages: data.pages.length + 1, // Ensure we have one more page cached
 				});
 			}
@@ -164,7 +164,7 @@ export function VirtualizedAIImages({filters = defaultFilters, className}: Virtu
 					<div className='flex items-center space-x-2'>
 						{hasNextPage ? <Badge variant='secondary'>
 							{isFetchingNextPage ? 'Loading more...' : 'Scroll for more'}
-						</Badge> : null}
+                     </Badge> : null}
 					</div>
 				</div>
 			</div>

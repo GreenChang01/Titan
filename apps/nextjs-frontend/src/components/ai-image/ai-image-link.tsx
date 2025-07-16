@@ -22,7 +22,7 @@ export function AIImageLink({href, children, filters = defaultFilters, className
 		// Prefetch AI images data for the target route
 		queryClient.prefetchInfiniteQuery({
 			queryKey: aiImageKeys.infinite(filters),
-			queryFn: async ({pageParam = 0}) => {
+			async queryFn({pageParam = 0}) {
 				// Use same mock data structure as the main hook
 				if (process.env.NODE_ENV === 'development') {
 					const cursor = pageParam;
@@ -53,7 +53,7 @@ export function AIImageLink({href, children, filters = defaultFilters, className
 				return fetch(`/api/ai/images?cursor=${pageParam}&limit=10`).then(async res => res.json());
 			},
 			initialPageParam: 0,
-			getNextPageParam: (lastPage: {nextCursor: number | null}) => lastPage.nextCursor,
+			getNextPageParam: (lastPage: {nextCursor: number | undefined}) => lastPage.nextCursor,
 			// Only prefetch first page on route hover
 			pages: 1,
 		});

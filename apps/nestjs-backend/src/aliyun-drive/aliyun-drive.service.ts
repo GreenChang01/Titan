@@ -22,6 +22,8 @@ import {
 	MoveItemDto,
 	CopyItemDto,
 	FileOperationResponseDto,
+	TestConnectionDto,
+	TestConnectionResponseDto,
 } from './dto/index';
 
 /**
@@ -175,6 +177,103 @@ export class AliyunDriveService {
 	async updateLastSyncTime(config: AliyunDriveConfig): Promise<void> {
 		config.lastSyncAt = new Date();
 		await this.em.persistAndFlush(config);
+	}
+
+	/**
+	 * 测试WebDAV连接
+	 * 
+	 * 使用提供的配置信息测试WebDAV连接是否正常
+	 * 不会保存配置，仅用于验证连接有效性
+	 * 
+	 * @param testDto 测试连接的配置信息
+	 * @returns Promise<TestConnectionResponseDto> 测试结果
+	 */
+	async testConnection(testDto: TestConnectionDto): Promise<TestConnectionResponseDto> {
+		const startTime = Date.now();
+		
+		try {
+			// 创建临时的WebDAV客户端
+			const client = axios.create({
+				baseURL: testDto.webdavUrl,
+				timeout: testDto.timeout || this.defaultTimeout,
+				auth: {
+					username: testDto.username,
+					password: testDto.password,
+				},
+				headers: {
+					'Content-Type': 'application/xml',
+					'User-Agent': 'Titan-Material-Platform/1.0',
+				},
+			});
+
+			// 测试连接：尝试列出根目录
+			const testPath = testDto.basePath || '/';
+			const response = await client.request({
+				method: 'PROPFIND',
+				url: testPath,
+				headers: {
+					'Depth': '0',
+				},
+				data: `<?xml version="1.0"?>
+					<D:propfind xmlns:D="DAV:">
+						<D:prop>
+							<D:resourcetype/>
+							<D:getlastmodified/>
+							<D:getcontentlength/>
+							<D:getcontenttype/>
+							<D:displayname/>
+						</D:prop>
+					</D:propfind>`,
+			});
+
+			const responseTime = Date.now() - startTime;
+
+			if (response.status === 207) {
+				return {
+					success: true,
+					message: 'WebDAV连接测试成功',
+					responseTime,
+				};
+			} else {
+				return {
+					success: false,
+					message: `WebDAV连接测试失败: HTTP ${response.status}`,
+					responseTime,
+					error: response.statusText,
+				};
+			}
+		} catch (error: any) {
+			const responseTime = Date.now() - startTime;
+			
+			this.logger.error('WebDAV连接测试失败', {
+				error: error.message,
+				url: testDto.webdavUrl,
+				username: testDto.username,
+				responseTime,
+			});
+
+			let errorMessage = 'WebDAV连接测试失败';
+			if (error.code === 'ECONNREFUSED') {
+				errorMessage = '连接被拒绝，请检查WebDAV服务器地址和网络连接';
+			} else if (error.response?.status === 401) {
+				errorMessage = '认证失败，请检查用户名和密码';
+			} else if (error.response?.status === 403) {
+				errorMessage = '权限不足，请检查账户权限';
+			} else if (error.response?.status === 404) {
+				errorMessage = '路径不存在，请检查WebDAV地址和基础路径';
+			} else if (error.code === 'ENOTFOUND') {
+				errorMessage = '域名解析失败，请检查WebDAV服务器地址';
+			} else if (error.code === 'ETIMEDOUT') {
+				errorMessage = '连接超时，请检查网络连接或增加超时时间';
+			}
+
+			return {
+				success: false,
+				message: errorMessage,
+				responseTime,
+				error: error.message,
+			};
+		}
 	}
 
 	// WebDAV 客户端方法

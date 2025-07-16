@@ -134,7 +134,7 @@ export function Step4Advanced(): JSX.Element {
 				<AccordionItem value='mixing'>
 					<AccordionTrigger>
 						<div className='flex items-center gap-2'>
-							<Volume2 className='h-4 w-4' />
+							<Volume2 className='h-4 w-4'/>
 							<span>混音设置</span>
 						</div>
 					</AccordionTrigger>
@@ -143,341 +143,341 @@ export function Step4Advanced(): JSX.Element {
 						<Card>
 							<CardHeader>
 								<CardTitle>混音预设</CardTitle>
-							<CardDescription>选择专业的混音预设或自定义设置</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-								{presets.map(preset => (
-									<Card
-										key={preset.id}
-										className={cn(
-											'cursor-pointer transition-all duration-200 hover:shadow-md',
-											selectedPreset === preset.id ? 'ring-2 ring-primary border-primary' : '',
-										)}
-										onClick={() => {
-											handlePresetSelect(preset.id);
-										}}
-									>
-										<CardContent className='p-4'>
-											<div className='space-y-2'>
-												<div className='flex items-center justify-between'>
-													<h4 className='font-medium'>{preset.name}</h4>
-													<Volume2 className='h-4 w-4 text-muted-foreground'/>
+								<CardDescription>选择专业的混音预设或自定义设置</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+									{presets.map(preset => (
+										<Card
+											key={preset.id}
+											className={cn(
+												'cursor-pointer transition-all duration-200 hover:shadow-md',
+												selectedPreset === preset.id ? 'ring-2 ring-primary border-primary' : '',
+											)}
+											onClick={() => {
+												handlePresetSelect(preset.id);
+											}}
+										>
+											<CardContent className='p-4'>
+												<div className='space-y-2'>
+													<div className='flex items-center justify-between'>
+														<h4 className='font-medium'>{preset.name}</h4>
+														<Volume2 className='h-4 w-4 text-muted-foreground'/>
+													</div>
+													<p className='text-sm text-muted-foreground'>{preset.description}</p>
 												</div>
-												<p className='text-sm text-muted-foreground'>{preset.description}</p>
-											</div>
-										</CardContent>
-									</Card>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Volume Controls */}
-					<Card>
-						<CardHeader>
-							<CardTitle>音量控制</CardTitle>
-							<CardDescription>调节人声和音景的音量平衡</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-6'>
-							{/* Voice Volume */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='voice-volume'>人声音量</Label>
-									<span className='text-sm font-medium'>{Math.round(mixingSettings.voiceVolume * 100)}%</span>
+											</CardContent>
+										</Card>
+									))}
 								</div>
-								<Slider
-									id='voice-volume'
-									value={[mixingSettings.voiceVolume]}
-									min={0}
-									max={1}
-									step={0.05}
-									className='w-full'
-									onValueChange={value => {
-										handleMixingChange('voiceVolume', value[0]);
-									}}
-								/>
-							</div>
+							</CardContent>
+						</Card>
 
-							{/* Soundscape Volume */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='soundscape-volume'>音景音量</Label>
-									<span className='text-sm font-medium'>{Math.round(mixingSettings.soundscapeVolume * 100)}%</span>
-								</div>
-								<Slider
-									id='soundscape-volume'
-									value={[mixingSettings.soundscapeVolume]}
-									min={0}
-									max={1}
-									step={0.05}
-									className='w-full'
-									onValueChange={value => {
-										handleMixingChange('soundscapeVolume', value[0]);
-									}}
-								/>
-							</div>
-
-							{/* Volume Balance Indicator */}
-							<div className='p-3 bg-muted/50 rounded-md'>
-								<div className='flex items-center justify-between text-sm'>
-									<span>总音量平衡:</span>
-									<span className='font-medium'>
-										人声 {Math.round(mixingSettings.voiceVolume * 100)}% | 音景{' '}
-										{Math.round(mixingSettings.soundscapeVolume * 100)}%
-									</span>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Fade Effects */}
-					<Card>
-						<CardHeader>
-							<CardTitle>淡入淡出效果</CardTitle>
-							<CardDescription>配置音频开始和结束的过渡效果</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-6'>
-							{/* Fade In */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='fade-in'>淡入时长</Label>
-									<span className='text-sm font-medium'>{mixingSettings.fadeInDuration}秒</span>
-								</div>
-								<Slider
-									id='fade-in'
-									value={[mixingSettings.fadeInDuration]}
-									min={0}
-									max={10}
-									step={0.5}
-									className='w-full'
-									onValueChange={value => {
-										handleMixingChange('fadeInDuration', value[0]);
-									}}
-								/>
-							</div>
-
-							{/* Fade Out */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='fade-out'>淡出时长</Label>
-									<span className='text-sm font-medium'>{mixingSettings.fadeOutDuration}秒</span>
-								</div>
-								<Slider
-									id='fade-out'
-									value={[mixingSettings.fadeOutDuration]}
-									min={0}
-									max={15}
-									step={0.5}
-									className='w-full'
-									onValueChange={value => {
-										handleMixingChange('fadeOutDuration', value[0]);
-									}}
-								/>
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* EQ Settings */}
-					<Card>
-						<CardHeader>
-							<CardTitle>均衡器设置</CardTitle>
-							<CardDescription>调节音频的频率特性以优化听感</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-6'>
-							{/* Low Frequency */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='eq-low'>低频 (60-250Hz)</Label>
-									<span className='text-sm font-medium'>
-										{(mixingSettings.eqSettings?.lowFreq || 0) > 0 ? '+' : ''}
-										{mixingSettings.eqSettings?.lowFreq || 0}dB
-									</span>
-								</div>
-								<Slider
-									id='eq-low'
-									value={[mixingSettings.eqSettings?.lowFreq || 0]}
-									min={-6}
-									max={6}
-									step={0.5}
-									className='w-full'
-									onValueChange={value => {
-										handleEqChange('lowFreq', value[0] || 0);
-									}}
-								/>
-							</div>
-
-							{/* Mid Frequency */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='eq-mid'>中频 (250-4000Hz)</Label>
-									<span className='text-sm font-medium'>
-										{(mixingSettings.eqSettings?.midFreq || 0) > 0 ? '+' : ''}
-										{mixingSettings.eqSettings?.midFreq || 0}dB
-									</span>
-								</div>
-								<Slider
-									id='eq-mid'
-									value={[mixingSettings.eqSettings?.midFreq || 0]}
-									min={-6}
-									max={6}
-									step={0.5}
-									className='w-full'
-									onValueChange={value => {
-										handleEqChange('midFreq', value[0] || 0);
-									}}
-								/>
-							</div>
-
-							{/* High Frequency */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='eq-high'>高频 (4000-20000Hz)</Label>
-									<span className='text-sm font-medium'>
-										{(mixingSettings.eqSettings?.highFreq || 0) > 0 ? '+' : ''}
-										{mixingSettings.eqSettings?.highFreq || 0}dB
-									</span>
-								</div>
-								<Slider
-									id='eq-high'
-									value={[mixingSettings.eqSettings?.highFreq || 0]}
-									min={-6}
-									max={6}
-									step={0.5}
-									className='w-full'
-									onValueChange={value => {
-										handleEqChange('highFreq', value[0] || 0);
-									}}
-								/>
-							</div>
-
-							<div className='p-3 bg-blue-50 border border-blue-200 rounded-md'>
-								<div className='flex items-start gap-2'>
-									<Info className='h-4 w-4 text-blue-600 mt-0.5'/>
-									<div className='space-y-1'>
-										<p className='text-sm text-blue-800'>中频增强有助于提高人声清晰度，适合中老年听众</p>
-									</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</AccordionContent>
-			</AccordionItem>
-
-			<AccordionItem value='quality'>
-				<AccordionTrigger>
-					<div className='flex items-center gap-2'>
-						<Zap className='h-4 w-4' />
-						<span>质量控制</span>
-					</div>
-				</AccordionTrigger>
-				<AccordionContent className='space-y-6'>
-					{/* Quality Requirements */}
-					<Card>
-						<CardHeader>
-							<CardTitle>质量控制</CardTitle>
-							<CardDescription>设置音频质量标准和自动重试机制</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-6'>
-							{/* Minimum Score */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='min-score'>最低质量评分</Label>
-									<span className='text-sm font-medium'>{qualitySettings.minimumScore}/10</span>
-								</div>
-								<Slider
-									id='min-score'
-									value={[qualitySettings.minimumScore]}
-									min={5}
-									max={9.5}
-									step={0.1}
-									className='w-full'
-									onValueChange={value => {
-										handleQualityChange('minimumScore', value[0]);
-									}}
-								/>
-								<p className='text-xs text-muted-foreground'>低于此评分的音频将被自动重新生成</p>
-							</div>
-
-							<Separator/>
-
-							{/* Auto Retry */}
-							<div className='flex items-center justify-between'>
-								<div className='space-y-0.5'>
-									<Label htmlFor='auto-retry'>自动重试</Label>
-									<p className='text-sm text-muted-foreground'>质量不达标时自动重新生成</p>
-								</div>
-								<Switch
-									id='auto-retry'
-									checked={qualitySettings.enableAutoRetry}
-									onCheckedChange={checked => {
-										handleQualityChange('enableAutoRetry', checked);
-									}}
-								/>
-							</div>
-
-							{/* Max Retries */}
-							{qualitySettings.enableAutoRetry ? (
+						{/* Volume Controls */}
+						<Card>
+							<CardHeader>
+								<CardTitle>音量控制</CardTitle>
+								<CardDescription>调节人声和音景的音量平衡</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-6'>
+								{/* Voice Volume */}
 								<div className='space-y-3'>
 									<div className='flex items-center justify-between'>
-										<Label htmlFor='max-retries'>最大重试次数</Label>
-										<span className='text-sm font-medium'>{qualitySettings.maxRetryAttempts}次</span>
+										<Label htmlFor='voice-volume'>人声音量</Label>
+										<span className='text-sm font-medium'>{Math.round(mixingSettings.voiceVolume * 100)}%</span>
 									</div>
 									<Slider
-										id='max-retries'
-										value={[qualitySettings.maxRetryAttempts]}
-										min={1}
-										max={5}
-										step={1}
+										id='voice-volume'
+										value={[mixingSettings.voiceVolume]}
+										min={0}
+										max={1}
+										step={0.05}
 										className='w-full'
 										onValueChange={value => {
-											handleQualityChange('maxRetryAttempts', value[0]);
+											handleMixingChange('voiceVolume', value[0]);
 										}}
 									/>
 								</div>
-							) : null}
-						</CardContent>
-					</Card>
-				</AccordionContent>
-			</AccordionItem>
 
-			<AccordionItem value='advanced'>
-				<AccordionTrigger>
-					<div className='flex items-center gap-2'>
-						<Headphones className='h-4 w-4' />
-						<span>高级选项</span>
-					</div>
-				</AccordionTrigger>
-				<AccordionContent className='space-y-6'>
-					{/* Advanced Options */}
-					<Card>
-						<CardHeader>
-							<CardTitle>高级选项</CardTitle>
-							<CardDescription>专业级音频处理选项</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-6'>
-							<div className='p-4 bg-muted/50 rounded-md'>
-								<div className='flex items-center gap-2 mb-2'>
-									<Headphones className='h-4 w-4'/>
-									<span className='font-medium'>双耳处理</span>
-									<Badge variant='secondary'>即将推出</Badge>
+								{/* Soundscape Volume */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='soundscape-volume'>音景音量</Label>
+										<span className='text-sm font-medium'>{Math.round(mixingSettings.soundscapeVolume * 100)}%</span>
+									</div>
+									<Slider
+										id='soundscape-volume'
+										value={[mixingSettings.soundscapeVolume]}
+										min={0}
+										max={1}
+										step={0.05}
+										className='w-full'
+										onValueChange={value => {
+											handleMixingChange('soundscapeVolume', value[0]);
+										}}
+									/>
 								</div>
-								<p className='text-sm text-muted-foreground'>3D音效、双耳节拍等高级功能将在后续版本中提供</p>
-							</div>
 
-							<div className='p-4 bg-muted/50 rounded-md'>
-								<div className='flex items-center gap-2 mb-2'>
-									<Zap className='h-4 w-4'/>
-									<span className='font-medium'>实时处理</span>
-									<Badge variant='secondary'>即将推出</Badge>
+								{/* Volume Balance Indicator */}
+								<div className='p-3 bg-muted/50 rounded-md'>
+									<div className='flex items-center justify-between text-sm'>
+										<span>总音量平衡:</span>
+										<span className='font-medium'>
+											人声 {Math.round(mixingSettings.voiceVolume * 100)}% | 音景{' '}
+											{Math.round(mixingSettings.soundscapeVolume * 100)}%
+										</span>
+									</div>
 								</div>
-								<p className='text-sm text-muted-foreground'>实时音频效果预览和动态调整功能</p>
-							</div>
-						</CardContent>
-					</Card>
-				</AccordionContent>
-			</AccordionItem>
-		</Accordion>
+							</CardContent>
+						</Card>
+
+						{/* Fade Effects */}
+						<Card>
+							<CardHeader>
+								<CardTitle>淡入淡出效果</CardTitle>
+								<CardDescription>配置音频开始和结束的过渡效果</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-6'>
+								{/* Fade In */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='fade-in'>淡入时长</Label>
+										<span className='text-sm font-medium'>{mixingSettings.fadeInDuration}秒</span>
+									</div>
+									<Slider
+										id='fade-in'
+										value={[mixingSettings.fadeInDuration]}
+										min={0}
+										max={10}
+										step={0.5}
+										className='w-full'
+										onValueChange={value => {
+											handleMixingChange('fadeInDuration', value[0]);
+										}}
+									/>
+								</div>
+
+								{/* Fade Out */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='fade-out'>淡出时长</Label>
+										<span className='text-sm font-medium'>{mixingSettings.fadeOutDuration}秒</span>
+									</div>
+									<Slider
+										id='fade-out'
+										value={[mixingSettings.fadeOutDuration]}
+										min={0}
+										max={15}
+										step={0.5}
+										className='w-full'
+										onValueChange={value => {
+											handleMixingChange('fadeOutDuration', value[0]);
+										}}
+									/>
+								</div>
+							</CardContent>
+						</Card>
+
+						{/* EQ Settings */}
+						<Card>
+							<CardHeader>
+								<CardTitle>均衡器设置</CardTitle>
+								<CardDescription>调节音频的频率特性以优化听感</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-6'>
+								{/* Low Frequency */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='eq-low'>低频 (60-250Hz)</Label>
+										<span className='text-sm font-medium'>
+											{(mixingSettings.eqSettings?.lowFreq || 0) > 0 ? '+' : ''}
+											{mixingSettings.eqSettings?.lowFreq || 0}dB
+										</span>
+									</div>
+									<Slider
+										id='eq-low'
+										value={[mixingSettings.eqSettings?.lowFreq || 0]}
+										min={-6}
+										max={6}
+										step={0.5}
+										className='w-full'
+										onValueChange={value => {
+											handleEqChange('lowFreq', value[0] || 0);
+										}}
+									/>
+								</div>
+
+								{/* Mid Frequency */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='eq-mid'>中频 (250-4000Hz)</Label>
+										<span className='text-sm font-medium'>
+											{(mixingSettings.eqSettings?.midFreq || 0) > 0 ? '+' : ''}
+											{mixingSettings.eqSettings?.midFreq || 0}dB
+										</span>
+									</div>
+									<Slider
+										id='eq-mid'
+										value={[mixingSettings.eqSettings?.midFreq || 0]}
+										min={-6}
+										max={6}
+										step={0.5}
+										className='w-full'
+										onValueChange={value => {
+											handleEqChange('midFreq', value[0] || 0);
+										}}
+									/>
+								</div>
+
+								{/* High Frequency */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='eq-high'>高频 (4000-20000Hz)</Label>
+										<span className='text-sm font-medium'>
+											{(mixingSettings.eqSettings?.highFreq || 0) > 0 ? '+' : ''}
+											{mixingSettings.eqSettings?.highFreq || 0}dB
+										</span>
+									</div>
+									<Slider
+										id='eq-high'
+										value={[mixingSettings.eqSettings?.highFreq || 0]}
+										min={-6}
+										max={6}
+										step={0.5}
+										className='w-full'
+										onValueChange={value => {
+											handleEqChange('highFreq', value[0] || 0);
+										}}
+									/>
+								</div>
+
+								<div className='p-3 bg-blue-50 border border-blue-200 rounded-md'>
+									<div className='flex items-start gap-2'>
+										<Info className='h-4 w-4 text-blue-600 mt-0.5'/>
+										<div className='space-y-1'>
+											<p className='text-sm text-blue-800'>中频增强有助于提高人声清晰度，适合中老年听众</p>
+										</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</AccordionContent>
+				</AccordionItem>
+
+				<AccordionItem value='quality'>
+					<AccordionTrigger>
+						<div className='flex items-center gap-2'>
+							<Zap className='h-4 w-4'/>
+							<span>质量控制</span>
+						</div>
+					</AccordionTrigger>
+					<AccordionContent className='space-y-6'>
+						{/* Quality Requirements */}
+						<Card>
+							<CardHeader>
+								<CardTitle>质量控制</CardTitle>
+								<CardDescription>设置音频质量标准和自动重试机制</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-6'>
+								{/* Minimum Score */}
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='min-score'>最低质量评分</Label>
+										<span className='text-sm font-medium'>{qualitySettings.minimumScore}/10</span>
+									</div>
+									<Slider
+										id='min-score'
+										value={[qualitySettings.minimumScore]}
+										min={5}
+										max={9.5}
+										step={0.1}
+										className='w-full'
+										onValueChange={value => {
+											handleQualityChange('minimumScore', value[0]);
+										}}
+									/>
+									<p className='text-xs text-muted-foreground'>低于此评分的音频将被自动重新生成</p>
+								</div>
+
+								<Separator/>
+
+								{/* Auto Retry */}
+								<div className='flex items-center justify-between'>
+									<div className='space-y-0.5'>
+										<Label htmlFor='auto-retry'>自动重试</Label>
+										<p className='text-sm text-muted-foreground'>质量不达标时自动重新生成</p>
+									</div>
+									<Switch
+										id='auto-retry'
+										checked={qualitySettings.enableAutoRetry}
+										onCheckedChange={checked => {
+											handleQualityChange('enableAutoRetry', checked);
+										}}
+									/>
+								</div>
+
+								{/* Max Retries */}
+								{qualitySettings.enableAutoRetry ? (
+									<div className='space-y-3'>
+										<div className='flex items-center justify-between'>
+											<Label htmlFor='max-retries'>最大重试次数</Label>
+											<span className='text-sm font-medium'>{qualitySettings.maxRetryAttempts}次</span>
+										</div>
+										<Slider
+											id='max-retries'
+											value={[qualitySettings.maxRetryAttempts]}
+											min={1}
+											max={5}
+											step={1}
+											className='w-full'
+											onValueChange={value => {
+												handleQualityChange('maxRetryAttempts', value[0]);
+											}}
+										/>
+									</div>
+								) : null}
+							</CardContent>
+						</Card>
+					</AccordionContent>
+				</AccordionItem>
+
+				<AccordionItem value='advanced'>
+					<AccordionTrigger>
+						<div className='flex items-center gap-2'>
+							<Headphones className='h-4 w-4'/>
+							<span>高级选项</span>
+						</div>
+					</AccordionTrigger>
+					<AccordionContent className='space-y-6'>
+						{/* Advanced Options */}
+						<Card>
+							<CardHeader>
+								<CardTitle>高级选项</CardTitle>
+								<CardDescription>专业级音频处理选项</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-6'>
+								<div className='p-4 bg-muted/50 rounded-md'>
+									<div className='flex items-center gap-2 mb-2'>
+										<Headphones className='h-4 w-4'/>
+										<span className='font-medium'>双耳处理</span>
+										<Badge variant='secondary'>即将推出</Badge>
+									</div>
+									<p className='text-sm text-muted-foreground'>3D音效、双耳节拍等高级功能将在后续版本中提供</p>
+								</div>
+
+								<div className='p-4 bg-muted/50 rounded-md'>
+									<div className='flex items-center gap-2 mb-2'>
+										<Zap className='h-4 w-4'/>
+										<span className='font-medium'>实时处理</span>
+										<Badge variant='secondary'>即将推出</Badge>
+									</div>
+									<p className='text-sm text-muted-foreground'>实时音频效果预览和动态调整功能</p>
+								</div>
+							</CardContent>
+						</Card>
+					</AccordionContent>
+				</AccordionItem>
+			</Accordion>
 
 			{/* Settings Summary */}
 			<Card className='bg-muted/50 border-muted'>

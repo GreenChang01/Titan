@@ -7,7 +7,7 @@ import {FfmpegAudioMixer} from './services/ffmpeg-audio-mixer.service';
 
 // Providers
 import {ElevenLabsProvider} from './providers/elevenlabs.provider';
-import {ElevenLabsSoundscapeProvider} from './providers/soundverse.provider';
+import {ElevenLabsSoundscapeProvider} from './providers/elevenlabs-soundscape.provider';
 
 @Module({
 	imports: [ConfigModule],

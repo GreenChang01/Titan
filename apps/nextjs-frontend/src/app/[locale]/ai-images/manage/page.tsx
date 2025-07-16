@@ -17,11 +17,11 @@ export default function AIImagesManagePage() {
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/dashboard'>工作台</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbLink href='/ai-images'>AI图片</BreadcrumbLink>
 							</BreadcrumbItem>
-							<BreadcrumbSeparator />
+							<BreadcrumbSeparator/>
 							<BreadcrumbItem>
 								<BreadcrumbPage>图片管理</BreadcrumbPage>
 							</BreadcrumbItem>
@@ -36,7 +36,7 @@ export default function AIImagesManagePage() {
 								管理和查看生成的AI图片素材
 							</p>
 						</div>
-						<VirtualizedAIImages />
+						<VirtualizedAIImages/>
 					</div>
 				</main>
 			</div>

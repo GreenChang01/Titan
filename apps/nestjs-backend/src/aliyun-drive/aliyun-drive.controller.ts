@@ -20,6 +20,7 @@ import {FileInterceptor} from '@nestjs/platform-express';
 import {ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiQuery} from '@nestjs/swagger';
 import {Response} from 'express';
 import {User} from '../auth/decorators/user.decorator';
+import {Public} from '../auth/decorators/public.decorator';
 import {User as UserEntity} from '../users/entities/user.entity';
 import {AliyunDriveService} from './aliyun-drive.service';
 import {
@@ -32,6 +33,7 @@ import {
 	DeleteItemsDto,
 	MoveItemDto,
 	CopyItemDto,
+	TestConnectionDto,
 } from './dto/index';
 
 /**
@@ -140,6 +142,45 @@ export class AliyunDriveController {
 			createdAt: config.createdAt,
 			updatedAt: config.updatedAt,
 		};
+	}
+
+	/**
+	 * 测试WebDAV连接
+	 * 测试提供的WebDAV配置是否能正常连接
+	 */
+	@Public()
+	@Post('config/test')
+	@HttpCode(HttpStatus.OK)
+	@ApiOperation({
+		summary: '测试WebDAV连接',
+		description: '测试提供的WebDAV配置信息是否能正常连接到服务器',
+	})
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'Connection test completed',
+		schema: {
+			type: 'object',
+			properties: {
+				success: {type: 'boolean', example: true},
+				message: {type: 'string', example: 'WebDAV连接测试成功'},
+				responseTime: {type: 'number', example: 1250},
+				error: {type: 'string', example: 'Connection refused'},
+			},
+		},
+	})
+	@ApiResponse({
+		status: HttpStatus.BAD_REQUEST,
+		description: 'Invalid configuration data',
+	})
+	async testConnection(
+		@Body() testDto: TestConnectionDto,
+	): Promise<{
+		success: boolean;
+		message: string;
+		responseTime?: number;
+		error?: string;
+	}> {
+		return this.aliyunDriveService.testConnection(testDto);
 	}
 
 	@Put('config/:id')
