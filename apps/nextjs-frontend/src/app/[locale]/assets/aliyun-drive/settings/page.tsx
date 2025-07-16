@@ -39,21 +39,14 @@ export default function AliyunDriveSettingsPage() {
 
 			<div className='p-6'>
 				<div className='max-w-7xl mx-auto'>
-					<div className='mb-6'>
-						<h1 className='text-3xl font-bold text-foreground'>阿里云盘连接设置</h1>
-						<p className='text-muted-foreground mt-2'>
-							配置阿里云盘WebDAV连接设置
-						</p>
-					</div>
-
 					<Card>
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<Settings className='w-5 h-5 text-blue-500'/>
-								连接设置
+								阿里云盘WebDAV配置
 							</CardTitle>
 							<CardDescription>
-								配置阿里云盘WebDAV连接设置
+								管理您的阿里云盘WebDAV连接配置，支持文件浏览和上传下载
 							</CardDescription>
 						</CardHeader>
 						<CardContent>

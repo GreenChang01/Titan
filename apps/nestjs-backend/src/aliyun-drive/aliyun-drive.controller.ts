@@ -34,6 +34,7 @@ import {
 	MoveItemDto,
 	CopyItemDto,
 	TestConnectionDto,
+	AliyunDriveConfigDto,
 } from './dto/index';
 
 /**
@@ -59,6 +60,7 @@ export class AliyunDriveController {
 	@ApiResponse({
 		status: HttpStatus.CREATED,
 		description: 'Configuration created successfully',
+		type: AliyunDriveConfigDto,
 	})
 	@ApiResponse({
 		status: HttpStatus.BAD_REQUEST,
@@ -71,18 +73,7 @@ export class AliyunDriveController {
 	async createConfig(
 		@User() user: UserEntity,
 		@Body() createDto: CreateAliyunDriveConfigDto,
-	): Promise<{
-			id: string;
-			webdavUrl: string;
-			username: string;
-			displayName?: string;
-			timeout: number;
-			basePath?: string;
-			isActive: boolean;
-			lastSyncAt?: Date;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+	): Promise<AliyunDriveConfigDto> {
 		const config = await this.aliyunDriveService.createConfig(user, createDto);
 
 		return {
@@ -107,23 +98,13 @@ export class AliyunDriveController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: 'Configuration retrieved successfully',
+		type: AliyunDriveConfigDto,
 	})
 	@ApiResponse({
 		status: HttpStatus.UNAUTHORIZED,
 		description: 'User not authenticated',
 	})
-	async getConfig(@User() user: UserEntity): Promise<{
-		id: string;
-		webdavUrl: string;
-		username: string;
-		displayName?: string;
-		timeout: number;
-		basePath?: string;
-		isActive: boolean;
-		lastSyncAt?: Date;
-		createdAt: Date;
-		updatedAt: Date;
-	} | null> {
+	async getConfig(@User() user: UserEntity): Promise<AliyunDriveConfigDto | null> {
 		const config = await this.aliyunDriveService.findByUser(user);
 
 		if (!config) {
@@ -172,9 +153,7 @@ export class AliyunDriveController {
 		status: HttpStatus.BAD_REQUEST,
 		description: 'Invalid configuration data',
 	})
-	async testConnection(
-		@Body() testDto: TestConnectionDto,
-	): Promise<{
+	async testConnection(@Body() testDto: TestConnectionDto): Promise<{
 		success: boolean;
 		message: string;
 		responseTime?: number;
@@ -184,22 +163,16 @@ export class AliyunDriveController {
 	}
 
 	@Put('config/:id')
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'Configuration updated successfully',
+		type: AliyunDriveConfigDto,
+	})
 	async updateConfig(
 		@Param('id') id: string,
 		@User() user: UserEntity,
 		@Body() updateDto: UpdateAliyunDriveConfigDto,
-	): Promise<{
-			id: string;
-			webdavUrl: string;
-			username: string;
-			displayName?: string;
-			timeout: number;
-			basePath?: string;
-			isActive: boolean;
-			lastSyncAt?: Date;
-			createdAt: Date;
-			updatedAt: Date;
-		}> {
+	): Promise<AliyunDriveConfigDto> {
 		const config = await this.aliyunDriveService.findByUser(user);
 
 		if (!config || config.id !== id) {
@@ -438,9 +411,9 @@ export class AliyunDriveController {
 		@Param('id') id: string,
 		@User() user: UserEntity,
 	): Promise<{
-			message: string;
-			lastSyncAt?: Date;
-		}> {
+		message: string;
+		lastSyncAt?: Date;
+	}> {
 		const config = await this.aliyunDriveService.findByUser(user);
 
 		if (!config || config.id !== id) {

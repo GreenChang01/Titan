@@ -3182,6 +3182,16 @@
           "nullable": false,
           "mappedType": "uuid"
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "webdav_url": {
           "name": "webdav_url",
           "type": "varchar(255)",

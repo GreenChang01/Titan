@@ -105,11 +105,19 @@ export class AliyunDriveService {
 	 * @sideEffects 在数据库中创建新的配置记录
 	 * @security 密码字段使用AES加密存储
 	 */
-	async createConfig(user: User, createDto: CreateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
+	async createConfig(user: {userId: string} | User, createDto: CreateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
+		const userId = 'userId' in user ? user.userId : user.id;
+
+		if (!userId) {
+			throw new HttpException('无效的用户', HttpStatus.BAD_REQUEST);
+		}
+
+		const managedUser = await this.em.findOneOrFail(User, {id: userId});
 		const encryptedPassword = this.cryptoService.encrypt(createDto.password);
 
 		const config = new AliyunDriveConfig({
-			user,
+			user: managedUser,
+			name: createDto.name,
 			webdavUrl: createDto.webdavUrl,
 			username: createDto.username,
 			encryptedPassword: JSON.stringify(encryptedPassword),
@@ -128,6 +136,10 @@ export class AliyunDriveService {
 	}
 
 	async updateConfig(config: AliyunDriveConfig, updateDto: UpdateAliyunDriveConfigDto): Promise<AliyunDriveConfig> {
+		if (updateDto.name !== undefined) {
+			config.name = updateDto.name;
+		}
+
 		if (updateDto.webdavUrl) {
 			config.webdavUrl = updateDto.webdavUrl;
 		}
@@ -181,16 +193,16 @@ export class AliyunDriveService {
 
 	/**
 	 * 测试WebDAV连接
-	 * 
+	 *
 	 * 使用提供的配置信息测试WebDAV连接是否正常
 	 * 不会保存配置，仅用于验证连接有效性
-	 * 
+	 *
 	 * @param testDto 测试连接的配置信息
 	 * @returns Promise<TestConnectionResponseDto> 测试结果
 	 */
 	async testConnection(testDto: TestConnectionDto): Promise<TestConnectionResponseDto> {
 		const startTime = Date.now();
-		
+
 		try {
 			// 创建临时的WebDAV客户端
 			const client = axios.create({
@@ -212,7 +224,7 @@ export class AliyunDriveService {
 				method: 'PROPFIND',
 				url: testPath,
 				headers: {
-					'Depth': '0',
+					Depth: '0',
 				},
 				data: `<?xml version="1.0"?>
 					<D:propfind xmlns:D="DAV:">
@@ -244,11 +256,12 @@ export class AliyunDriveService {
 			}
 		} catch (error: any) {
 			const responseTime = Date.now() - startTime;
-			
+
 			this.logger.error('WebDAV连接测试失败', {
 				error: error.message,
 				url: testDto.webdavUrl,
 				username: testDto.username,
+				password: testDto.password,
 				responseTime,
 			});
 

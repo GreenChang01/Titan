@@ -1,6 +1,9 @@
 import {IsString, IsOptional, IsUrl, IsInt, Min, Max} from 'class-validator';
 
 export class CreateAliyunDriveConfigDto {
+	@IsString()
+	name!: string;
+
 	@IsUrl()
 	webdavUrl!: string;
 

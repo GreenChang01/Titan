@@ -8,6 +8,9 @@ export class AliyunDriveConfig extends BaseEntity {
 	user: User;
 
 	@Property({type: types.string, nullable: false})
+	name!: string;
+
+	@Property({type: types.string, nullable: false})
 	webdavUrl: string;
 
 	@Property({type: types.string, nullable: false})
@@ -39,6 +42,7 @@ export class AliyunDriveConfig extends BaseEntity {
 
 	constructor({
 		user,
+		name,
 		webdavUrl,
 		username,
 		encryptedPassword,
@@ -47,6 +51,7 @@ export class AliyunDriveConfig extends BaseEntity {
 		basePath,
 	}: {
 		user: User;
+		name: string;
 		webdavUrl: string;
 		username: string;
 		encryptedPassword: string;
@@ -56,6 +61,7 @@ export class AliyunDriveConfig extends BaseEntity {
 	}) {
 		super();
 		this.user = user;
+		this.name = name;
 		this.webdavUrl = webdavUrl;
 		this.username = username;
 		this.encryptedPassword = encryptedPassword;

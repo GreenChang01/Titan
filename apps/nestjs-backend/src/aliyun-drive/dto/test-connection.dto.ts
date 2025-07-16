@@ -1,6 +1,10 @@
 import {IsString, IsOptional, IsUrl, IsInt, Min, Max} from 'class-validator';
 
 export class TestConnectionDto {
+	@IsOptional()
+	@IsString()
+	name?: string;
+
 	@IsUrl()
 	webdavUrl!: string;
 
